@@ -1,0 +1,27 @@
+{
+  "name": "bacon-jam-10",
+  "version": "1.0.0",
+  "description": "Team Natural 20's entry to the 10th Bacon Game Jam",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "node node_modules/nodemon/bin/nodemon.js ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AndyBarron/bacon-jam-10"
+  },
+  "author": "Team Natural 20",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AndyBarron/bacon-jam-10/issues"
+  },
+  "homepage": "https://github.com/AndyBarron/bacon-jam-10",
+  "dependencies": {
+    "browserify": "13.0.0",
+    "ejs": "2.3.4",
+    "express": "4.13.4",
+    "nodemon": "1.8.1",
+    "pixi.js": "3.0.9"
+  }
+}

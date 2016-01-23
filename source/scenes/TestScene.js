@@ -11,16 +11,24 @@ var testSceneMusic = new howler.Howl({
 function TestScreen() {
   this.stage = new pixi.Container();
 
-  this.player = new objects.Player(new pixi.Sprite.fromImage('/graphics/space_guy.png'));
-
-  this.player.sprite.x = 300;
-  this.player.sprite.y = 300;
+  this.player = new objects.Player(300, 300, new pixi.Sprite.fromImage('/graphics/space_guy.png'));
+  this.aliens = new Array();
+  this.aliens.push(new objects.Alien(500, 300, new pixi.Sprite.fromImage('/graphics/alien.png'), this.player));
 
   this.stage.addChild(this.player.sprite);
+
+  for(var i = 0; i < this.aliens.length; i++) {
+    this.stage.addChild(this.aliens[i].sprite);
+  }
 
   this.update = function update(delta) {
     this.checkKeyboardEvents();
     this.player.update(delta);
+    
+    for(var i = 0; i < this.aliens.length; i++) {
+      this.aliens[i].update(delta);
+    }
+
     this.applyGravity(delta);
   };
 
@@ -53,7 +61,6 @@ TestScreen.prototype = {
       // Down
     }
 
-    // TODO: REMOVE THIS
     if (this.player.velocity.y == 0 && this.player.isJumping) {
       this.player.isJumping = false;
     }
@@ -62,9 +69,11 @@ TestScreen.prototype = {
   applyGravity: function applyGravity(delta) {
     this.player.velocity.y += 100 * delta;   
 
+    // TODO: REMOVE THIS
     if (this.player.sprite.y > 300) {
       this.player.velocity.y = 0;
     }
+    // END TODO
   }
 }
 

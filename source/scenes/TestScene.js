@@ -19,7 +19,9 @@ function TestScreen() {
   this.stage.addChild(this.player.sprite);
 
   this.update = function update(delta) {
-    this.movePlayer(delta);
+    this.checkKeyboardEvents();
+    this.player.update(delta);
+    this.applyGravity(delta);
   };
 
   this.getStage = function getStage() {
@@ -30,21 +32,38 @@ function TestScreen() {
 };
 
 TestScreen.prototype = {
-  movePlayer: function movePlayer(delta) {
-    if (keyboard.isKeyDown(keyboard.W)) {
-      this.player.move(0, -this.player.speed * delta);
+  checkKeyboardEvents: function checkKeyboardEvents() {
+    if (keyboard.isKeyDown(keyboard.W) && !this.player.isJumping) {
+      this.player.isJumping = true;
+      this.player.velocity.y = -100;
     }
 
     if (keyboard.isKeyDown(keyboard.A)) {
-      this.player.move(-this.player.speed * delta, 0);
+      this.player.velocity.x = -this.player.speed;
+    }
+    else if (keyboard.isKeyDown(keyboard.D)) {
+      this.player.velocity.x = this.player.speed;
+    }
+    else
+    {
+       this.player.velocity.x = 0;
     }
 
     if (keyboard.isKeyDown(keyboard.S)) {
-      this.player.move(0, this.player.speed * delta);
+      // Down
     }
 
-    if (keyboard.isKeyDown(keyboard.D)) {
-      this.player.move(this.player.speed * delta, 0);
+    // TODO: REMOVE THIS
+    if (this.player.velocity.y == 0 && this.player.isJumping) {
+      this.player.isJumping = false;
+    }
+
+  },
+  applyGravity: function applyGravity(delta) {
+    this.player.velocity.y += 100 * delta;   
+
+    if (this.player.sprite.y > 300) {
+      this.player.velocity.y = 0;
     }
   }
 }

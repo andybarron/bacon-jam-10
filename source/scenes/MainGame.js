@@ -83,7 +83,7 @@ MainGame.prototype = {
     if (keyboard.isKeyDown(keyboard.W) && this.player.grounded) {
       this.player.grounded = false;
       this.player.velocity.y = -constants.PLAYER_JUMP_SPEED;
-      this.player.sounds.play('jumping');
+      this.player.sounds['jump'].play();
     }
 
     if (keyboard.isKeyDown(keyboard.A)) {

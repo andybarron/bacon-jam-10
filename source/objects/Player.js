@@ -13,15 +13,14 @@ function Player(x, y, sprite) {
     y: 0.0
   };
   this.isJumping = false;
-  this.sounds = new howler.Howl({
-    urls: ['../audio/SoundPlaceholder1.mp3'],
-    sprite: {
-      jumping: [900, 600],
-      attacking: [2500, 900],
-      hiding: [4450, 700],
-      flying: [6300, 650]
-    }
-  });
+
+  this.sounds = {
+    'jump': new howler.Howl({ urls: ['../audio/jumping.mp3'] }),
+    'attack': new howler.Howl({ urls: ['../audio/attacking.mp3'] }),
+    'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
+    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] })
+  };
+
 }
 
 Player.prototype = {

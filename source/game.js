@@ -11,6 +11,11 @@ var lastTime = Date.now();
 var scene = null;
 var TestScene = require('./scenes/TestScene');
 scene = new TestScene();
+
+// Starts playing the background music
+scene.backgroundMusic.play();
+console.log("Playing music");
+
 var animate = function animate() {
   var time = Date.now();
   var delta = (time - lastTime) / 1000.0;

@@ -2,6 +2,11 @@ var pixi = require('pixi.js');
 var colors = require('../colors');
 var objects = require("../objects");
 var keyboard = require("../keyboard");
+var howler = require('howler');
+
+var testSceneMusic = new howler.Howl({
+  urls: ['../audio/asteroids-revised.mp3.mp3']
+});
 
 function TestScreen() {
   this.stage = new pixi.Container();
@@ -20,6 +25,8 @@ function TestScreen() {
   this.getStage = function getStage() {
     return this.stage;
   };
+  
+  this.backgroundMusic = testSceneMusic;
 };
 
 TestScreen.prototype = {

@@ -48,10 +48,15 @@ function MainGame() {
   // PAUSE OVERLAY
   this.pausedOverlay = new pixi.Container();
   this.pauseGraphics = new pixi.Graphics();
+  this.pauseText = new pixi.Sprite(pixi.loader.resources.pause.texture);
+  this.pauseText.anchor = new pixi.Point(0.5, 0.5);
+  this.pauseText.x = 400;
+  this.pauseText.y = 300;
   this.pauseGraphics.beginFill(0x000000, 0.5);
   this.pauseGraphics.drawRect(0,0,800,600);
   this.pauseGraphics.endFill();
-  this.pausedOverlay.addChild(this.pauseGraphics);
+  this.pausedOverlay.addChild(this.pauseText);
+  this.pausedOverlay.addChild(this.pauseGraphics);  
 
   // GRAPHICS FOR DEBUG
   this.graphics = new pixi.Graphics();

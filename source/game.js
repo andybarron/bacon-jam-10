@@ -17,8 +17,9 @@ debug('loading assets');
 pixi.loader
   .add([
     {name: 'avatar', url: "/graphics/space_guy.png"},
-    {name: 'alien', url: "/graphics/alien.png"}
-    ])
+    {name: 'alien', url: "/graphics/alien.png"},
+    {name: 'pause', url: "/graphics/text/pause.png"}
+  ])
   .on("progress", loadProgressHandler)
   .load(finishedLoading);
 

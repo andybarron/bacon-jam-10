@@ -13,6 +13,11 @@ app.set('view engine', 'ejs');
 
 console.info("Compiling game source...");
 browserify('source/main.js').bundle((err, buf) => {
+  if (err) {
+    console.error(err.toString());
+    console.error("Syntax error detected! Exiting.");
+    process.exit(1);
+  }
   var script = buf.toString('utf8');
   console.info("Done!");
 

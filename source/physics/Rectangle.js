@@ -20,7 +20,11 @@ Rectangle.prototype = {
     var h = 0.5 * (this.h + other.h);
     var dx = thisCenter.x - otherCenter.x;
     var dy = thisCenter.y - otherCenter.y;
-    if (Math.abs(dx) <= w && )
+    var result = null;
+    if (Math.abs(dx) <= w && Math.abs(dy) <= h) {
+      
+    }
+    return result;
   },
 };
 

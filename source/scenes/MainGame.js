@@ -5,7 +5,8 @@ var keyboard = require("../keyboard");
 var howler = require('howler');
 
 var testSceneMusic = new howler.Howl({
-  urls: ['../audio/asteroids-revised.mp3.mp3']
+  urls: ['../audio/asteroids-revised.mp3.mp3'],
+  loop: true
 });
 
 function MainGame() {
@@ -44,6 +45,7 @@ MainGame.prototype = {
     if (keyboard.isKeyDown(keyboard.W) && !this.player.isJumping) {
       this.player.isJumping = true;
       this.player.velocity.y = -100;
+      this.player.sounds.play('jumping');
     }
 
     if (keyboard.isKeyDown(keyboard.A)) {

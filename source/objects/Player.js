@@ -15,12 +15,18 @@ function Player(x, y, sprite) {
     y: 0.0
   };
   this.isJumping = false;
+  this.isHiding = false;
 
   this.sounds = {
     'jump': new howler.Howl({ urls: ['../audio/jumping.mp3'] }),
     'attack': new howler.Howl({ urls: ['../audio/attacking.mp3'] }),
     'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
-    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] })
+    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'],
+        onend: function() { 
+          this.isHiding = false;
+          console.log("Hiding: " + this.isHiding);
+        }
+      })
   };
 
 }

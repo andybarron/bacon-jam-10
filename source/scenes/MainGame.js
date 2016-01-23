@@ -169,6 +169,10 @@ MainGame.prototype = {
 
     if (keyboard.isKeyDown(keyboard.S)) {
       // Down
+      if( !this.player.isHiding ){
+        this.player.isHiding = true;
+        this.player.sounds['hide'].play();
+      }
     }
 
   },

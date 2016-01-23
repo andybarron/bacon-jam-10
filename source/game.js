@@ -35,7 +35,7 @@ function finishedLoading(){
   scene = new MainGame();
 
   // Starts playing the background music
-  scene.backgroundMusic.play();
+  scene.backgroundMusic.play(); // TODO move to first update() call
   console.log("Playing music");
 
   var animate = function animate() {

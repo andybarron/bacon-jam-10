@@ -1,4 +1,5 @@
 var pixi = require('pixi.js');
+var howler = require('howler');
 
 function Player(x, y, sprite) {
   this.sprite = sprite;
@@ -11,6 +12,15 @@ function Player(x, y, sprite) {
     y: 0.0
   };
   this.isJumping = false;
+  this.sounds = new howler.Howl({
+    urls: ['../audio/SoundPlaceholder1.mp3'],
+    sprite: {
+      jumping: [900, 600],
+      attacking: [2500, 900],
+      hiding: [4450, 700],
+      flying: [6300, 650]
+    }
+  });
 }
 
 Player.prototype = {

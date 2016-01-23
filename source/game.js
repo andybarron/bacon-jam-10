@@ -1,6 +1,7 @@
 var pixi = require('pixi.js');
 var debug = require('./debug');
 var constants = require('./constants');
+var keyboard = require('./keyboard');
 debug('Begin game setup!');
 
 
@@ -47,6 +48,7 @@ var animate = function animate() {
     scene.update(delta);
     render.render(scene.getStage());
   }
+  keyboard.update();
   window.requestAnimationFrame(animate);
 };
 animate();

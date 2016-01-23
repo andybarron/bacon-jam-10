@@ -15,13 +15,22 @@ var testSceneMusic = new howler.Howl({
 function MainGame() {
   var self = this; // ugh
   this.stage = new pixi.Container();
+  this.paused = false;
 
-  //this.player = new objects.Player(300, 300, new pixi.Sprite.fromImage('/graphics/space_guy.png'));
+  // PLAYER SETUP
   this.player = new objects.Player(300, 300, new pixi.Sprite(pixi.loader.resources.avatar.texture));
+  this.stage.addChild(this.player.sprite);
+
+  // ALIEN SETUP
   this.aliens = new Array();
   this.aliens.push(new objects.Alien(500, 300, new pixi.Sprite(pixi.loader.resources.alien.texture), this.player));
   this.aliens.push(new objects.Alien(100, 300, new pixi.Sprite(pixi.loader.resources.alien.texture), this.player));
 
+  for(var i = 0; i < this.aliens.length; i++) {
+    this.stage.addChild(this.aliens[i].sprite);
+  }
+
+  // PLATFORM SETUP
   this.platforms = [
     new pixi.Rectangle(200, 400, 300, 100),
     new pixi.Rectangle(600, 350, 100, 100),
@@ -35,28 +44,36 @@ function MainGame() {
     g.endFill();
   });
   this.stage.addChild(this.platformGraphics);
-
-  this.stage.addChild(this.player.sprite);
-
-  for(var i = 0; i < this.aliens.length; i++) {
-    this.stage.addChild(this.aliens[i].sprite);
-  }
-
+  
+  // GRAPHICS FOR DEBUG
   this.graphics = new pixi.Graphics();
   this.stage.addChild(this.graphics);
 
+  // BACKGROUND MUSIC
+  this.backgroundMusic = testSceneMusic;
+
+  // UPDATE METHOD FOR GAME
   this.update = function update(delta) {
+    // CHECK FOR KEYBOARD EVENTS
+    this.checkKeyboardEvents(delta);
+
+    if (this.paused) return;
+    
+    // GRAVITY
     this.applyGravity(delta);
+    // PLAYER UPDATE
     this.player.grounded = false;
     this.player.update(delta);
     this.checkTileCollision(this.player);
-    this.checkKeyboardEvents(delta);
-    
+
+    // ALIEN UPDATE
     for(var i = 0; i < this.aliens.length; i++) {
       this.aliens[i].update(delta);
     }
     
     this.graphics.clear();
+
+    // DEBUG ALIEN COLLISION
     this.aliens.forEach(function(alien) {
       var overlap = collision.getSpriteOverlap(
         self.player.sprite,
@@ -68,18 +85,23 @@ function MainGame() {
         self.graphics.endFill();
       }
     });
-
   };
 
+  // STAGE SETUP
   this.getStage = function getStage() {
     return this.stage;
   };
-  
-  this.backgroundMusic = testSceneMusic;
 };
 
 MainGame.prototype = {
   checkKeyboardEvents: function checkKeyboardEvents(delta) {
+
+    if (keyboard.isKeyPressed(keyboard.ESC)) {
+      this.paused = !this.paused;
+    }
+
+    if(this.paused) return;
+
     if (keyboard.isKeyDown(keyboard.W) && this.player.grounded) {
       this.player.grounded = false;
       this.player.velocity.y = -constants.PLAYER_JUMP_SPEED;

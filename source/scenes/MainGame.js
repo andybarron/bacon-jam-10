@@ -167,12 +167,14 @@ MainGame.prototype = {
       }
     }
 
-    if (keyboard.isKeyDown(keyboard.S)) {
+    if (keyboard.isKeyDown(keyboard.S) && this.player.grounded) {
       // Down
       if( !this.player.isHiding ){
         this.player.isHiding = true;
         this.player.sounds['hide'].play();
       }
+    } else {
+      this.player.isHiding = false;
     }
 
   },

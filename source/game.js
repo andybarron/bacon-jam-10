@@ -8,6 +8,7 @@ debug('Begin game setup!');
 // TODO height/width or resizing to window
 debug('Initializing renderer');
 var render = new pixi.autoDetectRenderer(800, 600);
+var scene = null;
 debug('Adding view to DOM');
 document.querySelector('#display-wrapper').appendChild(render.view);
 
@@ -22,14 +23,14 @@ pixi.loader
   .load(finishedLoading);
 
 function loadProgressHandler(loader, resource) {
-  console.log("loading: " + resource.url);
+  // TODO have a loading bar!
+  debug("loading: " + resource.url);
 }
 
 function finishedLoading(){
   console.log("All assets loaded");
   debug('Setting up animation loop');
   var lastTime = Date.now();
-  var scene = null;
   var MainGame = require('./scenes/MainGame');
   scene = new MainGame();
 

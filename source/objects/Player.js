@@ -4,6 +4,7 @@ var constants = require('../constants');
 
 function Player(x, y, sprite) {
   this.sprite = sprite;
+  this.grounded = false;
   this.sprite.x = x;
   this.sprite.y = y;
   this.sprite.anchor = new pixi.Point(0.5, 0.5);

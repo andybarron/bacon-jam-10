@@ -1,6 +1,7 @@
 var pixi = require('pixi.js');
 
 module.exports = {
+  // works on pixi.Rectangle and pixi.Sprite
   getRectangleCenter: function getRectangleCenter(r) {
     return {
       x: r.x + r.width/2.0,
@@ -23,5 +24,44 @@ module.exports = {
     b.updateTransform();
     return this.getRectangleOverlap(a.getBounds(), b.getBounds());
   },
-  // TODO(andybarron): Implement sprite versions that call updateTransform() first!
+  // TODO: platforms/tiles can limit collision direction to avoid
+  //       "catching" on walls/floors
+  resolveTileCollision: function resolveTileCollision(player, tileRect) {
+    var charSprite = player.sprite;
+    charSprite.updateTransform();
+    var overlap = this.getRectangleOverlap(charSprite.getBounds(), tileRect);
+    if (overlap) {
+      var charCenter = this.getRectangleCenter(charSprite.getBounds());
+      var tileCenter = this.getRectangleCenter(tileRect);
+      if (overlap.width > overlap.height) { // char moves vertically
+        if (tileCenter.y >= charCenter.y) {
+          // TODO also set grounded to true???
+          player.grounded = true;
+          charSprite.y -= overlap.height;
+          if (player.velocity.y > 0) {
+            player.velocity.y = 0;
+          }
+        } else {
+          charSprite.y += overlap.height;
+          if (player.velocity.y < 0) {
+            player.velocity.y = 0;
+          }
+        }
+      } else { // char moves horizontally
+        player.velocity.x = 0;
+        if (tileCenter.x >= charCenter.x) {
+          charSprite.x -= overlap.width;
+          if (player.velocity.x > 0) {
+            player.velocity.x = 0;
+          }
+        } else {
+          charSprite.x += overlap.width;
+          if (player.velocity.x < 0) {
+            player.velocity.x = 0;
+          }
+        }
+      }
+    }
+    return overlap;
+  },
 }

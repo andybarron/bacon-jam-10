@@ -21,6 +21,9 @@ browserify('source/main.js').bundle((err, buf) => {
     res.send(script);
   });
 
+  // Serve up graphics
+  app.use('/graphics', express.static('graphics'));
+
   // Serve home page with game
   app.get('/', (req, res) => {
     res.render('game');

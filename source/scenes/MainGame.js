@@ -12,7 +12,8 @@ var testSceneMusic = new howler.Howl({
 function MainGame() {
   this.stage = new pixi.Container();
 
-  this.player = new objects.Player(300, 300, new pixi.Sprite.fromImage('/graphics/space_guy.png'));
+  //this.player = new objects.Player(300, 300, new pixi.Sprite.fromImage('/graphics/space_guy.png'));
+  this.player = new objects.Player(300, 300, new pixi.Sprite(pixi.loader.resources.avatar.texture));
   this.aliens = new Array();
   this.aliens.push(new objects.Alien(500, 300, new pixi.Sprite.fromImage('/graphics/alien.png'), this.player));
 

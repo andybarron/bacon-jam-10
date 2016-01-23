@@ -4,6 +4,8 @@ var constants = require('../constants');
 
 function Player(x, y, sprite) {
   this.sprite = sprite;
+  this.hitPoints = 3;
+  this.recentHit = false;
   this.grounded = false;
   this.sprite.x = x;
   this.sprite.y = y;

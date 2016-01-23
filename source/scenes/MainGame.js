@@ -93,10 +93,6 @@ function MainGame() {
         alien.sprite
       );
       if (overlap) {
-        if( !self.player.isOverlapping ){
-          self.player.isOverlapping = true;
-          self.player.sounds['ouch'].play();
-        }
         self.graphics.beginFill(0xFF00FF, 0.5);
         self.graphics.drawShape(overlap);
         self.graphics.endFill();
@@ -104,6 +100,7 @@ function MainGame() {
         if(self.player.recentHit == false){
           self.player.recentHit = true;
           self.player.hitPoints -= 1;
+          self.player.sounds['ouch'].play();
           console.log("hp: " + self.player.hitPoints);
 
           if(overlap.x > self.player.sprite.x){
@@ -113,9 +110,6 @@ function MainGame() {
             self.player.velocity.x = 500;
           }
         }
-
-      } else {
-        self.player.isOverlapping = false;
       }
     });
   };

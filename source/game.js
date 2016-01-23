@@ -22,44 +22,39 @@ pixi.loader
   .load(finishedLoading);
 
 function loadProgressHandler(loader, resource) {
-
   console.log("loading: " + resource.url);
 }
 
 function finishedLoading(){
   console.log("All assets loaded");
+  debug('Setting up animation loop');
+  var lastTime = Date.now();
+  var scene = null;
+  var MainGame = require('./scenes/MainGame');
+  scene = new MainGame();
 
-debug('Setting up animation loop');
-var lastTime = Date.now();
-var scene = null;
-var MainGame = require('./scenes/MainGame');
-scene = new MainGame();
+  // Starts playing the background music
+  scene.backgroundMusic.play();
+  console.log("Playing music");
 
-// Starts playing the background music
-scene.backgroundMusic.play();
-console.log("Playing music");
+  var animate = function animate() {
+    var time = Date.now();
+    var delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );
+    lastTime = time;
+    if (scene) {
+      var currentScene = scene; // in case the scene is changed
+      scene.update(delta);
+      render.render(scene.getStage());
+    }
+    keyboard.update();
+    window.requestAnimationFrame(animate);
+  };
+  animate();
+  debug('End setup phase');
+}
 
-var animate = function animate() {
-  var time = Date.now();
-  var delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );
-  lastTime = time;
-  if (scene) {
-    var currentScene = scene; // in case the scene is changed
-    scene.update(delta);
-    render.render(scene.getStage());
-  }
-  keyboard.update();
-  window.requestAnimationFrame(animate);
-};
-animate();
-debug('End setup phase');
 module.exports = {
   setScene: function setScene(nextScene) {
     scene = nextScene;
   },
 };
-}
-
-
-
-

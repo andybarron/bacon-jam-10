@@ -15,12 +15,14 @@ function Player(x, y, sprite) {
     y: 0.0
   };
   this.isHiding = false;
+  this.isOverlapping = false;
 
   this.sounds = {
     'jump': new howler.Howl({ urls: ['../audio/jumping.mp3'] }),
     'attack': new howler.Howl({ urls: ['../audio/attacking.mp3'] }),
     'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
-    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] })
+    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] }),
+    'ouch': new howler.Howl({ urls: ['../audio/ouch.mp3'] })
   };
 
 }

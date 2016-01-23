@@ -3,74 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <title>Bacon Game Jam 10</title>
-    <script src="/game.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style>
+      html, body {
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        background-color: #777;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-  	<div id="player"></div>
-    <!-- <iframe id="player" width="420" height="315" src="https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1" frameborder="0" allowfullscreen></iframe> -->
+  	<div id="display-wrapper"></div>
+    <script src="/game.js"></script>
   </body>
 </html>
-
-<script type="text/javascript" src="http://www.youtube.com/player_api"></script>
-
-<script>
-
-  // 2. This code loads the IFrame Player API code asynchronously.
-  var counter = 0;
-  var tag = document.createElement('script');
-
-  tag.src = "https://www.youtube.com/iframe_api";
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-  // 3. This function creates an <iframe> (and YouTube player)
-  //    after the API code downloads.
-  var player;
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-      height: '390',
-      width: '640',
-      videoId: 'oHg5SJYRHA0',
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  // 4. The API will call this function when the video player is ready.
-  function onPlayerReady(event) {
-    event.target.playVideo();
-  }
-
-  // 5. The API calls this function when the player's state changes.
-  //    The function indicates that when playing a video (state=1),
-  //    the player should play for six seconds and then stop.
-  var done = false;
-  function onPlayerStateChange(event) {
-    // if (event.data == YT.PlayerState.PLAYING && !done) {
-    //   setTimeout(stopVideo, 6000);
-    //   done = true;
-    // }
-    // console.log("State Changed");
-    if( counter > 2 ){
-	    
-	    if( event.data !== YT.PlayerState.PLAYING ){
-	    	$("body").append('<iframe class="player_copy" width="420" height="315" src="https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1" frameborder="0" allowfullscreen></iframe>');
-	    	player.playVideo();
-	    }
-	  }
-	  else {
-	  	counter = counter + 1;
-	  }
-  }
-  function stopVideo() {
-    player.stopVideo();
-  }
-
-  // This doesn't work :(
-  // $('iframe.player_copy').click(function() {
-  // 	$("body").append('<div class="player_copy"><iframe id="player" width="420" height="315" src="https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1" frameborder="0" allowfullscreen></iframe></div>');
-  // });
-</script>

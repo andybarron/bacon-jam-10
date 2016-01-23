@@ -47,14 +47,29 @@ MainGame.prototype = {
     }
 
     if (keyboard.isKeyDown(keyboard.A)) {
-      this.player.velocity.x = -this.player.speed;
+      //Moving left, increase left velocity up to max
+      if(this.player.velocity.x >= -this.player.MAX_VELOCITY){
+        this.player.velocity.x += -this.player.momentum;
+      }
     }
     else if (keyboard.isKeyDown(keyboard.D)) {
-      this.player.velocity.x = this.player.speed;
+      //Moving right, increase right velocity up to max
+      if(this.player.velocity.x <= this.player.MAX_VELOCITY){
+        this.player.velocity.x += this.player.momentum;
+      }
     }
     else
     {
-       this.player.velocity.x = 0;
+      //Not moving, velocity moves closer to 0 until stop
+      if(this.player.velocity.x > 0) {
+        this.player.velocity.x += -this.player.momentum
+      }
+      else if (this.player.velocity.x < 0){
+        this.player.velocity.x += this.player.momentum
+      }
+      else{
+        //do nothing
+      }
     }
 
     if (keyboard.isKeyDown(keyboard.S)) {

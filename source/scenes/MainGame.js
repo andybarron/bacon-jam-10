@@ -8,7 +8,7 @@ var testSceneMusic = new howler.Howl({
   urls: ['../audio/asteroids-revised.mp3.mp3']
 });
 
-function TestScreen() {
+function MainGame() {
   this.stage = new pixi.Container();
 
   this.player = new objects.Player(300, 300, new pixi.Sprite.fromImage('/graphics/space_guy.png'));
@@ -39,7 +39,7 @@ function TestScreen() {
   this.backgroundMusic = testSceneMusic;
 };
 
-TestScreen.prototype = {
+MainGame.prototype = {
   checkKeyboardEvents: function checkKeyboardEvents() {
     if (keyboard.isKeyDown(keyboard.W) && !this.player.isJumping) {
       this.player.isJumping = true;
@@ -77,5 +77,5 @@ TestScreen.prototype = {
   }
 }
 
-module.exports = TestScreen;
+module.exports = MainGame;
 

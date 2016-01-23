@@ -3,14 +3,14 @@ var debug = require('./debug');
 debug('Begin game setup!');
 // TODO height/width or resizing to window
 debug('Initializing renderer');
-var render = new pixi.autoDetectRenderer(800, 600);
+var render = new pixi.autoDetectRenderer(1280, 720);
 debug('Adding view to DOM');
 document.querySelector('#display-wrapper').appendChild(render.view);
 debug('Setting up animation loop');
 var lastTime = Date.now();
 var scene = null;
-var TestScene = require('./scenes/TestScene');
-scene = new TestScene();
+var MainGame = require('./scenes/MainGame');
+scene = new MainGame();
 
 // Starts playing the background music
 scene.backgroundMusic.play();

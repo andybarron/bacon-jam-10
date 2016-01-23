@@ -22,7 +22,7 @@ function MainGame() {
   this.paused = false;
 
   // PLAYER SETUP
-  this.player = new objects.Player(300, 300, new pixi.Sprite(pixi.loader.resources.avatar.texture));
+  this.player = new objects.Player(300, 300);
   this.stage.addChild(this.player.sprite);
 
   // ALIEN SETUP
@@ -82,7 +82,7 @@ function MainGame() {
     this.applyGravity(delta);
     // PLAYER UPDATE
     this.player.grounded = false;
-    this.player.update(delta);
+    this.player.update(delta, this.stage);
     this.checkTileCollision(this.player);
 
     // ALIEN UPDATE
@@ -185,6 +185,10 @@ MainGame.prototype = {
       }
     } else {
       this.player.isHiding = false;
+    }
+
+    if (keyboard.isKeyPressed(keyboard.E)) {
+      this.player.attack(this.stage);
     }
 
   },

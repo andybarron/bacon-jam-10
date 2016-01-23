@@ -18,10 +18,29 @@ pixi.loader
   .add([
     {name: 'avatar', url: "/graphics/space_guy.png"},
     {name: 'alien', url: "/graphics/alien.png"},
-    {name: 'pause', url: "/graphics/text/pause.png"}
+    {name: 'pause', url: "/graphics/text/pause.png"},
+    {name: 'swishy_attack_1', url: "/graphics/swishy/attack/sprite_1.png"},
+    {name: 'swishy_attack_2', url: "/graphics/swishy/attack/sprite_2.png"},
+    {name: 'swishy_attack_3', url: "/graphics/swishy/attack/sprite_3.png"},
+    {name: 'swishy_attack_4', url: "/graphics/swishy/attack/sprite_4.png"},
+    {name: 'swishy_attack_5', url: "/graphics/swishy/attack/sprite_5.png"},
+    {name: 'swishy_attack_6', url: "/graphics/swishy/attack/sprite_6.png"},
+    {name: 'swishy_attack_7', url: "/graphics/swishy/attack/sprite_7.png"},
+    {name: 'swishy_attack_8', url: "/graphics/swishy/attack/sprite_8.png"},
+    {name: 'swishy_idle_1', url: "/graphics/swishy/idle/sprite_1.png"},
+    {name: 'swishy_idle_2', url: "/graphics/swishy/idle/sprite_2.png"},
+    {name: 'swishy_idle_3', url: "/graphics/swishy/idle/sprite_3.png"},
+    {name: 'swishy_idle_4', url: "/graphics/swishy/idle/sprite_4.png"},
+    {name: 'swishy_idle_5', url: "/graphics/swishy/idle/sprite_5.png"},
+    {name: 'swishy_idle_6', url: "/graphics/swishy/idle/sprite_6.png"},
+    {name: 'swishy_idle_7', url: "/graphics/swishy/idle/sprite_7.png"},
+    {name: 'swishy_idle_8', url: "/graphics/swishy/idle/sprite_8.png"},
   ])
   .on("progress", loadProgressHandler)
   .load(finishedLoading);
+
+var alienImages = ["image_sequence_01.png","image_sequence_02.png","image_sequence_03.png","image_sequence_04.png"];
+
 
 function loadProgressHandler(loader, resource) {
   // TODO have a loading bar!
@@ -36,7 +55,7 @@ function finishedLoading(){
   scene = new MainGame();
 
   // Starts playing the background music
-  scene.backgroundMusic.play(); // TODO move to first update() call
+  // scene.backgroundMusic.play(); // TODO move to first update() call
   console.log("Playing music");
 
   var animate = function animate() {

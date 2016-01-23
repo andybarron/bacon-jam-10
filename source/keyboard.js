@@ -33,9 +33,10 @@ module.exports = {
     keysPressed = {};
     keysReleased = {};
   },
-  W: 87,
   A: 65,
-  S: 83,
   D: 68,
+  E: 69,
+  S: 83,
+  W: 87,
   ESC: 27,
 }

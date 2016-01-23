@@ -1,20 +1,15 @@
-
-function Rectangle(x, y, w, h) {
-  this.x = x;
-  this.y = y;
-  this.w = w;
-  this.h = h;
-};
-
-Rectangle.prototype = {
-  getCenter: function getCenter() {
-    return {x: this.x + this.w/2.0, y: this.y + this.h/2.0};
+module.exports = {
+  getRectangleCenter: function getRectangleCenter(r) {
+    return {
+      x: r.x + r.width;
+      y: r.y + r.height;
+    };
   },
-  getOverlap: function getOverlap(other) {
+  getOverlap: function getOverlap(a, b) {
     // algorithm adapted from:
     // http://gamedev.stackexchange.com/questions/29786/a-simple-2d-rectangle-
     //   collision-algorithm-that-also-determines-which-sides-that
-    var thisCenter = this.getCenter();
+    var aCenter = this.getCenter();
     var otherCenter = other.getCenter();
     var w = 0.5 * (this.w + other.w);
     var h = 0.5 * (this.h + other.h);
@@ -26,6 +21,4 @@ Rectangle.prototype = {
     }
     return result;
   },
-};
-
-module.exports = Rectangle;
+}

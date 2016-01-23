@@ -1,24 +1,27 @@
+var pixi = require('pixi.js');
+
 module.exports = {
   getRectangleCenter: function getRectangleCenter(r) {
     return {
-      x: r.x + r.width;
-      y: r.y + r.height;
+      x: r.x + r.width/2.0,
+      y: r.y + r.height/2.0,
     };
   },
-  getOverlap: function getOverlap(a, b) {
-    // algorithm adapted from:
-    // http://gamedev.stackexchange.com/questions/29786/a-simple-2d-rectangle-
-    //   collision-algorithm-that-also-determines-which-sides-that
-    var aCenter = this.getCenter();
-    var otherCenter = other.getCenter();
-    var w = 0.5 * (this.w + other.w);
-    var h = 0.5 * (this.h + other.h);
-    var dx = thisCenter.x - otherCenter.x;
-    var dy = thisCenter.y - otherCenter.y;
+  getRectangleOverlap: function getRectangleOverlap(a, b) {
+    var l = Math.max(a.x, b.x); // rightmost left
+    var r = Math.min(a.x + a.width, b.x + b.width); // leftmost right
+    var t = Math.max(a.y, b.y); // lowest top
+    var b = Math.min(a.y + a.height, b.y + b.height); // highest bottom
     var result = null;
-    if (Math.abs(dx) <= w && Math.abs(dy) <= h) {
-      
+    if (r > l && b > t) {
+      result = new pixi.Rectangle(l, t, r - l, b - t);
     }
     return result;
   },
+  getSpriteOverlap: function getSpriteOverlap(a, b) {
+    a.updateTransform();
+    b.updateTransform();
+    return this.getRectangleOverlap(a.getBounds(), b.getBounds());
+  },
+  // TODO(andybarron): Implement sprite versions that call updateTransform() first!
 }

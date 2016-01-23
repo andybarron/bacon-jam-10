@@ -1,13 +1,12 @@
 var pixi = require('pixi.js');
 var howler = require('howler');
+var constants = require('../constants');
 
 function Player(x, y, sprite) {
   this.sprite = sprite;
   this.sprite.x = x;
   this.sprite.y = y;
   this.sprite.anchor = new pixi.Point(0.5, 0.5);
-  this.momentum = 5
-  this.MAX_VELOCITY = 200;
   this.velocity = {
     x: 0.0,
     y: 0.0

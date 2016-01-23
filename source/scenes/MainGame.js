@@ -45,6 +45,14 @@ function MainGame() {
   });
   this.stage.addChild(this.platformGraphics);
   
+  // PAUSE OVERLAY
+  this.pausedOverlay = new pixi.Container();
+  this.pauseGraphics = new pixi.Graphics();
+  this.pauseGraphics.beginFill(0x000000, 0.5);
+  this.pauseGraphics.drawRect(0,0,800,600);
+  this.pauseGraphics.endFill();
+  this.pausedOverlay.addChild(this.pauseGraphics);
+
   // GRAPHICS FOR DEBUG
   this.graphics = new pixi.Graphics();
   this.stage.addChild(this.graphics);
@@ -98,6 +106,13 @@ MainGame.prototype = {
 
     if (keyboard.isKeyPressed(keyboard.ESC)) {
       this.paused = !this.paused;
+
+      if (this.paused) {
+        this.stage.addChild(this.pausedOverlay);
+      }
+      else {
+        this.stage.removeChild(this.pausedOverlay);
+      }
     }
 
     if(this.paused) return;

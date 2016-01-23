@@ -119,6 +119,7 @@ function MainGame() {
 };
 
 MainGame.prototype = {
+
   checkKeyboardEvents: function checkKeyboardEvents(delta) {
 
     if (keyboard.isKeyPressed(keyboard.ESC)) {

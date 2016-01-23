@@ -36,14 +36,16 @@ function MainGame() {
     new pixi.Rectangle(600, 350, 100, 100),
     new pixi.Rectangle(0, 550, 800, 100),
   ];
-  this.platformGraphics = new pixi.Graphics();
+  this.platformGraphicsContainer = new pixi.Container();
   this.platforms.forEach(function(platform) {
-    var g = self.platformGraphics;
+    var g = new pixi.Graphics();
+    g.boundsPadding = 0; // Important!
     g.beginFill(0x0077BB);
     g.drawShape(platform);
     g.endFill();
+    self.platformGraphicsContainer.addChild(g);
   });
-  this.stage.addChild(this.platformGraphics);
+  this.stage.addChild(this.platformGraphicsContainer);
   
   // PAUSE OVERLAY
   this.pausedOverlay = new pixi.Container();
@@ -112,6 +114,8 @@ function MainGame() {
         }
       }
     });
+    this.stage.x = 400 - this.player.sprite.x; // TODO hardcoded size
+    this.stage.y = 300 - this.player.sprite.y; // TODO hardcoded size
   };
 
   // STAGE SETUP
@@ -185,8 +189,8 @@ MainGame.prototype = {
   },
   checkTileCollision: function checkTileCollision(character) {
     var player = this.player;
-    this.platforms.forEach(function(platform) {
-      collision.resolveTileCollision(player, platform);
+    this.platformGraphicsContainer.children.forEach(function(gfx) {
+      collision.resolveTileCollision(player, gfx.getBounds());
     });
   }
 }

@@ -3,6 +3,8 @@ var colors = require('../colors');
 var objects = require("../objects");
 var keyboard = require("../keyboard");
 var howler = require('howler');
+var collision = require('../physics/collision');
+var debug = require('../debug');
 
 var testSceneMusic = new howler.Howl({
   urls: ['../audio/asteroids-revised.mp3.mp3'],
@@ -15,12 +17,16 @@ function MainGame() {
   this.player = new objects.Player(300, 300, new pixi.Sprite.fromImage('/graphics/space_guy.png'));
   this.aliens = new Array();
   this.aliens.push(new objects.Alien(500, 300, new pixi.Sprite.fromImage('/graphics/alien.png'), this.player));
+  this.aliens.push(new objects.Alien(100, 300, new pixi.Sprite.fromImage('/graphics/alien.png'), this.player));
 
   this.stage.addChild(this.player.sprite);
 
   for(var i = 0; i < this.aliens.length; i++) {
     this.stage.addChild(this.aliens[i].sprite);
   }
+
+  this.graphics = new pixi.Graphics();
+  this.stage.addChild(this.graphics);
 
   this.update = function update(delta) {
     this.checkKeyboardEvents();
@@ -29,6 +35,22 @@ function MainGame() {
     for(var i = 0; i < this.aliens.length; i++) {
       this.aliens[i].update(delta);
     }
+    
+    this.player.sprite.updateTransform();
+    var self = this;
+    this.graphics.clear();
+    this.aliens.forEach(function(alien) {
+      alien.sprite.updateTransform();
+      var overlap = collision.getOverlap(
+        self.player.sprite.getBounds(),
+        alien.sprite.getBounds()
+      );
+      if (overlap) {
+        self.graphics.beginFill(0xFF00FF, 0.5);
+        self.graphics.drawShape(overlap);
+        self.graphics.endFill();
+      }
+    });
 
     this.applyGravity(delta);
   };

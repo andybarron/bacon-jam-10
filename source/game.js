@@ -3,7 +3,7 @@ var debug = require('./debug');
 debug('Begin game setup!');
 // TODO height/width or resizing to window
 debug('Initializing renderer');
-var render = new pixi.autoDetectRenderer(1280, 720);
+var render = new pixi.autoDetectRenderer(800, 600);
 debug('Adding view to DOM');
 document.querySelector('#display-wrapper').appendChild(render.view);
 debug('Setting up animation loop');

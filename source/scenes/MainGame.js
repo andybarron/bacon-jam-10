@@ -14,7 +14,11 @@ var testSceneMusic = new howler.Howl({
 
 function MainGame() {
   var self = this; // ugh
+  this.container = new pixi.Container();
+  this.ui = new pixi.Container();
   this.stage = new pixi.Container();
+  this.container.addChild(this.stage);
+  this.container.addChild(this.ui);
   this.paused = false;
 
   // PLAYER SETUP
@@ -120,7 +124,7 @@ function MainGame() {
 
   // STAGE SETUP
   this.getStage = function getStage() {
-    return this.stage;
+    return this.container;
   };
 };
 
@@ -132,10 +136,10 @@ MainGame.prototype = {
       this.paused = !this.paused;
 
       if (this.paused) {
-        this.stage.addChild(this.pausedOverlay);
+        this.ui.addChild(this.pausedOverlay);
       }
       else {
-        this.stage.removeChild(this.pausedOverlay);
+        this.ui.removeChild(this.pausedOverlay);
       }
     }
 

@@ -1,0 +1,6 @@
+module.exports = {
+  MAX_DELTA: 1/30,
+  GRAVITY: 100,
+  PLAYER_ACCELERATION: 300,
+  PLAYER_MAX_SPEED: 200,
+};

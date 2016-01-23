@@ -5,6 +5,7 @@ var keyboard = require("../keyboard");
 var howler = require('howler');
 var collision = require('../physics/collision');
 var debug = require('../debug');
+var constants = require('../constants');
 
 var testSceneMusic = new howler.Howl({
   urls: ['../audio/asteroids-revised.mp3.mp3'],
@@ -29,21 +30,19 @@ function MainGame() {
   this.stage.addChild(this.graphics);
 
   this.update = function update(delta) {
-    this.checkKeyboardEvents();
+    this.checkKeyboardEvents(delta);
     this.player.update(delta);
     
     for(var i = 0; i < this.aliens.length; i++) {
       this.aliens[i].update(delta);
     }
     
-    this.player.sprite.updateTransform();
     var self = this;
     this.graphics.clear();
     this.aliens.forEach(function(alien) {
-      alien.sprite.updateTransform();
-      var overlap = collision.getOverlap(
-        self.player.sprite.getBounds(),
-        alien.sprite.getBounds()
+      var overlap = collision.getSpriteOverlap(
+        self.player.sprite,
+        alien.sprite
       );
       if (overlap) {
         self.graphics.beginFill(0xFF00FF, 0.5);
@@ -63,7 +62,7 @@ function MainGame() {
 };
 
 MainGame.prototype = {
-  checkKeyboardEvents: function checkKeyboardEvents() {
+  checkKeyboardEvents: function checkKeyboardEvents(delta) {
     if (keyboard.isKeyDown(keyboard.W) && !this.player.isJumping) {
       this.player.isJumping = true;
       this.player.velocity.y = -100;
@@ -72,27 +71,27 @@ MainGame.prototype = {
 
     if (keyboard.isKeyDown(keyboard.A)) {
       //Moving left, increase left velocity up to max
-      if(this.player.velocity.x >= -this.player.MAX_VELOCITY){
-        this.player.velocity.x += -this.player.momentum;
+      if(this.player.velocity.x >= -constants.PLAYER_MAX_SPEED){
+        this.player.velocity.x += -constants.PLAYER_ACCELERATION * delta;
       }
     }
     else if (keyboard.isKeyDown(keyboard.D)) {
       //Moving right, increase right velocity up to max
-      if(this.player.velocity.x <= this.player.MAX_VELOCITY){
-        this.player.velocity.x += this.player.momentum;
+      if(this.player.velocity.x <= constants.PLAYER_MAX_SPEED){
+        this.player.velocity.x += constants.PLAYER_ACCELERATION * delta;
       }
     }
     else
     {
       //Not moving, velocity moves closer to 0 until stop
       if(this.player.velocity.x > 0) {
-        this.player.velocity.x += -this.player.momentum
+        this.player.velocity.x += -constants.PLAYER_ACCELERATION * delta;
       }
       else if (this.player.velocity.x < 0){
-        this.player.velocity.x += this.player.momentum
+        this.player.velocity.x += constants.PLAYER_ACCELERATION * delta;
       }
-      else{
-        //do nothing
+      if (Math.abs(this.player.velocity.x) < constants.PLAYER_ACCELERATION * delta) {
+        this.player.velocity.x = 0; // IMPORTANT! prevents flipping back and forth at rest
       }
     }
 

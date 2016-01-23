@@ -7,7 +7,7 @@ module.exports = {
       y: r.y + r.height/2.0,
     };
   },
-  getOverlap: function getOverlap(a, b) {
+  getRectangleOverlap: function getRectangleOverlap(a, b) {
     var l = Math.max(a.x, b.x); // rightmost left
     var r = Math.min(a.x + a.width, b.x + b.width); // leftmost right
     var t = Math.max(a.y, b.y); // lowest top
@@ -17,6 +17,11 @@ module.exports = {
       result = new pixi.Rectangle(l, t, r - l, b - t);
     }
     return result;
-  }
+  },
+  getSpriteOverlap: function getSpriteOverlap(a, b) {
+    a.updateTransform();
+    b.updateTransform();
+    return this.getRectangleOverlap(a.getBounds(), b.getBounds());
+  },
   // TODO(andybarron): Implement sprite versions that call updateTransform() first!
 }

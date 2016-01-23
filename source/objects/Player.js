@@ -91,7 +91,7 @@ Player.prototype = {
   attack: function attack(stage) {
     stage.addChild(this.animations.attackClip);
     this.animations.attackClip.gotoAndPlay(0);
-    this.sounds.attack.play();
+    //this.sounds.attack.play();
   }
 };
 

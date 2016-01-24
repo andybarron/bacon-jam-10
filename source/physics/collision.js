@@ -108,7 +108,7 @@ module.exports = {
     var overlap = this.getRectangleOverlap(player.getBounds(), enemy.getBounds());
     if(overlap && !player.recentHit) {
       var charCenter = this.getRectangleCenter(player.getBounds());
-      var enemyCenter = this.getRectangleCenter(player.getBounds());
+      var enemyCenter = this.getRectangleCenter(enemy.getBounds());
       player.hitPoints-=1;
       player.recentHit = true;
 

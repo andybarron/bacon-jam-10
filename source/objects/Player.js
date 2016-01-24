@@ -8,10 +8,11 @@ var collision = require('../physics/collision');
 
 var attackTextures = [];
 var idleTextures = [];
+var jumpTextures = [];
 
 for (var i = 1; i <= 8; i++) {
   var s = "towel_attack_" + i;
-  attackTextures.push(pixi.loader.resources[s].texture);
+  attackTextures.push(assets.texture(s));
 };
 
 for (var i = 1; i <= 8; i++) {
@@ -19,15 +20,29 @@ for (var i = 1; i <= 8; i++) {
   idleTextures.push(assets.texture(s));
 };
 
+for (var i = 1; i <= 3; i++) {
+  var s = "swishy_jump_" + i;
+  jumpTextures.push(assets.texture(s));
+};
+
 function Player(x, y) {
   PhysicsObject.call(this, x, y, 34, 54);
+
+  // Sprite Setup
   this.idleSprite = new pixi.extras.MovieClip(idleTextures);
   this.idleSprite.loop = true;
   this.idleSprite.animationSpeed = 0.5;
   this.idleSprite.play();
+  
   this.towelSprite = new pixi.extras.MovieClip(attackTextures);
   this.towelSprite.loop = false;
   this.towelSprite.animationSpeed = 0.8;
+
+  this.jumpSprite = new pixi.extras.MovieClip(jumpTextures);
+  this.jumpSprite.loop = true;
+  this.jumpSprite.animationSpeed = 0.2;
+
+  this.currentSprite = this.idleSprite;
   this.setSprite(this.idleSprite, true);
   this.hitPoints = constants.PLAYER_MAX_HEALTH;
   this.recentHit = false;
@@ -55,6 +70,15 @@ extend(PhysicsObject, Player, {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
       assets.sounds.player.jump.play();
+    }
+
+    if (!this.grounded) {
+      this.setMainSprite(this.jumpSprite);
+      this.jumpSprite.play(0);
+    }
+    else if (this.jumpSprite.playing) {
+      this.jumpSprite.stop();
+      this.setMainSprite(this.idleSprite);
     }
 
     // Movement
@@ -99,7 +123,7 @@ extend(PhysicsObject, Player, {
         if (this.container.scale.x > 0) {
           var diff = enemy.getPosition().x - this.getPosition().x;
 
-          if (diff > 0 && diff < 30) {
+          if (diff > 0 && diff < 50) {
             hit= true;
             game.world.removeChild(enemy.container);
             game.aliens.splice(game.aliens.indexOf(enemy), 1);
@@ -109,7 +133,7 @@ extend(PhysicsObject, Player, {
         else if (this.container.scale.x < 0) {
           var diff = this.getPosition().x - enemy.getPosition().x;
 
-          if (diff > 0 && diff < 30) {
+          if (diff > 0 && diff < 50) {
             hit = true;
             game.world.removeChild(enemy.container);
             game.aliens.splice(game.aliens.indexOf(enemy), 1);
@@ -132,7 +156,19 @@ extend(PhysicsObject, Player, {
         collision.resolveEnemyCollision(self, enemy);
       });
     }
-  }
+  },
+  setMainSprite: function setSprite(spr, center) {
+    if (center) {
+      this.centered = true;
+      spr.anchor.x = 0.5;
+      spr.anchor.y = 0.5;
+      spr.x = this._bounds.width / 2.0;
+      spr.y = this._bounds.height / 2.0;
+    }
+    this.container.removeChild(this.currentSprite);
+    this.container.addChild(spr);
+    this.currentSprite = spr;
+  },
 });
 
 module.exports = Player;

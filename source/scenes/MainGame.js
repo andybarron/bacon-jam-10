@@ -124,24 +124,21 @@ MainGame.prototype.update = function update(delta) {
 
   // Update Player
   self.player.update(delta, self);
-  self.physGfx.beginFill(0x00FFFF);
-  self.physGfx.drawShape(self.player.getBounds());
-  self.physGfx.endFill();
+  // self.physGfx.beginFill(0x00FFFF);
+  // self.physGfx.drawShape(self.player.getBounds());
+  // self.physGfx.endFill();
 
   // update aliens
   self.aliens.forEach(function(object) {
     object.update(delta, self);
-    self.physGfx.beginFill(0x00FFFF);
-    self.physGfx.drawShape(object.getBounds());
-    self.physGfx.endFill();
+    // self.physGfx.beginFill(0x00FFFF);
+    // self.physGfx.drawShape(object.getBounds());
+    // self.physGfx.endFill();
   });
 
   //update health
   for(var i = 0; i < this.health.length; i++){
     self.health[i].update(delta, self, i);
-    self.physGfx.beginFill(0x00FFFF);
-    self.physGfx.drawShape(self.player.getBounds());
-    self.physGfx.endFill();
   }
 };
 

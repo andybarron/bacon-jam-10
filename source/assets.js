@@ -24,7 +24,7 @@ var sounds = {
 }
 
 var music = {
-  backgroundMusic: new howler.Howl({urls: ['../audio/asteroids-revised.mp3.mp3'],loop: true,volume: 0.3}),
+  backgroundMusic: new howler.Howl({urls: ['../audio/towel_game.mp3'],loop: true, volume: 0.5}),
 }
 
 function addAnimationSet(name, url, start, end) {
@@ -35,6 +35,7 @@ function addAnimationSet(name, url, start, end) {
 
 addAnimationSet('towel_attack_#', '/graphics/swishy/attack/l0_sprite_#.png', 1, 8);
 addAnimationSet('swishy_idle_#', '/graphics/swishy/idle/sprite_#.png', 1, 8);
+addAnimationSet('swishy_jump_#', '/graphics/swishy/jumping/sprite_#.png', 1, 3);
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!

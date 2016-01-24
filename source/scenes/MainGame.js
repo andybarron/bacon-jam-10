@@ -43,7 +43,7 @@ function MainGame() {
   this.platformGraphicsContainer = new pixi.Container();
   this.platforms.forEach(function(platform) {
     var g = new pixi.Graphics();
-    g.boundsPadding = 0; // Important!
+    g.getBounds()Padding = 0; // Important!
     g.beginFill(0x0077BB);
     g.drawShape(platform);
     g.endFill();

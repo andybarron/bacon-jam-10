@@ -2,13 +2,17 @@ var pixi = require('pixi.js');
 var extend = require('../extend');
 var BaseScene = require('./BaseScene');
 var PhysicsObject = require('../physics/PhysicsObject');
+var PC = require('../objects/PlayerCharacter');
 
 function PhysicsTest() {
   BaseScene.call(this);
   this.objects = [];
   this.physGfx = new pixi.Graphics();
   this.world.addChild(this.physGfx);
-  this.objects.push(new PhysicsObject(100, 100, 50, 50));
+  this.player = new PC();
+  this.player.setPosition(100, 100);
+  this.objects.push(this.player);
+  this.world.addChild(this.player.container);
   this.tileGfx = new pixi.Graphics();
   this.world.addChild(this.tileGfx);
   this.platforms = [
@@ -28,11 +32,12 @@ extend(BaseScene, PhysicsTest);
 
 PhysicsTest.prototype.update = function update(delta) {
   var self = this;
+  self.player.performActions(delta);
   self.physGfx.clear();
   self.objects.forEach(function(object) {
     object.updatePhysics(delta, self.platforms);
     self.physGfx.beginFill(0x00FFFF);
-    self.physGfx.drawShape(object.bounds);
+    self.physGfx.drawShape(object.getBounds());
     self.physGfx.endFill();
   });
 };

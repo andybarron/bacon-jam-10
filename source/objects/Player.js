@@ -18,8 +18,8 @@ for (var i = 1; i <= 8; i++) {
   idleTextures.push(assets.texture(s));
 };
 
-function Player(x, y, width, height) {
-  PhysicsObject.call(this, x, y, width, height);
+function Player(x, y) {
+  PhysicsObject.call(this, x, y, 34, 54);
   this.idleSprite = new pixi.extras.MovieClip(idleTextures);
   this.idleSprite.loop = true;
   this.idleSprite.animationSpeed = 0.5;

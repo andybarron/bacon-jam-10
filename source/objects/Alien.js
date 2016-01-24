@@ -5,8 +5,8 @@ var keyboard = require('../keyboard');
 var constants = require('../constants');
 var assets = require('../assets');
 
-function Alien(x, y, width, height, player) {
-  PhysicsObject.call(this, x, y, width, height);
+function Alien(x, y, player) {
+  PhysicsObject.call(this, x, y, 21, 32);
   this.player = player;
   this.speed = 75;
   var sprite = assets.sprite('alien');

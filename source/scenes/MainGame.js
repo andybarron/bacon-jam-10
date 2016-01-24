@@ -5,6 +5,7 @@ var objects = require('../objects');
 var keyboard = require("../keyboard");
 var howler = require("howler");
 var assets = require('../assets');
+var constants = require('../constants');
 
 var testSceneMusic = new howler.Howl({
   urls: ['/audio/asteroids-revised.mp3.mp3'],
@@ -21,14 +22,14 @@ function MainGame() {
   this.world.addChild(this.physGfx);
 
   // Create player
-  this.player = new objects.Player(0, 0, 34, 54);
+  this.player = new objects.Player(0, 0);
   this.player.setPosition(100, 100);
   this.objects.push(this.player);
   this.world.addChild(this.player.container);
 
   // Create aliens
-  this.aliens.push(new objects.Alien(500, 300, 50, 50, this.player));
-  this.aliens.push(new objects.Alien(100, 300, 50, 50, this.player));
+  this.aliens.push(new objects.Alien(500, 300, this.player));
+  this.aliens.push(new objects.Alien(100, 300, this.player));
 
   this.aliens.forEach(function(alien) {
     self.world.addChild(alien.container);
@@ -62,6 +63,7 @@ function MainGame() {
     new pixi.Rectangle(200, 375, 300, 100),
     new pixi.Rectangle(600, 350, 100, 100),
     new pixi.Rectangle(0, 550, 800, 100),
+    new pixi.Rectangle(0, 460, 50, 50),
   ];
   
   this.platforms.forEach(function(platform) {
@@ -88,6 +90,8 @@ MainGame.prototype.update = function update(delta) {
   if(this.paused) return;
 
   var self = this;
+  this.world.x = -this.player.getPosition().x + constants.SCREEN_WIDTH / 2;
+
   self.physGfx.clear();
 
   // Update Player

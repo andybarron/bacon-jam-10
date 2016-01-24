@@ -106,7 +106,7 @@ function MainGame() {
   this.world.addChild(this.tileGfx);
 
   // Platforms
-  var map1 = maps.room1;
+  var map1 = maps.room2;
 
   this.platforms = [];
 

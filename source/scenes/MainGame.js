@@ -30,8 +30,8 @@ function MainGame() {
   this.world.addChild(this.player.container);
 
   // Create aliens
-  this.aliens.push(new objects.Alien(500, 300, this.player));
-  this.aliens.push(new objects.Alien(100, 300, this.player));
+  this.aliens.push(new objects.Alien(500, 100, this.player));
+  this.aliens.push(new objects.Alien(100, 100, this.player));
 
   this.aliens.forEach(function(alien) {
     self.world.addChild(alien.container);

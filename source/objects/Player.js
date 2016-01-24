@@ -29,7 +29,6 @@ for (var i = 1; i <= 3; i++) {
 for (var i = 1; i <= 1; i++) {
   var s = "swishy_glide_" + i;
   glideTextures.push(assets.texture(s));
-  console.log("TextureLoaded");
 };
 
 function Player(x, y) {
@@ -58,6 +57,7 @@ function Player(x, y) {
   this.hitPoints = constants.PLAYER_MAX_HEALTH;
   this.recentHit = false;
   this.hitTimeout = 0;
+  this.gliding = false;
 }
 
 extend(PhysicsObject, Player, {
@@ -77,19 +77,43 @@ extend(PhysicsObject, Player, {
   },
   performActions: function performActions(delta, game) {
     // Jump action
-    if (keyboard.isKeyDown(keyboard.W) && this.grounded) {
+    if (keyboard.isKeyPressed(keyboard.W) && this.grounded) {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
       assets.sounds.player.jump.play();
     }
 
-    if (!this.grounded) {
-      this.setMainSprite(this.jumpSprite);
-      this.jumpSprite.play(0);
+    // Start Glide
+    if (!this.grounded && keyboard.isKeyPressed(keyboard.SPACE) && !this.gliding) {
+      console.log("SET GLIDE SPRITE");
+      this.setMainSprite(this.glideSprite, true);
+      this.glideSprite.play();
+      this.gliding = true;
+      this.gravityScale = 0.5;
     }
-    else if (this.jumpSprite.playing) {
+    // Cancel glide on keypress
+    else if (this.gliding && keyboard.isKeyPressed(keyboard.SPACE)) {
+      console.log("CANEL GLIDE");
+      this.setMainSprite(this.jumpSprite, true);
+      this.jumpSprite.play();
+      this.gliding = false;
+      this.gravityScale = 1.0;
+    }
+    else if (!this.grounded && !this.gliding && this.currentSprite != this.jumpSprite) {
+      console.log("SET JUMP SPRITE");
+      this.setMainSprite(this.jumpSprite, true);
+      this.jumpSprite.play();
+    }
+    
+    if (this.grounded && this.jumpSprite.playing) {
       this.jumpSprite.stop();
-      this.setMainSprite(this.idleSprite);
+      this.setMainSprite(this.idleSprite, true);
+    }
+    else if (this.grounded && this.glideSprite.playing) {
+      this.glideSprite.stop();
+      this.setMainSprite(this.idleSprite, true);
+      this.gravityScale = 1;
+      this.gliding = false;
     }
 
     // Movement
@@ -121,7 +145,7 @@ extend(PhysicsObject, Player, {
 
     if (keyboard.isKeyPressed(keyboard.E)) {
 
-      this.container.addChildAt(this.towelSprite, this.container.children.length-1);
+      this.container.addChildAt(this.towelSprite, 0);
       this.towelSprite.gotoAndPlay(0);
       assets.sounds.player.attack.play();
       
@@ -168,7 +192,7 @@ extend(PhysicsObject, Player, {
       });
     }
   },
-  setMainSprite: function setSprite(spr, center) {
+  setMainSprite: function setMainSprite(spr, center) {
     if (center) {
       this.centered = true;
       spr.anchor.x = 0.5;
@@ -183,97 +207,3 @@ extend(PhysicsObject, Player, {
 });
 
 module.exports = Player;
-
-// var pixi = require('pixi.js');
-// var howler = require('howler');
-// var constants = require('../constants');
-
-// var attackTextures = [];
-// var idleTextures = [];
-
-// for (var i = 1; i <= 8; i++) {
-//   var s = "swishy_attack_" + i;
-//   attackTextures.push(pixi.loader.resources[s].texture);
-// };
-
-// for (var i = 1; i <= 8; i++) {
-//   var s = "swishy_idle_" + i;
-//   idleTextures.push(pixi.loader.resources[s].texture);
-// };
-
-// function Player(x, y, sprite) {
-//   this.sprite = new pixi.extras.MovieClip(idleTextures);
-//   this.sprite.loop = true;
-//   this.sprite.animationSpeed = 0.5;
-//   this.sprite.play();
-
-//   this.hitPoints = 3;
-//   this.recentHit = false;
-//   this.grounded = false;
-//   this.sprite.x = x;
-//   this.sprite.y = y;
-//   this.sprite.anchor = new pixi.Point(0.5, 0.5);
-//   this.velocity = {
-//     x: 0.0,
-//     y: 0.0
-//   };
-//   this.isHiding = false;
-//   this.isOverlapping = false;
-
-//   // Animations
-//   this.animations = {};
-
-//   // Attack Animation
-//   this.animations.attackClip = new pixi.extras.MovieClip(attackTextures);
-
-//   // Animation setup
-//   // setup animation positions
-//   for(var name in this.animations) {
-//     this.animations[name].x = this.sprite.x - this.sprite.width / 2;
-//     this.animations[name].y = this.sprite.y - this.sprite.height / 2;
-//     this.animations[name].loop = false;
-//   }
-//   // End Animations
-
-//   this.sounds = {
-//     'jump': new howler.Howl({ urls: ['../audio/jump/jump.wav'], volume: 0.33 }),
-//     'attack': new howler.Howl({ urls: ['../audio/hit/attacking.mp3'] }),
-//     'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
-//     'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] }),
-//     'ouch': new howler.Howl({ urls: ['../audio/ouch.mp3'] })
-//   };
-
-// }
-
-// Player.prototype = {
-//   move: function move(delta) { 
-//     this.sprite.x += this.velocity.x * delta;
-//     this.sprite.y += this.velocity.y * delta;
-
-//     // update animation positions
-//     for(var name in this.animations) {
-//       this.animations[name].scale = this.sprite.scale;
-//       this.animations[name].x = this.sprite.x - this.sprite.width / 2.0 * this.sprite.scale.x;
-//       this.animations[name].y = this.sprite.y - this.sprite.height / 2.0 * this.sprite.scale.y;   
-//     }
-//   },
-//   update: function update(delta, stage) {
-//     this.move(delta);
-
-//     if (this.velocity.x < 0) {
-//       this.sprite.scale.x = -1;
-//     }
-//     else if (this.velocity.x > 0) {
-//       this.sprite.scale.x = 1;
-//     }
-
-//     // remove animations
-//     for(var name in this.animations) {
-//       if (stage.children.indexOf(this.animations[name]) > -1 && !this.animations[name].playing) {
-//         stage.removeChild(this.animations[name]);
-//       }
-//     }
-//   },
-// };
-
-// module.exports = Player;

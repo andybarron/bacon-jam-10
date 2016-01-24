@@ -39,4 +39,5 @@ module.exports = {
   S: 83,
   W: 87,
   ESC: 27,
+  SPACE: 32,
 }

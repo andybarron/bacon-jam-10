@@ -16,9 +16,6 @@ PhysicsObject.prototype = {
     return this._bounds;
   },
   updateContainer: function updateContainer() {
-    var center = collision.getRectangleCenter(this._bounds);
-    this.container.x = center.x;
-    this.container.y = center.y;
     if (this.flipLeft) {
       if (this.velocity.x > 0) {
         this.container.scale.x = 1;
@@ -26,15 +23,23 @@ PhysicsObject.prototype = {
         this.container.scale.x = -1;
       }
     }
+    this.container.x = this._bounds.x;
+    if (this.container.scale.x == -1) {
+      // TODO this is hacky but it works
+      this.container.x += this._bounds.width;
+    }
+    this.container.y = this._bounds.y;
   },
-  setSprite: function setSprite(spr) {
+  setSprite: function setSprite(spr, center) {
     // TODO center? yes? no? maybe?
-    spr.anchor.x = 0.5;
-    spr.anchor.y = 0.5;
+    if (center) {
+      spr.anchor.x = 0.5;
+      spr.anchor.y = 0.5;
+      spr.x = this._bounds.width / 2.0;
+      spr.y = this._bounds.height / 2.0;
+    }
     this.container.removeChildren();
     this.container.addChild(spr);
-    spr.x = 0;
-    spr.y = 0;
   },
   translate: function translate(dx, dy) {
     this._bounds.x += dx;

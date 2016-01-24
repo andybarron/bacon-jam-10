@@ -8,7 +8,7 @@ function PlayerCharacter() {
   PhysicsObject.call(this, 0, 0, 50, 50);
   var tex = pixi.loader.resources.swishy_idle_1.texture;
   var sprite = new pixi.Sprite(tex);
-  this.setSprite(sprite);
+  this.setSprite(sprite, true);
 }
 
 extend(PhysicsObject, PlayerCharacter, {

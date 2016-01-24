@@ -8,7 +8,7 @@ var debug = require('../debug');
 var constants = require('../constants');
 
 var testSceneMusic = new howler.Howl({
-  urls: ['../audio/asteroids-revised.mp3.mp3'],
+  urls: ['/audio/asteroids-revised.mp3.mp3'],
   loop: true
 });
 

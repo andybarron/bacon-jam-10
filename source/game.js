@@ -51,8 +51,8 @@ function finishedLoading(){
   console.log("All assets loaded");
   debug('Setting up animation loop');
   var lastTime = Date.now();
-  var MainGame = require('./scenes/MainGame');
-  scene = new MainGame();
+  var StartScene = require('./scenes/PhysicsTest');
+  scene = new StartScene();
 
   // Starts playing the background music
   // scene.backgroundMusic.play(); // TODO move to first update() call

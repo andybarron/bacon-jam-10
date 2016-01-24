@@ -26,6 +26,42 @@ module.exports = {
   },
   // TODO: platforms/tiles can limit collision direction to avoid
   //       "catching" on walls/floors
+  collidePhysicsTile: function collidePhysicsTile(phys, tileRect) {
+    var overlap = this.getRectangleOverlap(phys.bounds, tileRect);
+    if (overlap) {
+      var charCenter = this.getRectangleCenter(phys.bounds);
+      var tileCenter = this.getRectangleCenter(tileRect);
+      if (overlap.width > overlap.height) { // char moves vertically
+        if (tileCenter.y >= charCenter.y) {
+          // TODO also set grounded to true???
+          phys.grounded = true;
+          phys.bounds.y -= overlap.height;
+          if (phys.velocity.y > 0) {
+            phys.velocity.y = 0;
+          }
+        } else {
+          phys.bounds.y += overlap.height;
+          if (phys.velocity.y < 0) {
+            phys.velocity.y = 0;
+          }
+        }
+      } else { // char moves horizontally
+        phys.velocity.x = 0;
+        if (tileCenter.x >= charCenter.x) {
+          phys.bounds.x -= overlap.width;
+          if (phys.velocity.x > 0) {
+            phys.velocity.x = 0;
+          }
+        } else {
+          phys.bounds.x += overlap.width;
+          if (phys.velocity.x < 0) {
+            phys.velocity.x = 0;
+          }
+        }
+      }
+    }
+    return overlap;
+  },
   resolveTileCollision: function resolveTileCollision(player, tileRect) {
     var charSprite = player.sprite;
     charSprite.updateTransform();

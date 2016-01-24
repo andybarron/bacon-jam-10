@@ -3,11 +3,11 @@ var extend = require('../extend');
 var PhysicsObject = require('../physics/PhysicsObject');
 var keyboard = require('../keyboard');
 var constants = require('../constants');
+var assets = require('../assets');
 
 function PlayerCharacter() {
   PhysicsObject.call(this, 0, 0, 50, 50);
-  var tex = pixi.loader.resources.swishy_idle_1.texture;
-  var sprite = new pixi.Sprite(tex);
+  var sprite = assets.sprite('swishy_idle_1');
   this.setSprite(sprite, true);
 }
 

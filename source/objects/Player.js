@@ -3,18 +3,19 @@ var extend = require('../extend');
 var PhysicsObject = require('../physics/PhysicsObject');
 var keyboard = require('../keyboard');
 var constants = require('../constants');
+var assets = require('../assets');
 
 var attackTextures = [];
 var idleTextures = [];
 
 for (var i = 1; i <= 8; i++) {
   var s = "swishy_attack_" + i;
-  attackTextures.push(pixi.loader.resources[s].texture);
+  attackTextures.push(assets.texture(s));
 };
 
 for (var i = 1; i <= 8; i++) {
   var s = "swishy_idle_" + i;
-  idleTextures.push(pixi.loader.resources[s].texture);
+  idleTextures.push(assets.texture(s));
 };
 
 function Player(x, y, width, height) {

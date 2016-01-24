@@ -4,6 +4,7 @@ var BaseScene = require('./BaseScene');
 var objects = require('../objects');
 var keyboard = require("../keyboard");
 var howler = require("howler");
+var assets = require('../assets');
 
 var testSceneMusic = new howler.Howl({
   urls: ['/audio/asteroids-revised.mp3.mp3'],
@@ -39,7 +40,7 @@ function MainGame() {
   // Pause Overlay
   this.pausedOverlay = new pixi.Container();
   this.pauseGraphics = new pixi.Graphics();
-  this.pauseText = new pixi.Sprite(pixi.loader.resources.pause.texture);
+  this.pauseText = assets.sprite('pause');
   this.pauseText.anchor = new pixi.Point(0.5, 0.5);
   this.pauseText.x = 400;
   this.pauseText.y = 300;

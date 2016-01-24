@@ -3,12 +3,13 @@ var extend = require('../extend');
 var PhysicsObject = require('../physics/PhysicsObject');
 var keyboard = require('../keyboard');
 var constants = require('../constants');
+var assets = require('../assets');
 
 function Alien(x, y, width, height, player) {
   PhysicsObject.call(this, x, y, width, height);
   this.player = player;
   this.speed = 75;
-  var sprite = new pixi.Sprite(pixi.loader.resources.alien.texture);
+  var sprite = assets.sprite('alien');
   this.setSprite(sprite, true);
 }
 

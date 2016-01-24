@@ -14,7 +14,7 @@ function addAnimationSet(name, url, start, end) {
   }
 }
 
-addAnimationSet('swishy_attack_#', '/graphics/swishy/attack/sprite_#.png', 1, 8);
+addAnimationSet('towel_attack_#', '/graphics/swishy/attack/l0_sprite_#.png', 1, 8);
 addAnimationSet('swishy_idle_#', '/graphics/swishy/idle/sprite_#.png', 1, 8);
 
 function onLoadResource(loader, resource) {

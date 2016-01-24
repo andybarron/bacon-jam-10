@@ -37,6 +37,7 @@ function addAnimationSet(name, url, start, end) {
 addAnimationSet('towel_attack_#', '/graphics/swishy/attack/l0_sprite_#.png', 1, 8);
 addAnimationSet('swishy_idle_#', '/graphics/swishy/idle/sprite_#.png', 1, 8);
 addAnimationSet('swishy_jump_#', '/graphics/swishy/jumping/sprite_#.png', 1, 3);
+addAnimationSet('swishy_glide_#', '/graphics/swishy/float/sprite_#.png', 1, 3);
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!

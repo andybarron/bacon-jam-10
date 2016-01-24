@@ -9,6 +9,7 @@ var collision = require('../physics/collision');
 var attackTextures = [];
 var idleTextures = [];
 var jumpTextures = [];
+var glideTextures = [];
 
 for (var i = 1; i <= 8; i++) {
   var s = "towel_attack_" + i;
@@ -23,6 +24,11 @@ for (var i = 1; i <= 8; i++) {
 for (var i = 1; i <= 3; i++) {
   var s = "swishy_jump_" + i;
   jumpTextures.push(assets.texture(s));
+};
+
+for (var i = 1; i <= 1; i++) {
+  var s = "swishy_glide_" + i;
+  glideTextures.push(assets.texture(s));
 };
 
 function Player(x, y) {
@@ -41,6 +47,10 @@ function Player(x, y) {
   this.jumpSprite = new pixi.extras.MovieClip(jumpTextures);
   this.jumpSprite.loop = true;
   this.jumpSprite.animationSpeed = 0.2;
+
+  this.glideSprite = new pixi.extras.MovieClip(glideTextures);
+  this.glideSprite.loop = true;
+  this.glideSprite.animationSpeed = 0.2;
 
   this.currentSprite = this.idleSprite;
   this.setSprite(this.idleSprite, true);

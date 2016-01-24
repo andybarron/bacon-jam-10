@@ -22,5 +22,6 @@
    game.
 
 ## Game deployment
-TBD, probably heroku. To run the game in non-development mode:  
+* To play the game in your browser: [http://cleanupinsector4.herokuapp.com/](http://cleanupinsector4.herokuapp.com/)
+* To run the game in non-development mode:  
 `npm start`

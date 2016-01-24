@@ -14,6 +14,10 @@ function Alien(x, y, player) {
 }
 
 extend(PhysicsObject, Alien, {
+  update: function update(delta, game) {
+    this.updatePhysics(delta, game.platforms);
+    this.chasePlayer(delta);
+  },
   chasePlayer: function chasePlayer(delta) {
     if (this.player.getPosition().x < this.getPosition().x) {
       this.velocity.x = -this.speed;

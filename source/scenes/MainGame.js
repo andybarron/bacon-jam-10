@@ -121,7 +121,7 @@ MainGame.prototype.update = function update(delta) {
 
   // update aliens
   self.aliens.forEach(function(object) {
-    object.updatePhysics(delta, self.platforms);
+    object.update(delta, self);
     self.physGfx.beginFill(0x00FFFF);
     self.physGfx.drawShape(object.getBounds());
     self.physGfx.endFill();

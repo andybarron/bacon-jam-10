@@ -11,6 +11,7 @@ var sprites = [
   {name: 'spill', url: "/graphics/spill.png"},
   {name: 'heart', url: "/graphics/hp.png"},
   {name: 'empty_heart', url: "/graphics/losthp.pnsg"},
+  {name: 'title', url: '/graphics/Text/Title.png'}
 ];
 
 var sounds = {

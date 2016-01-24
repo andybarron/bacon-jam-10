@@ -11,6 +11,7 @@ var maps = require('../maps');
 function MainGame() {
   BaseScene.call(this);
   var self = this;
+  this.init = false;
   this.objects = [];
   this.aliens = [];
   this.health = [];
@@ -107,6 +108,12 @@ function MainGame() {
 extend(BaseScene, MainGame);
 
 MainGame.prototype.update = function update(delta) {
+
+  if (!this.init) {
+    this.init = true;
+    this.backgroundMusic.play();
+  }
+
   if (keyboard.isKeyPressed(keyboard.ESC)) {
     this.paused = !this.paused;
 

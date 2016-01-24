@@ -22,12 +22,8 @@ function finishedLoading(){
   debug('Setting up animation loop');
 
   var lastTime = Date.now();
-  var StartScene = require('./scenes/MainGame');
+  var StartScene = require('./scenes/MainMenuScene');
   scene = new StartScene();
-
-  // Starts playing the background music
-  scene.backgroundMusic.play(); // TODO move to first update() call
-  console.log("Playing music");
 
   // Animate the Screen
   var animate = function animate() {

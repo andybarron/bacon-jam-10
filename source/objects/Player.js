@@ -32,11 +32,11 @@ function Player(x, y) {
 
 extend(PhysicsObject, Player, {
   update: function update(delta, game) {
-    this.performActions(delta);
+    this.performActions(delta, game);
     this.removeInactiveSprites();
     this.updatePhysics(delta, game.platforms);
   },
-  performActions: function performActions(delta) {
+  performActions: function performActions(delta, game) {
     // Jump action
     if (keyboard.isKeyDown(keyboard.W) && this.grounded) {
       this.grounded = false;
@@ -76,34 +76,32 @@ extend(PhysicsObject, Player, {
       this.container.addChildAt(this.towelSprite, this.container.children.length-1);
       this.towelSprite.gotoAndPlay(0);
       
-      // // check aliens
-      // for (var i = 0; i < this.aliens.length; i++) {
-      //   var enemy = this.aliens[i];
+      // check aliens
+      for (var i = 0; i < game.aliens.length; i++) {
+        var enemy = game.aliens[i];
 
-      //   // facing right
-      //   if (this.player.sprite.scale.x > 0) {
-      //     var diff = enemy.sprite.x - this.player.sprite.x;
-      //     console.log(enemy + " " + diff);
+        // facing right
+        if (this.container.scale.x > 0) {
+          var diff = enemy.getPosition().x - this.getPosition().x;
 
-      //     if (diff > 0 && diff < 30) {
-      //       console.log("hit");
-      //       this.stage.removeChild(enemy.sprite);
-      //       this.aliens.splice(this.aliens.indexOf(enemy), 1);
-      //     }  
-      //   }
-      //   // facing left
-      //   else if (this.player.sprite.scale.x < 0) {
-      //     var diff = this.player.sprite.x - enemy.sprite.x;
-      //     console.log(enemy + " " + diff);
+          if (diff > 0 && diff < 30) {
+            console.log("hit");
+            game.world.removeChild(enemy.container);
+            game.aliens.splice(game.aliens.indexOf(enemy), 1);
+          }  
+        }
+        // facing left
+        else if (this.container.scale.x < 0) {
+          var diff = this.getPosition().x - enemy.getPosition().x;
 
-      //     if (diff > 0 && diff < 30) {
-      //       console.log("hit");
-      //       this.stage.removeChild(enemy.sprite);
-      //       this.aliens.splice(this.aliens.indexOf(enemy), 1);
-      //     }  
-      //   }
+          if (diff > 0 && diff < 30) {
+            console.log("hit");
+            game.world.removeChild(enemy.container);
+            game.aliens.splice(game.aliens.indexOf(enemy), 1);
+          }  
+        }
         
-      // }
+      }
     }
   },
   removeInactiveSprites: function removeInactiveSprites() {

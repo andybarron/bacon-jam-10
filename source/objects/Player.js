@@ -29,6 +29,7 @@ for (var i = 1; i <= 3; i++) {
 for (var i = 1; i <= 1; i++) {
   var s = "swishy_glide_" + i;
   glideTextures.push(assets.texture(s));
+  console.log("TextureLoaded");
 };
 
 function Player(x, y) {

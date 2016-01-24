@@ -18,7 +18,7 @@ function MainGame() {
   BaseScene.call(this);
   var self = this;
   this.objects = [];
-  this.aliens = [];aw
+  this.aliens = [];
 
   this.physGfx = new pixi.Graphics();
   this.world.addChild(this.physGfx);

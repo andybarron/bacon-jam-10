@@ -4,6 +4,7 @@ var PhysicsObject = require('../physics/PhysicsObject');
 var keyboard = require('../keyboard');
 var constants = require('../constants');
 var assets = require('../assets');
+var collision = require('../physics/collision');
 
 var attackTextures = [];
 var idleTextures = [];
@@ -28,6 +29,9 @@ function Player(x, y) {
   this.towelSprite.loop = false;
   this.towelSprite.animationSpeed = 0.8;
   this.setSprite(this.idleSprite, true);
+  this.hitPoints = constants.PLAYER_MAX_HEALTH;
+  this.recentHit = false;
+  this.hitTimeout = 0;
 }
 
 extend(PhysicsObject, Player, {
@@ -35,6 +39,15 @@ extend(PhysicsObject, Player, {
     this.performActions(delta, game);
     this.removeInactiveSprites();
     this.updatePhysics(delta, game.platforms);
+    this.updateEnemyCollisions(game.aliens);
+
+    if(this.recentHit){
+      this.hitTimeout += 1;
+      if (this.hitTimeout >= constants.PLAYER_HIT_TIMEOUT){
+        this.hitTimeout = 0;
+        this.recentHit = false;
+      }
+    }
   },
   performActions: function performActions(delta, game) {
     // Jump action
@@ -107,6 +120,14 @@ extend(PhysicsObject, Player, {
   removeInactiveSprites: function removeInactiveSprites() {
     if (!this.towelSprite.playing) {
       this.container.removeChild(this.towelSprite);
+    }
+  },
+  updateEnemyCollisions: function updateEnemyCollisions(enemies) {
+    if(enemies){
+      var self = this;
+      enemies.forEach(function(enemy){
+        collision.resolveEnemyCollision(self, enemy);
+      });
     }
   }
 });

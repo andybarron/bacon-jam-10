@@ -1,4 +1,5 @@
 var pixi = require('pixi.js');
+var constants = require('../constants');
 
 module.exports = {
   // works on pixi.Rectangle and pixi.Sprite
@@ -96,6 +97,33 @@ module.exports = {
             player.velocity.x = 0;
           }
         }
+      }
+    }
+    return overlap;
+  },
+
+  resolveEnemyCollision: function resolveEnemyCollision(player, enemy) {
+    var charSprite = player.sprite;
+    var enemySprite = enemy.Sprite;
+    var overlap = this.getRectangleOverlap(player.getBounds(), enemy.getBounds());
+    if(overlap && !player.recentHit) {
+      var charCenter = this.getRectangleCenter(player.getBounds());
+      var enemyCenter = this.getRectangleCenter(player.getBounds());
+      player.hitPoints-=1;
+      player.recentHit = true;
+
+      if(enemyCenter.x > charCenter.x){
+        player.velocity.x = -constants.PLAYER_BOUNCE_SPEED_X;
+      }
+      else{
+        player.velocity.x = constants.PLAYER_BOUNCE_SPEED_X;
+      }
+
+      if(enemyCenter.y > charCenter.y){
+        player.velocity.y = constants.PLAYER_BOUNCE_SPEED_Y;
+      }
+      else{
+        player.velocity.y = -constants.PLAYER_BOUNCE_SPEED_Y;
       }
     }
     return overlap;

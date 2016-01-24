@@ -18,11 +18,13 @@ extend(PhysicsObject, Heart, {
   update: function update(delta, game, modifier) {
     var temp_x = game.world.x;
     var temp_y = game.world.y;
-
     var new_x = -temp_x + (40 * (modifier + 1));
     var new_y = -temp_y + 100;
 
     this.setPosition(new_x, new_y);
+    if(modifier == game.player.hitPoints){
+      this.setSprite(this.emptySprite, true);
+    }
   },
   performActions: function performActions(delta, game) {
 

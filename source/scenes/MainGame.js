@@ -26,7 +26,7 @@ function MainGame() {
 
   // Create player
   this.player = new objects.Player(0, 0);
-  this.player.setPosition(100, 100);
+  this.player.setPosition(200, 100);
   this.objects.push(this.player);
   this.world.addChild(this.player.container);
 
@@ -44,7 +44,7 @@ function MainGame() {
 
   // Create aliens
   this.aliens.push(new objects.Alien(500, 100, this.player));
-  this.aliens.push(new objects.Alien(100, 100, this.player));
+  this.aliens.push(new objects.Alien(0, 100, this.player));
 
   this.aliens.forEach(function(alien) {
     self.world.addChild(alien.container);

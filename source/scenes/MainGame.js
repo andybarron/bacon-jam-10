@@ -26,14 +26,14 @@ function MainGame() {
 
   //Create Hearts
   for(var i = 0; i < constants.PLAYER_MAX_HEALTH; i++){
-    var heart_x = (this.player.getPosition().x - 260) + (40 * i);
-    var heart_y = this.player.getPosition().y - 200;
+    var heart_x = 0;
+    var heart_y = 0;
 
     this.health.push(new objects.Heart(heart_x, heart_y));
   }
 
   this.health.forEach(function(heart){
-    self.world.addChild(heart.container);
+    self.ui.addChild(heart.container);
   });
 
   // Create aliens
@@ -122,10 +122,6 @@ MainGame.prototype.update = function update(delta) {
 
   var self = this;
 
-  // Have screen follow the player
-  this.world.x = -this.player.getPosition().x + constants.SCREEN_WIDTH / 2;
-  this.world.y = -this.player.getPosition().y + constants.SCREEN_HEIGHT / 2;
-
   self.physGfx.clear();
 
   // Update Player
@@ -146,6 +142,10 @@ MainGame.prototype.update = function update(delta) {
   for(var i = 0; i < this.health.length; i++){
     self.health[i].update(delta, self, i);
   }
+
+  // Have screen follow the player
+  this.world.x = -this.player.getPosition().x + constants.SCREEN_WIDTH / 2;
+  this.world.y = -this.player.getPosition().y + constants.SCREEN_HEIGHT / 2;
 };
 
 module.exports = MainGame;

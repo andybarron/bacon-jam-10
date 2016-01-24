@@ -6,6 +6,7 @@ var keyboard = require("../keyboard");
 var howler = require("howler");
 var assets = require('../assets');
 var constants = require('../constants');
+var maps = require('../maps');
 
 var testSceneMusic = new howler.Howl({
   urls: ['/audio/asteroids-revised.mp3.mp3'],
@@ -59,17 +60,41 @@ function MainGame() {
   this.world.addChild(this.tileGfx);
 
   // Platforms
-  this.platforms = [
-    new pixi.Rectangle(200, 375, 300, 100),
-    new pixi.Rectangle(600, 350, 100, 100),
-    new pixi.Rectangle(0, 550, 800, 100),
-    new pixi.Rectangle(0, 460, 50, 50),
-  ];
-  
+  // this.platforms = [
+  //   new pixi.Rectangle(200, 375, 300, 100),
+  //   new pixi.Rectangle(600, 350, 100, 100),
+  //   new pixi.Rectangle(0, 550, 800, 100),
+  //   new pixi.Rectangle(0, 460, 50, 50),
+  // ];
+
+  var map1 = maps.room1;
+
+  this.platforms = [];
+
+  var tileWidth = 50;
+  var tileHeight = 50;
+
+  for (var i = 0; i < map1.length; i++) {
+    for (var k = 0; k < map1[i].length; k++) {
+      var s;
+      if (map1[i][k] == 1) {
+        s = assets.sprite("tile_1");
+      } 
+      else if (map1[i][k] == 2) {
+        s = assets.sprite("tile_2");
+      }
+      if (s != null) {
+        s.x = k*tileWidth;
+        s.y = i*tileHeight;
+        this.platforms.push(s);
+      }
+    }
+  }
+
+
+
   this.platforms.forEach(function(platform) {
-    self.tileGfx.beginFill(0xFFFF00);
-    self.tileGfx.drawShape(platform);
-    self.tileGfx.endFill();
+    self.world.addChild(platform);
   });
 }
 

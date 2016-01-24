@@ -5,6 +5,8 @@ var sprites = [
   {name: 'avatar', url: "/graphics/space_guy.png"},
   {name: 'alien', url: "/graphics/alien.png"},
   {name: 'pause', url: "/graphics/text/pause.png"},
+  {name: 'tile_1', url: "/graphics/tiles/tile1.png"},
+  {name: 'tile_2', url: "/graphics/tiles/tile2.png"},
 ];
 // TODO also load SOUND!!!
 

@@ -50,6 +50,31 @@ function MainGame() {
 
   // Pause attributes
   this.paused = false;
+  this.died = false;
+
+  // Death Overlay
+  this.deathOverlay = new pixi.Container();
+  this.deathGraphics = new pixi.Graphics();
+  this.deathText = new pixi.Text('YOU DIED.', {
+    font: '20px monospace',
+    fill: 0xFF00CC,
+  });
+  this.deathText.anchor = new pixi.Point(0.5, 0.5);
+  this.deathText.x = 400;
+  this.deathText.y = 150;
+  this.deathGraphics.beginFill(0x000000, 0.5);
+  this.deathGraphics.drawRect(0,0,800,600);
+  this.deathGraphics.endFill();
+    this.deathRestartText = new pixi.Text('PRESS [RETURN] TO RESTART', {
+    font: '20px monospace',
+    fill: 0x00FFCC,
+  });
+  this.deathRestartText.anchor = new pixi.Point(0.5, 0.5);
+  this.deathRestartText.x = 400;
+  this.deathRestartText.y = 450;
+  this.deathOverlay.addChild(this.deathText);
+  this.deathOverlay.addChild(this.deathRestartText);
+  this.deathOverlay.addChild(this.deathGraphics);  
 
   // Pause Overlay
   this.pausedOverlay = new pixi.Container();
@@ -57,11 +82,19 @@ function MainGame() {
   this.pauseText = assets.sprite('pause');
   this.pauseText.anchor = new pixi.Point(0.5, 0.5);
   this.pauseText.x = 400;
-  this.pauseText.y = 300;
+  this.pauseText.y = 150;
   this.pauseGraphics.beginFill(0x000000, 0.5);
   this.pauseGraphics.drawRect(0,0,800,600);
   this.pauseGraphics.endFill();
+  this.restartText = new pixi.Text('PRESS [RETURN] TO RESTART', {
+    font: '20px monospace',
+    fill: 0x00FFCC,
+  });
+  this.restartText.anchor = new pixi.Point(0.5, 0.5);
+  this.restartText.x = 400;
+  this.restartText.y = 450;
   this.pausedOverlay.addChild(this.pauseText);
+  this.pausedOverlay.addChild(this.restartText);
   this.pausedOverlay.addChild(this.pauseGraphics);  
 
   console.log(assets.music);
@@ -122,6 +155,15 @@ MainGame.prototype.update = function update(delta) {
     this.backgroundMusic.play();
   }
 
+  if(this.died) {
+    if (keyboard.isKeyPressed(keyboard.RETURN)) {
+      this.backgroundMusic.stop();
+      game.setScene(new MainGame());
+    }
+
+    return;
+  };
+
   if (keyboard.isKeyPressed(keyboard.ESC)) {
     this.paused = !this.paused;
 
@@ -133,7 +175,14 @@ MainGame.prototype.update = function update(delta) {
     }
   }
 
-  if(this.paused) return;
+  if(this.paused) {
+    if (keyboard.isKeyPressed(keyboard.RETURN)) {
+      this.backgroundMusic.stop();
+      game.setScene(new MainGame());
+    }
+
+    return;
+  };
 
   if (collision.getRectangleOverlap(
       this.player.getBounds(),
@@ -168,6 +217,12 @@ MainGame.prototype.update = function update(delta) {
   // Have screen follow the player
   this.world.x = -this.player.getPosition().x + constants.SCREEN_WIDTH / 2;
   this.world.y = -this.player.getPosition().y + constants.SCREEN_HEIGHT / 2;
+
+  // reset on fall
+  if (this.player.getPosition().y > constants.SCREEN_HEIGHT || this.player.hitPoints == 0) {
+    this.died = true;
+    this.ui.addChild(this.deathOverlay);
+  }
 };
 
 module.exports = MainGame;

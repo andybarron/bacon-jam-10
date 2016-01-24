@@ -219,7 +219,7 @@ MainGame.prototype.update = function update(delta) {
   this.world.y = -this.player.getPosition().y + constants.SCREEN_HEIGHT / 2;
 
   // reset on fall
-  if (this.player.getPosition().y > constants.SCREEN_HEIGHT || this.player.hitPoints == 0) {
+  if (!this.died && this.player.getPosition().y > constants.SCREEN_HEIGHT*2 || this.player.hitPoints == 0) {
     this.died = true;
     this.ui.addChild(this.deathOverlay);
   }

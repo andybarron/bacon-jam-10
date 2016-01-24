@@ -9,8 +9,8 @@ var attackTextures = [];
 var idleTextures = [];
 
 for (var i = 1; i <= 8; i++) {
-  var s = "swishy_attack_" + i;
-  attackTextures.push(assets.texture(s));
+  var s = "towel_attack_" + i;
+  attackTextures.push(pixi.loader.resources[s].texture);
 };
 
 for (var i = 1; i <= 8; i++) {
@@ -24,10 +24,18 @@ function Player(x, y, width, height) {
   this.idleSprite.loop = true;
   this.idleSprite.animationSpeed = 0.5;
   this.idleSprite.play();
+  this.towelSprite = new pixi.extras.MovieClip(attackTextures);
+  this.towelSprite.loop = false;
+  this.towelSprite.animationSpeed = 0.8;
   this.setSprite(this.idleSprite, true);
 }
 
 extend(PhysicsObject, Player, {
+  update: function update(delta, game) {
+    this.performActions(delta);
+    this.removeInactiveSprites();
+    this.updatePhysics(delta, game.platforms);
+  },
   performActions: function performActions(delta) {
     // Jump action
     if (keyboard.isKeyDown(keyboard.W) && this.grounded) {
@@ -65,37 +73,43 @@ extend(PhysicsObject, Player, {
 
     if (keyboard.isKeyPressed(keyboard.E)) {
 
-      this.container.addChild(this.player.animations.attackClip);
-      this.player.animations.attackClip.gotoAndPlay(0);
+      this.container.addChildAt(this.towelSprite, this.container.children.length-1);
+      console.log(this.towelSprite.getBounds());
+      this.towelSprite.gotoAndPlay(0);
+      
+      // // check aliens
+      // for (var i = 0; i < this.aliens.length; i++) {
+      //   var enemy = this.aliens[i];
 
-      // check aliens
-      for (var i = 0; i < this.aliens.length; i++) {
-        var enemy = this.aliens[i];
+      //   // facing right
+      //   if (this.player.sprite.scale.x > 0) {
+      //     var diff = enemy.sprite.x - this.player.sprite.x;
+      //     console.log(enemy + " " + diff);
 
-        // facing right
-        if (this.player.sprite.scale.x > 0) {
-          var diff = enemy.sprite.x - this.player.sprite.x;
-          console.log(enemy + " " + diff);
+      //     if (diff > 0 && diff < 30) {
+      //       console.log("hit");
+      //       this.stage.removeChild(enemy.sprite);
+      //       this.aliens.splice(this.aliens.indexOf(enemy), 1);
+      //     }  
+      //   }
+      //   // facing left
+      //   else if (this.player.sprite.scale.x < 0) {
+      //     var diff = this.player.sprite.x - enemy.sprite.x;
+      //     console.log(enemy + " " + diff);
 
-          if (diff > 0 && diff < 30) {
-            console.log("hit");
-            this.stage.removeChild(enemy.sprite);
-            this.aliens.splice(this.aliens.indexOf(enemy), 1);
-          }  
-        }
-        // facing left
-        else if (this.player.sprite.scale.x < 0) {
-          var diff = this.player.sprite.x - enemy.sprite.x;
-          console.log(enemy + " " + diff);
-
-          if (diff > 0 && diff < 30) {
-            console.log("hit");
-            this.stage.removeChild(enemy.sprite);
-            this.aliens.splice(this.aliens.indexOf(enemy), 1);
-          }  
-        }
+      //     if (diff > 0 && diff < 30) {
+      //       console.log("hit");
+      //       this.stage.removeChild(enemy.sprite);
+      //       this.aliens.splice(this.aliens.indexOf(enemy), 1);
+      //     }  
+      //   }
         
-      }
+      // }
+    }
+  },
+  removeInactiveSprites: function removeInactiveSprites() {
+    if (!this.towelSprite.playing) {
+      this.container.removeChild(this.towelSprite);
     }
   }
 });

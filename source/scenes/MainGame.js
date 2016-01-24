@@ -21,7 +21,7 @@ function MainGame() {
   this.world.addChild(this.physGfx);
 
   // Create player
-  this.player = new objects.Player(0, 0, 50, 50);
+  this.player = new objects.Player(0, 0, 34, 54);
   this.player.setPosition(100, 100);
   this.objects.push(this.player);
   this.world.addChild(this.player.container);
@@ -59,7 +59,7 @@ function MainGame() {
 
   // Platforms
   this.platforms = [
-    new pixi.Rectangle(200, 400, 300, 100),
+    new pixi.Rectangle(200, 375, 300, 100),
     new pixi.Rectangle(600, 350, 100, 100),
     new pixi.Rectangle(0, 550, 800, 100),
   ];
@@ -91,11 +91,11 @@ MainGame.prototype.update = function update(delta) {
   self.physGfx.clear();
 
   // Update Player
-  self.player.performActions(delta);
+  self.player.update(delta, self);
 
   // Update objects
   self.objects.forEach(function(object) {
-    object.updatePhysics(delta, self.platforms);
+    object.update(delta, self.platforms);
     self.physGfx.beginFill(0x00FFFF);
     self.physGfx.drawShape(object.getBounds());
     self.physGfx.endFill();

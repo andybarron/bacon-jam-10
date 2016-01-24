@@ -18,7 +18,7 @@ function MainGame() {
   BaseScene.call(this);
   var self = this;
   this.objects = [];
-  this.aliens = [];
+  this.aliens = [];aw
 
   this.physGfx = new pixi.Graphics();
   this.world.addChild(this.physGfx);
@@ -61,13 +61,6 @@ function MainGame() {
   this.world.addChild(this.tileGfx);
 
   // Platforms
-  // this.platforms = [
-  //   new pixi.Rectangle(200, 375, 300, 100),
-  //   new pixi.Rectangle(600, 350, 100, 100),
-  //   new pixi.Rectangle(0, 550, 800, 100),
-  //   new pixi.Rectangle(0, 460, 50, 50),
-  // ];
-
   var map1 = maps.room1;
 
   this.platforms = [];

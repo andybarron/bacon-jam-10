@@ -74,7 +74,6 @@ extend(PhysicsObject, Player, {
     if (keyboard.isKeyPressed(keyboard.E)) {
 
       this.container.addChildAt(this.towelSprite, this.container.children.length-1);
-      console.log(this.towelSprite.getBounds());
       this.towelSprite.gotoAndPlay(0);
       
       // // check aliens

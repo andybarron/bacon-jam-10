@@ -8,12 +8,6 @@ var assets = require('../assets');
 var constants = require('../constants');
 var maps = require('../maps');
 
-var testSceneMusic = new howler.Howl({
-  urls: ['/audio/asteroids-revised.mp3.mp3'],
-  loop: true,
-  volume: 0.2,
-});
-
 function MainGame() {
   BaseScene.call(this);
   var self = this;
@@ -66,8 +60,9 @@ function MainGame() {
   this.pausedOverlay.addChild(this.pauseText);
   this.pausedOverlay.addChild(this.pauseGraphics);  
 
+  console.log(assets.music);
   // Background Music
-  this.backgroundMusic = testSceneMusic;
+  this.backgroundMusic = assets.music.backgroundMusic;
 
   // Setup World
   this.tileGfx = new pixi.Graphics();
@@ -97,8 +92,6 @@ function MainGame() {
       }
     }
   }
-
-
 
   this.platforms.forEach(function(platform) {
     self.world.addChild(platform);

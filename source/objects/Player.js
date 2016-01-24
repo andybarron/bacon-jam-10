@@ -54,7 +54,7 @@ extend(PhysicsObject, Player, {
     if (keyboard.isKeyDown(keyboard.W) && this.grounded) {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
-      // TODO play jump sound
+      assets.sounds.player.jump.play();
     }
 
     // Movement
@@ -88,7 +88,9 @@ extend(PhysicsObject, Player, {
 
       this.container.addChildAt(this.towelSprite, this.container.children.length-1);
       this.towelSprite.gotoAndPlay(0);
+      assets.sounds.player.attack.play();
       
+      var hit = false;
       // check aliens
       for (var i = 0; i < game.aliens.length; i++) {
         var enemy = game.aliens[i];
@@ -98,7 +100,7 @@ extend(PhysicsObject, Player, {
           var diff = enemy.getPosition().x - this.getPosition().x;
 
           if (diff > 0 && diff < 30) {
-            console.log("hit");
+            hit= true;
             game.world.removeChild(enemy.container);
             game.aliens.splice(game.aliens.indexOf(enemy), 1);
           }  
@@ -108,13 +110,14 @@ extend(PhysicsObject, Player, {
           var diff = this.getPosition().x - enemy.getPosition().x;
 
           if (diff > 0 && diff < 30) {
-            console.log("hit");
+            hit = true;
             game.world.removeChild(enemy.container);
             game.aliens.splice(game.aliens.indexOf(enemy), 1);
           }  
         }
-        
       }
+
+      if (hit) assets.sounds.player.attackHit.play();
     }
   },
   removeInactiveSprites: function removeInactiveSprites() {

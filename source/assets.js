@@ -1,5 +1,6 @@
 var pixi = require('pixi.js');
 var debug = require('./debug');
+var howler = require("howler");
 
 var sprites = [
   {name: 'avatar', url: "/graphics/space_guy.png"},
@@ -8,9 +9,23 @@ var sprites = [
   {name: 'tile_1', url: "/graphics/tiles/tile1.png"},
   {name: 'tile_2', url: "/graphics/tiles/tile2.png"},
   {name: 'heart', url: "/graphics/hp.png"},
-  {name: 'empty_heart', url: "/graphics/losthp.png"},
+  {name: 'empty_heart', url: "/graphics/losthp.pnsg"},
 ];
-// TODO also load SOUND!!!
+
+var sounds = {
+  player: {
+    'jump': new howler.Howl({ urls: ['../audio/jump/jump.wav'], volume: 0.33 }),
+    'attack': new howler.Howl({ urls: ['../audio/towelAttack/towelHit.wav'] }),
+    'attackHit': new howler.Howl({ urls: ['../audio/hit/Hit_Hurt5.wav'] }),
+    'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
+    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] }),
+    'ouch': new howler.Howl({ urls: ['../audio/ouch.mp3'] })
+  }
+}
+
+var music = {
+  backgroundMusic: new howler.Howl({urls: ['../audio/asteroids-revised.mp3.mp3'],loop: true,volume: 0.3}),
+}
 
 function addAnimationSet(name, url, start, end) {
   for (var i = start; i <= end; i++) {
@@ -45,7 +60,6 @@ module.exports = {
   sprite: function sprite(name) {
     return new pixi.Sprite(this.texture(name));
   },
-  sound: function sound(name) {
-    // TODO
-  },
+  sounds: sounds,
+  music: music,
 }

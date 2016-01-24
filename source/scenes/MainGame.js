@@ -78,12 +78,18 @@ function MainGame() {
 
   for (var i = 0; i < map1.length; i++) {
     for (var k = 0; k < map1[i].length; k++) {
-      var s;
+      var s = null;
       if (map1[i][k] == 1) {
         s = assets.sprite("tile_1");
       } 
       else if (map1[i][k] == 2) {
         s = assets.sprite("tile_2");
+      }
+      else if (map1[i][k] == 3) {
+        this.spill = assets.sprite("spill");
+        this.spill.x = k*tileWidth;
+        this.spill.y = i*tileHeight;
+        this.world.addChild(this.spill);
       }
       if (s != null) {
         s.x = k*tileWidth;

@@ -10,7 +10,8 @@ var maps = require('../maps');
 
 var testSceneMusic = new howler.Howl({
   urls: ['/audio/asteroids-revised.mp3.mp3'],
-  loop: true
+  loop: true,
+  volume: 0.2,
 });
 
 function MainGame() {
@@ -121,14 +122,9 @@ MainGame.prototype.update = function update(delta) {
 
   // Update Player
   self.player.update(delta, self);
-
-  // Update objects
-  self.objects.forEach(function(object) {
-    object.update(delta, self.platforms);
-    self.physGfx.beginFill(0x00FFFF);
-    self.physGfx.drawShape(object.getBounds());
-    self.physGfx.endFill();
-  });
+  self.physGfx.beginFill(0x00FFFF);
+  self.physGfx.drawShape(self.player.getBounds());
+  self.physGfx.endFill();
 
   // update aliens
   self.aliens.forEach(function(object) {

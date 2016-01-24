@@ -11,14 +11,14 @@ var sprites = [
   {name: 'spill', url: "/graphics/spill.png"},
   {name: 'heart', url: "/graphics/hp.png"},
   {name: 'empty_heart', url: "/graphics/losthp.pnsg"},
-  {name: 'title', url: '/graphics/Text/Title.png'}
+  {name: 'title', url: '/graphics/text/title.png'}
 ];
 
 var sounds = {
   player: {
     'jump': new howler.Howl({ urls: ['../audio/jump/jump.wav'], volume: 0.33 }),
-    'attack': new howler.Howl({ urls: ['../audio/towelAttack/towelHit.wav'] }),
-    'attackHit': new howler.Howl({ urls: ['../audio/hit/Hit_Hurt5.wav'] }),
+    'attack': new howler.Howl({ urls: ['../audio/towelattack/towelhit.wav'] }),
+    'attackHit': new howler.Howl({ urls: ['../audio/hit/hit_hurt5.wav'] }),
     'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
     'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] }),
     'ouch': new howler.Howl({ urls: ['../audio/ouch.mp3'] })

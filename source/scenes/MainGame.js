@@ -92,8 +92,10 @@ function MainGame() {
     
     this.graphics.clear();
 
+    console.log(this.aliens.length);
     // DEBUG ALIEN COLLISION
     this.aliens.forEach(function(alien) {
+      console.log(alien);
       var overlap = collision.getSpriteOverlap(
         self.player.sprite,
         alien.sprite
@@ -188,7 +190,37 @@ MainGame.prototype = {
     }
 
     if (keyboard.isKeyPressed(keyboard.E)) {
-      this.player.attack(this.stage);
+      this.stage.addChild(this.player.animations.attackClip);
+      this.player.animations.attackClip.gotoAndPlay(0);
+
+      // check aliens
+      for (var i = 0; i < this.aliens.length; i++) {
+        var enemy = this.aliens[i];
+
+        // facing right
+        if (this.player.sprite.scale.x > 0) {
+          var diff = enemy.sprite.x - this.player.sprite.x;
+          console.log(enemy + " " + diff);
+
+          if (diff > 0 && diff < 30) {
+            console.log("hit");
+            this.stage.removeChild(enemy.sprite);
+            this.aliens.splice(this.aliens.indexOf(enemy), 1);
+          }  
+        }
+        // facing left
+        else if (this.player.sprite.scale.x < 0) {
+          var diff = this.player.sprite.x - enemy.sprite.x;
+          console.log(enemy + " " + diff);
+
+          if (diff > 0 && diff < 30) {
+            console.log("hit");
+            this.stage.removeChild(enemy.sprite);
+            this.aliens.splice(this.aliens.indexOf(enemy), 1);
+          }  
+        }
+        
+      }
     }
 
   },

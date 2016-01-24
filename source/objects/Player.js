@@ -6,6 +6,8 @@ var constants = require('../constants');
 var assets = require('../assets');
 var collision = require('../physics/collision');
 
+var glideGravityScale = 0.3;
+
 var attackTextures = [];
 var idleTextures = [];
 var jumpTextures = [];
@@ -67,6 +69,13 @@ extend(PhysicsObject, Player, {
     this.updatePhysics(delta, game.platforms);
     this.updateEnemyCollisions(game.aliens);
 
+    if (this.gliding && this.velocity.y > 0) {
+      this.gravityScale = glideGravityScale;
+    }
+    else if (this.gravityScale != 1) {
+      this.gravityScale = 1;
+    }
+
     if(this.recentHit){
       this.hitTimeout += 1;
       if (this.hitTimeout >= constants.PLAYER_HIT_TIMEOUT){
@@ -84,20 +93,19 @@ extend(PhysicsObject, Player, {
     }
 
     // Start Glide
-    if (!this.grounded && keyboard.isKeyPressed(keyboard.SPACE) && !this.gliding) {
+    if (!this.grounded && keyboard.isKeyDown(keyboard.SPACE) && !this.gliding) {
       console.log("SET GLIDE SPRITE");
       this.setMainSprite(this.glideSprite, true);
       this.glideSprite.play();
       this.gliding = true;
-      this.gravityScale = 0.5;
+      this.gravityScale = glideGravityScale;
     }
     // Cancel glide on keypress
-    else if (this.gliding && keyboard.isKeyPressed(keyboard.SPACE)) {
+    else if (this.gliding && !keyboard.isKeyDown(keyboard.SPACE)) {
       console.log("CANEL GLIDE");
       this.setMainSprite(this.jumpSprite, true);
       this.jumpSprite.play();
       this.gliding = false;
-      this.gravityScale = 1.0;
     }
     else if (!this.grounded && !this.gliding && this.currentSprite != this.jumpSprite) {
       console.log("SET JUMP SPRITE");
@@ -112,7 +120,6 @@ extend(PhysicsObject, Player, {
     else if (this.grounded && this.glideSprite.playing) {
       this.glideSprite.stop();
       this.setMainSprite(this.idleSprite, true);
-      this.gravityScale = 1;
       this.gliding = false;
     }
 

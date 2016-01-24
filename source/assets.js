@@ -7,6 +7,8 @@ var sprites = [
   {name: 'pause', url: "/graphics/text/pause.png"},
   {name: 'tile_1', url: "/graphics/tiles/tile1.png"},
   {name: 'tile_2', url: "/graphics/tiles/tile2.png"},
+  {name: 'heart', url: "/graphics/hp.png"},
+  {name: 'empty_heart', url: "/graphics/losthp.png"},
 ];
 // TODO also load SOUND!!!
 

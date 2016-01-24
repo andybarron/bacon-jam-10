@@ -19,6 +19,7 @@ function MainGame() {
   var self = this;
   this.objects = [];
   this.aliens = [];
+  this.health = [];
 
   this.physGfx = new pixi.Graphics();
   this.world.addChild(this.physGfx);
@@ -28,6 +29,18 @@ function MainGame() {
   this.player.setPosition(100, 100);
   this.objects.push(this.player);
   this.world.addChild(this.player.container);
+
+  //Create Hearts
+  for(var i = 0; i < constants.PLAYER_MAX_HEALTH; i++){
+    var heart_x = (this.player.getPosition().x - 260) + (40 * i);
+    var heart_y = this.player.getPosition().y - 200;
+
+    this.health.push(new objects.Heart(heart_x, heart_y));
+  }
+
+  this.health.forEach(function(heart){
+    self.world.addChild(heart.container);
+  });
 
   // Create aliens
   this.aliens.push(new objects.Alien(500, 100, this.player));
@@ -126,6 +139,14 @@ MainGame.prototype.update = function update(delta) {
     self.physGfx.drawShape(object.getBounds());
     self.physGfx.endFill();
   });
+
+  //update health
+  for(var i = 0; i < this.health.length; i++){
+    self.health[i].update(delta, self, i);
+    self.physGfx.beginFill(0x00FFFF);
+    self.physGfx.drawShape(self.player.getBounds());
+    self.physGfx.endFill();
+  }
 };
 
 module.exports = MainGame;

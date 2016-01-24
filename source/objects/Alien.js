@@ -19,11 +19,18 @@ extend(PhysicsObject, Alien, {
     this.chasePlayer(delta);
   },
   chasePlayer: function chasePlayer(delta) {
-    if (this.player.getPosition().x < this.getPosition().x) {
+    var position = this.getPosition();
+    var playerPosition = this.player.getPosition();
+    if (playerPosition.x < position.x) {
       this.velocity.x = -this.speed;
     }
-    else if (this.player.getPosition().x > this.getPosition().x) {
+    else if (playerPosition.x > position.x) {
       this.velocity.x = this.speed;
+    }
+    if (Math.abs(position.x - playerPosition.x)
+        <= this.velocity.x * delta) {
+      this.translate(playerPosition.x - position.x, 0);
+      this.velocity.x = 0;
     }
   }  
 });

@@ -1,7 +1,7 @@
 # Bacon Game Jam 10: Team Natural 20
 
 ## Development setup
-1. [Install the latest version of NodeJS](https://nodejs.org/) (5.4.1 as of
+1. [Install the latest version of NodeJS](https://nodejs.org/) (5.5.0 as of
    this writing). Test your Node installation by running the following
    terminal commands:  
    `node -v`  

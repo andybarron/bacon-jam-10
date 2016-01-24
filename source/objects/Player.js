@@ -6,7 +6,7 @@ var constants = require('../constants');
 var assets = require('../assets');
 var collision = require('../physics/collision');
 
-var glideGravityScale = 0.3;
+var glideGravityScale = 0.15;
 
 var attackTextures = [];
 var idleTextures = [];
@@ -92,16 +92,22 @@ extend(PhysicsObject, Player, {
       assets.sounds.player.jump.play();
     }
 
+    if (!keyboard.isKeyDown(keyboard.W) && this.velocity.y < 0) {
+      this.velocity.y = 0; // cancel jump
+    }
+
     // Start Glide
-    if (!this.grounded && keyboard.isKeyDown(keyboard.SPACE) && !this.gliding) {
+    if (!this.grounded && keyboard.isKeyDown(keyboard.W) && !this.gliding
+        && this.velocity.y > 0) {
       console.log("SET GLIDE SPRITE");
+      this.velocity.y /= 2;
       this.setMainSprite(this.glideSprite, true);
       this.glideSprite.play();
       this.gliding = true;
       this.gravityScale = glideGravityScale;
     }
     // Cancel glide on keypress
-    else if (this.gliding && !keyboard.isKeyDown(keyboard.SPACE)) {
+    else if (this.gliding && !keyboard.isKeyDown(keyboard.W)) {
       console.log("CANEL GLIDE");
       this.setMainSprite(this.jumpSprite, true);
       this.jumpSprite.play();

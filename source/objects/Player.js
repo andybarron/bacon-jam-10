@@ -50,7 +50,7 @@ function Player(x, y, sprite) {
   // End Animations
 
   this.sounds = {
-    'jump': new howler.Howl({ urls: ['../audio/jump/jumping.mp3'] }),
+    'jump': new howler.Howl({ urls: ['../audio/jump/jump.wav'], volume: 0.33 }),
     'attack': new howler.Howl({ urls: ['../audio/hit/attacking.mp3'] }),
     'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
     'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] }),

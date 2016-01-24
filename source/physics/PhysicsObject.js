@@ -9,6 +9,7 @@ function PhysicsObject(x, y, w, h) {
   this._bounds = new pixi.Rectangle(x, y, w, h);
   this.container = new pixi.Container();
   this.flipLeft = true;
+  this.centered = false;
 }
 
 PhysicsObject.prototype = {
@@ -33,6 +34,7 @@ PhysicsObject.prototype = {
   setSprite: function setSprite(spr, center) {
     // TODO center? yes? no? maybe?
     if (center) {
+      this.centered = true;
       spr.anchor.x = 0.5;
       spr.anchor.y = 0.5;
       spr.x = this._bounds.width / 2.0;
@@ -52,7 +54,10 @@ PhysicsObject.prototype = {
     this.updateContainer();
   },
   getPosition: function getPosition() {
-    return new pixi.Point(this._bounds.x, this._bounds.y);
+    if (this.centered)
+      return new pixi.Point(this._bounds.x + this._bounds.width / 2.0, this._bounds.y + this._bounds.height);
+    else 
+      return new pixi.Point(this._bounds.x, this._bounds.y);
   },
   updatePhysics: function(delta, tiles) {
     this.grounded = false;

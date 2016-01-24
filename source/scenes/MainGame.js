@@ -122,7 +122,10 @@ MainGame.prototype.update = function update(delta) {
   if(this.paused) return;
 
   var self = this;
+
+  // Have screen follow the player
   this.world.x = -this.player.getPosition().x + constants.SCREEN_WIDTH / 2;
+  this.world.y = -this.player.getPosition().y + constants.SCREEN_HEIGHT / 2;
 
   self.physGfx.clear();
 

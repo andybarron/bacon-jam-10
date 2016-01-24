@@ -1,11 +1,9 @@
 var pixi = require('pixi.js');
-var colors = require('../colors');
-var objects = require("../objects");
+var extend = require('../extend');
+var BaseScene = require('./BaseScene');
+var objects = require('../objects');
 var keyboard = require("../keyboard");
-var howler = require('howler');
-var collision = require('../physics/collision');
-var debug = require('../debug');
-var constants = require('../constants');
+var howler = require("howler");
 
 var testSceneMusic = new howler.Howl({
   urls: ['/audio/asteroids-revised.mp3.mp3'],
@@ -13,45 +11,32 @@ var testSceneMusic = new howler.Howl({
 });
 
 function MainGame() {
-  var self = this; // ugh
-  this.container = new pixi.Container();
-  this.ui = new pixi.Container();
-  this.stage = new pixi.Container();
-  this.container.addChild(this.stage);
-  this.container.addChild(this.ui);
+  BaseScene.call(this);
+  var self = this;
+  this.objects = [];
+  this.aliens = [];
+
+  this.physGfx = new pixi.Graphics();
+  this.world.addChild(this.physGfx);
+
+  // Create player
+  this.player = new objects.Player(0, 0, 50, 50);
+  this.player.setPosition(100, 100);
+  this.objects.push(this.player);
+  this.world.addChild(this.player.container);
+
+  // Create aliens
+  this.aliens.push(new objects.Alien(500, 300, 50, 50, this.player));
+  this.aliens.push(new objects.Alien(100, 300, 50, 50, this.player));
+
+  this.aliens.forEach(function(alien) {
+    self.world.addChild(alien.container);
+  });
+
+  // Pause attributes
   this.paused = false;
 
-  // PLAYER SETUP
-  this.player = new objects.Player(300, 300);
-  this.stage.addChild(this.player.sprite);
-
-  // ALIEN SETUP
-  this.aliens = new Array();
-  this.aliens.push(new objects.Alien(500, 300, new pixi.Sprite(pixi.loader.resources.alien.texture), this.player));
-  this.aliens.push(new objects.Alien(100, 300, new pixi.Sprite(pixi.loader.resources.alien.texture), this.player));
-
-  for(var i = 0; i < this.aliens.length; i++) {
-    this.stage.addChild(this.aliens[i].sprite);
-  }
-
-  // PLATFORM SETUP
-  this.platforms = [
-    new pixi.Rectangle(200, 400, 300, 100),
-    new pixi.Rectangle(600, 350, 100, 100),
-    new pixi.Rectangle(0, 550, 800, 100),
-  ];
-  this.platformGraphicsContainer = new pixi.Container();
-  this.platforms.forEach(function(platform) {
-    var g = new pixi.Graphics();
-    g.getBounds()Padding = 0; // Important!
-    g.beginFill(0x0077BB);
-    g.drawShape(platform);
-    g.endFill();
-    self.platformGraphicsContainer.addChild(g);
-  });
-  this.stage.addChild(this.platformGraphicsContainer);
-  
-  // PAUSE OVERLAY
+  // Pause Overlay
   this.pausedOverlay = new pixi.Container();
   this.pauseGraphics = new pixi.Graphics();
   this.pauseText = new pixi.Sprite(pixi.loader.resources.pause.texture);
@@ -64,176 +49,105 @@ function MainGame() {
   this.pausedOverlay.addChild(this.pauseText);
   this.pausedOverlay.addChild(this.pauseGraphics);  
 
-  // GRAPHICS FOR DEBUG
-  this.graphics = new pixi.Graphics();
-  this.stage.addChild(this.graphics);
-
-  // BACKGROUND MUSIC
+  // Background Music
   this.backgroundMusic = testSceneMusic;
 
-  // UPDATE METHOD FOR GAME
-  this.update = function update(delta) {
-    // CHECK FOR KEYBOARD EVENTS
-    this.checkKeyboardEvents(delta);
+  // Setup World
+  this.tileGfx = new pixi.Graphics();
+  this.world.addChild(this.tileGfx);
 
-    if (this.paused) return;
-    
-    // GRAVITY
-    this.applyGravity(delta);
-    // PLAYER UPDATE
-    this.player.grounded = false;
-    this.player.update(delta, this.stage);
-    this.checkTileCollision(this.player);
-
-    // ALIEN UPDATE
-    for(var i = 0; i < this.aliens.length; i++) {
-      this.aliens[i].update(delta);
-    }
-    
-    this.graphics.clear();
-
-    console.log(this.aliens.length);
-    // DEBUG ALIEN COLLISION
-    this.aliens.forEach(function(alien) {
-      console.log(alien);
-      var overlap = collision.getSpriteOverlap(
-        self.player.sprite,
-        alien.sprite
-      );
-      if (overlap) {
-        self.graphics.beginFill(0xFF00FF, 0.5);
-        self.graphics.drawShape(overlap);
-        self.graphics.endFill();
-
-        if(self.player.recentHit == false){
-          self.player.recentHit = true;
-          self.player.hitPoints -= 1;
-          self.player.sounds['ouch'].play();
-          console.log("hp: " + self.player.hitPoints);
-
-          if(overlap.x > self.player.sprite.x){
-            self.player.velocity.x = -500;
-          }
-          else{
-            self.player.velocity.x = 500;
-          }
-        }
-      }
-    });
-    this.stage.x = 400 - this.player.sprite.x; // TODO hardcoded size
-    this.stage.y = 300 - this.player.sprite.y; // TODO hardcoded size
-  };
-
-  // STAGE SETUP
-  this.getStage = function getStage() {
-    return this.container;
-  };
-};
-
-MainGame.prototype = {
-
-  checkKeyboardEvents: function checkKeyboardEvents(delta) {
-
-    if (keyboard.isKeyPressed(keyboard.ESC)) {
-      this.paused = !this.paused;
-
-      if (this.paused) {
-        this.ui.addChild(this.pausedOverlay);
-      }
-      else {
-        this.ui.removeChild(this.pausedOverlay);
-      }
-    }
-
-    if(this.paused) return;
-
-    if (keyboard.isKeyDown(keyboard.W) && this.player.grounded) {
-      this.player.grounded = false;
-      this.player.velocity.y = -constants.PLAYER_JUMP_SPEED;
-      this.player.sounds['jump'].play();
-    }
-
-    if (keyboard.isKeyDown(keyboard.A)) {
-      //Moving left, increase left velocity up to max
-      if(this.player.velocity.x >= -constants.PLAYER_MAX_SPEED){
-        this.player.velocity.x += -constants.PLAYER_ACCELERATION * delta;
-      }
-    }
-    else if (keyboard.isKeyDown(keyboard.D)) {
-      //Moving right, increase right velocity up to max
-      if(this.player.velocity.x <= constants.PLAYER_MAX_SPEED){
-        this.player.velocity.x += constants.PLAYER_ACCELERATION * delta;
-      }
-    }
-    else
-    {
-      //Not moving, velocity moves closer to 0 until stop
-      if(this.player.velocity.x > 0) {
-        this.player.velocity.x += -constants.PLAYER_ACCELERATION * delta;
-      }
-      else if (this.player.velocity.x < 0){
-        this.player.velocity.x += constants.PLAYER_ACCELERATION * delta;
-      }
-      if (Math.abs(this.player.velocity.x) < constants.PLAYER_ACCELERATION * delta) {
-        this.player.velocity.x = 0; // IMPORTANT! prevents flipping back and forth at rest
-      }
-    }
-
-    if (keyboard.isKeyDown(keyboard.S) && this.player.grounded) {
-      // Down
-      if( !this.player.isHiding ){
-        this.player.isHiding = true;
-        this.player.sounds['hide'].play();
-      }
-    } else {
-      this.player.isHiding = false;
-    }
-
-    if (keyboard.isKeyPressed(keyboard.E)) {
-      this.stage.addChild(this.player.animations.attackClip);
-      this.player.animations.attackClip.gotoAndPlay(0);
-
-      // check aliens
-      for (var i = 0; i < this.aliens.length; i++) {
-        var enemy = this.aliens[i];
-
-        // facing right
-        if (this.player.sprite.scale.x > 0) {
-          var diff = enemy.sprite.x - this.player.sprite.x;
-          console.log(enemy + " " + diff);
-
-          if (diff > 0 && diff < 30) {
-            console.log("hit");
-            this.stage.removeChild(enemy.sprite);
-            this.aliens.splice(this.aliens.indexOf(enemy), 1);
-          }  
-        }
-        // facing left
-        else if (this.player.sprite.scale.x < 0) {
-          var diff = this.player.sprite.x - enemy.sprite.x;
-          console.log(enemy + " " + diff);
-
-          if (diff > 0 && diff < 30) {
-            console.log("hit");
-            this.stage.removeChild(enemy.sprite);
-            this.aliens.splice(this.aliens.indexOf(enemy), 1);
-          }  
-        }
-        
-      }
-    }
-
-  },
-  applyGravity: function applyGravity(delta) {
-    this.player.velocity.y += constants.GRAVITY * delta;
-  },
-  checkTileCollision: function checkTileCollision(character) {
-    var player = this.player;
-    this.platformGraphicsContainer.children.forEach(function(gfx) {
-      collision.resolveTileCollision(player, gfx.getBounds());
-    });
-  }
+  // Platforms
+  this.platforms = [
+    new pixi.Rectangle(200, 400, 300, 100),
+    new pixi.Rectangle(600, 350, 100, 100),
+    new pixi.Rectangle(0, 550, 800, 100),
+  ];
+  
+  this.platforms.forEach(function(platform) {
+    self.tileGfx.beginFill(0xFFFF00);
+    self.tileGfx.drawShape(platform);
+    self.tileGfx.endFill();
+  });
 }
+
+extend(BaseScene, MainGame);
+
+MainGame.prototype.update = function update(delta) {
+  if (keyboard.isKeyPressed(keyboard.ESC)) {
+    this.paused = !this.paused;
+
+    if (this.paused) {
+      this.ui.addChild(this.pausedOverlay);
+    }
+    else {
+      this.ui.removeChild(this.pausedOverlay);
+    }
+  }
+
+  if(this.paused) return;
+
+  var self = this;
+  self.physGfx.clear();
+
+  // Update Player
+  self.player.performActions(delta);
+
+  // Update objects
+  self.objects.forEach(function(object) {
+    object.updatePhysics(delta, self.platforms);
+    self.physGfx.beginFill(0x00FFFF);
+    self.physGfx.drawShape(object.getBounds());
+    self.physGfx.endFill();
+  });
+
+  // update aliens
+  self.aliens.forEach(function(object) {
+    object.updatePhysics(delta, self.platforms);
+    self.physGfx.beginFill(0x00FFFF);
+    self.physGfx.drawShape(object.getBounds());
+    self.physGfx.endFill();
+  });
+};
 
 module.exports = MainGame;
 
+
+// function MainGame() {
+
+
+//   // UPDATE METHOD FOR GAME
+//   this.update = function update(delta) {
+//     // CHECK FOR KEYBOARD EVENTS
+//     this.checkKeyboardEvents(delta);
+
+//     if (this.paused) return;
+    
+    
+//     // DEBUG ALIEN COLLISION
+//     this.aliens.forEach(function(alien) {
+//       console.log(alien);
+//       var overlap = collision.getSpriteOverlap(
+//         self.player.sprite,
+//         alien.sprite
+//       );
+//       if (overlap) {
+//         self.graphics.beginFill(0xFF00FF, 0.5);
+//         self.graphics.drawShape(overlap);
+//         self.graphics.endFill();
+
+//         if(self.player.recentHit == false){
+//           self.player.recentHit = true;
+//           self.player.hitPoints -= 1;
+//           self.player.sounds['ouch'].play();
+//           console.log("hp: " + self.player.hitPoints);
+
+//           if(overlap.x > self.player.sprite.x){
+//             self.player.velocity.x = -500;
+//           }
+//           else{
+//             self.player.velocity.x = 500;
+//           }
+//         }
+//       }
+//     });
+//   };

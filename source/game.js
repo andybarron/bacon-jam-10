@@ -2,18 +2,19 @@ var pixi = require('pixi.js');
 var debug = require('./debug');
 var constants = require('./constants');
 var keyboard = require('./keyboard');
-debug('Begin game setup!');
 
+debug('Begin game setup!');
 
 // TODO height/width or resizing to window
 debug('Initializing renderer');
 var render = new pixi.autoDetectRenderer(800, 600);
 var scene = null;
+
 debug('Adding view to DOM');
 document.querySelector('#display-wrapper').appendChild(render.view);
 
+// Load Assets
 debug('loading assets');
-//var loader = pixi.loader;
 pixi.loader
   .add([
     {name: 'avatar', url: "/graphics/space_guy.png"},
@@ -39,9 +40,6 @@ pixi.loader
   .on("progress", loadProgressHandler)
   .load(finishedLoading);
 
-var alienImages = ["image_sequence_01.png","image_sequence_02.png","image_sequence_03.png","image_sequence_04.png"];
-
-
 function loadProgressHandler(loader, resource) {
   // TODO have a loading bar!
   debug("loading: " + resource.url);
@@ -50,14 +48,16 @@ function loadProgressHandler(loader, resource) {
 function finishedLoading(){
   console.log("All assets loaded");
   debug('Setting up animation loop');
+
   var lastTime = Date.now();
-  var StartScene = require('./scenes/PhysicsTest');
+  var StartScene = require('./scenes/MainGame');
   scene = new StartScene();
 
   // Starts playing the background music
-  // scene.backgroundMusic.play(); // TODO move to first update() call
+  scene.backgroundMusic.play(); // TODO move to first update() call
   console.log("Playing music");
 
+  // Animate the Screen
   var animate = function animate() {
     var time = Date.now();
     var delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );

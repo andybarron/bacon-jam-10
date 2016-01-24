@@ -1,40 +1,26 @@
 var pixi = require('pixi.js');
+var extend = require('../extend');
+var PhysicsObject = require('../physics/PhysicsObject');
+var keyboard = require('../keyboard');
+var constants = require('../constants');
 
-function Alien(x, y, sprite, player) {
-  this.sprite = sprite;
-  this.sprite.x = x;
-  this.sprite.y = y;
-  this.sprite.anchor = new pixi.Point(0.5, 0.5);
-  this.speed = 50;
-  this.velocity = {
-    x: this.speed,
-    y: 0.0
-  };
+function Alien(x, y, width, height, player) {
+  PhysicsObject.call(this, x, y, width, height);
   this.player = player;
+  this.speed = 75;
+  var sprite = new pixi.Sprite(pixi.loader.resources.alien.texture);
+  this.setSprite(sprite, true);
 }
 
-Alien.prototype = {
-  move: function move(delta) {
-    this.sprite.x += this.velocity.x * delta;
-    this.sprite.y += this.velocity.y * delta;
-  },
-  update: function update(delta) {
-    if (this.player.sprite.x < this.sprite.x) {
+extend(PhysicsObject, Alien, {
+  chasePlayer: function chasePlayer(delta) {
+    if (this.player.getPosition().x < this.getPosition().x) {
       this.velocity.x = -this.speed;
     }
-    else if (this.player.sprite.x > this.sprite.x) {
+    else if (this.player.getPosition().x > this.getPosition().x) {
       this.velocity.x = this.speed;
     }
-    
-    this.move(delta);
-
-    if (this.velocity.x > 0) {
-      this.sprite.scale.x = -1;
-    }
-    else if (this.velocity.x < 0) {
-      this.sprite.scale.x = 1;
-    }
-  }
-};
+  }  
+});
 
 module.exports = Alien;

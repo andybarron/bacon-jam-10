@@ -4,16 +4,15 @@ var extend = require('../extend');
 var constants = require('../constants');
 var game = require('../game');
 var keyboard = require('../keyboard');
-var MainGame = require('./MainGame');
 var BaseScene = require('./BaseScene');
 
-function MainMenuScene() {
+function StageClearScene() {
   BaseScene.call(this);
-  var title = assets.sprite('title');
+  var title = assets.sprite('clear');
   this.ui.addChild(title);
   title.anchor.x = 0.5;
   title.x = constants.SCREEN_WIDTH / 2.0;
-  var play = new pixi.Text('PRESS [RETURN] TO ENGAGE SANITATION PROCEDURE', {
+  var play = new pixi.Text('PRESS [RETURN] TO RETURN TO BREAK ROOM', {
     font: '20px monospace',
     fill: 0xFF00CC,
   });
@@ -24,12 +23,13 @@ function MainMenuScene() {
   play.y = constants.SCREEN_HEIGHT - 200;
 }
 
-extend(BaseScene, MainMenuScene, {
+extend(BaseScene, StageClearScene, {
   update: function update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      game.setScene(new MainGame());
+      var MainMenuScene = require('./MainMenuScene');
+      game.setScene(new MainMenuScene());
     }
   }
 });
 
-module.exports = MainMenuScene;
+module.exports = StageClearScene;

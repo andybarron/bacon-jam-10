@@ -7,6 +7,9 @@ var howler = require("howler");
 var assets = require('../assets');
 var constants = require('../constants');
 var maps = require('../maps');
+var collision = require('../physics/collision');
+var StageClearScene = require('./StageClearScene');
+var game = require('../game');
 
 function MainGame() {
   BaseScene.call(this);
@@ -91,6 +94,11 @@ function MainGame() {
         this.spill.x = k*tileWidth;
         this.spill.y = i*tileHeight;
         this.world.addChild(this.spill);
+        this.spillRect = new pixi.Rectangle(
+          this.spill.x,
+          this.spill.y,
+          this.spill.width,
+          this.spill.height);
       }
       if (s != null) {
         s.x = k*tileWidth;
@@ -126,6 +134,13 @@ MainGame.prototype.update = function update(delta) {
   }
 
   if(this.paused) return;
+
+  if (collision.getRectangleOverlap(
+      this.player.getBounds(),
+      this.spillRect)) {
+    this.backgroundMusic.stop();
+    game.setScene(new StageClearScene());
+  }
 
   var self = this;
 

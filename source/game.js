@@ -22,8 +22,8 @@ function finishedLoading(){
   debug('Setting up animation loop');
 
   var lastTime = Date.now();
-  var StartScene = require('./scenes/MainMenuScene');
-  scene = new StartScene();
+  var MainMenuScene = require('./scenes/MainMenuScene');
+  scene = new MainMenuScene();
 
   // Animate the Screen
   var animate = function animate() {

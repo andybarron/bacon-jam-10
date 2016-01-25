@@ -4,6 +4,7 @@
 // '#' Enemy
 // Anything else will look up "objects" and then
 //   default to a wall
+var next = require('./level1');
 module.exports = {
   data: [
     '0                                     0',
@@ -18,4 +19,5 @@ module.exports = {
     b: "Console|Try not to fall into an OSHA-compliant Endless Pit(TM)...",
     c: "Console|...But if you do, a clone will be dispatched to finish your job.",
   },
+  next: next,
 }

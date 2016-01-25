@@ -12,7 +12,12 @@ var app = express();
 app.set('view engine', 'ejs');
 
 console.info("Compiling game source...");
-browserify('source/main.js').bundle((err, buf) => {
+var b = browserify('source/main.js', {
+  debug: DEV,
+  // TODO breaks pixi build; use bin? makes compilation faster
+  // noParse: [require.resolve('./node_modules/pixi.js')],
+});
+b.bundle((err, buf) => {
   if (err) {
     console.error(err.toString());
     console.error("Syntax error detected! Exiting.");
@@ -23,6 +28,7 @@ browserify('source/main.js').bundle((err, buf) => {
 
   // Serve concatenated js
   app.get('/game.js', (req, res) => {
+    res.header("Content-Type", "application/javascript");
     res.send(script);
   });
 

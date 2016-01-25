@@ -6,7 +6,6 @@ var keyboard = require("../keyboard");
 var howler = require("howler");
 var assets = require('../assets');
 var constants = require('../constants');
-var maps = require('../maps');
 var collision = require('../physics/collision');
 var StageClearScene = require('./StageClearScene');
 var game = require('../game');

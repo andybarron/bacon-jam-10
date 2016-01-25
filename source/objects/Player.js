@@ -13,6 +13,11 @@ var idleTextures = [];
 var jumpTextures = [];
 var glideTextures = [];
 
+var JUMP = keyboard.UP;
+var LEFT = keyboard.LEFT;
+var RIGHT = keyboard.RIGHT;
+var ATTACK = keyboard.SHIFT;
+
 for (var i = 1; i <= 8; i++) {
   var s = "towel_attack_" + i;
   attackTextures.push(assets.texture(s));
@@ -67,7 +72,7 @@ extend(PhysicsObject, Player, {
     this.performActions(delta, game);
     this.removeInactiveSprites();
     this.updatePhysics(delta, game.platforms);
-    this.updateEnemyCollisions(game.aliens);
+    this.updateEnemyCollisions(game.enemies);
 
     if (this.gliding && this.velocity.y > 0) {
       this.gravityScale = glideGravityScale;
@@ -86,18 +91,18 @@ extend(PhysicsObject, Player, {
   },
   performActions: function performActions(delta, game) {
     // Jump action
-    if (keyboard.isKeyPressed(keyboard.W) && this.grounded) {
+    if (keyboard.isKeyPressed(JUMP) && this.grounded) {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
       assets.sounds.player.jump.play();
     }
 
-    if (!keyboard.isKeyDown(keyboard.W) && this.velocity.y < 0) {
+    if (!keyboard.isKeyDown(JUMP) && this.velocity.y < 0) {
       this.velocity.y = 0; // cancel jump
     }
 
     // Start Glide
-    if (!this.grounded && keyboard.isKeyDown(keyboard.W) && !this.gliding
+    if (!this.grounded && keyboard.isKeyDown(JUMP) && !this.gliding
         && this.velocity.y > 0) {
       console.log("SET GLIDE SPRITE");
       this.velocity.y /= 2;
@@ -107,7 +112,7 @@ extend(PhysicsObject, Player, {
       this.gravityScale = glideGravityScale;
     }
     // Cancel glide on keypress
-    else if (this.gliding && !keyboard.isKeyDown(keyboard.W)) {
+    else if (this.gliding && !keyboard.isKeyDown(JUMP)) {
       console.log("CANEL GLIDE");
       this.setMainSprite(this.jumpSprite, true);
       this.jumpSprite.play();
@@ -130,13 +135,13 @@ extend(PhysicsObject, Player, {
     }
 
     // Movement
-    if (keyboard.isKeyDown(keyboard.A)) {
+    if (keyboard.isKeyDown(LEFT)) {
       //Moving left, increase left velocity up to max
       if(this.velocity.x >= -constants.PLAYER_MAX_SPEED){
         this.velocity.x += -constants.PLAYER_ACCELERATION * delta;
       }
     }
-    else if (keyboard.isKeyDown(keyboard.D)) {
+    else if (keyboard.isKeyDown(RIGHT)) {
       //Moving right, increase right velocity up to max
       if(this.velocity.x <= constants.PLAYER_MAX_SPEED){
         this.velocity.x += constants.PLAYER_ACCELERATION * delta;
@@ -156,16 +161,16 @@ extend(PhysicsObject, Player, {
       }
     }
 
-    if (keyboard.isKeyPressed(keyboard.E)) {
+    if (keyboard.isKeyPressed(ATTACK)) {
 
       this.container.addChildAt(this.towelSprite, 0);
       this.towelSprite.gotoAndPlay(0);
       assets.sounds.player.attack.play();
       
       var hit = false;
-      // check aliens
-      for (var i = 0; i < game.aliens.length; i++) {
-        var enemy = game.aliens[i];
+      // check enemies
+      for (var i = 0; i < game.enemies.length; i++) {
+        var enemy = game.enemies[i];
 
         // facing right
         if (this.container.scale.x > 0) {
@@ -174,7 +179,7 @@ extend(PhysicsObject, Player, {
           if (diff > 0 && diff < 50) {
             hit= true;
             game.world.removeChild(enemy.container);
-            game.aliens.splice(game.aliens.indexOf(enemy), 1);
+            game.enemies.splice(game.enemies.indexOf(enemy), 1);
           }  
         }
         // facing left
@@ -184,7 +189,7 @@ extend(PhysicsObject, Player, {
           if (diff > 0 && diff < 50) {
             hit = true;
             game.world.removeChild(enemy.container);
-            game.aliens.splice(game.aliens.indexOf(enemy), 1);
+            game.enemies.splice(game.enemies.indexOf(enemy), 1);
           }  
         }
       }

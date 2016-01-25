@@ -41,4 +41,9 @@ module.exports = {
   ESC: 27,
   SPACE: 32,
   RETURN: 13,
+  LEFT: 37,
+  RIGHT: 39,
+  UP: 38,
+  DOWN: 40,
+  SHIFT: 16,
 }

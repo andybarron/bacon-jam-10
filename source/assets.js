@@ -7,6 +7,7 @@ var sprites = [
   {name: 'alien', url: "/graphics/alien.png"},
   {name: 'pause', url: "/graphics/text/pause.png"},
   {name: 'tile_1', url: "/graphics/tiles/tile1.png"},
+  {name: 'console', url: "/graphics/tiles/console.png"},
   {name: 'tile_2', url: "/graphics/tiles/tile2.png"},
   {name: 'spill', url: "/graphics/spill.png"},
   {name: 'heart', url: "/graphics/hp.png"},

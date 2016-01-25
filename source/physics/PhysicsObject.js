@@ -53,6 +53,9 @@ PhysicsObject.prototype = {
     this._bounds.y = y;
     this.updateContainer();
   },
+  setCenter: function setCenter(x, y) {
+    this.setPosition(x - this._bounds.width/2, y - this._bounds.height/2);
+  },
   getPosition: function getPosition() {
     if (this.centered)
       return new pixi.Point(this._bounds.x + this._bounds.width / 2.0, this._bounds.y + this._bounds.height);

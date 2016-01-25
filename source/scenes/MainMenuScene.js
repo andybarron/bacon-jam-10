@@ -4,8 +4,9 @@ var extend = require('../extend');
 var constants = require('../constants');
 var game = require('../game');
 var keyboard = require('../keyboard');
-var MainGame = require('./MainGame');
+var GameplayScene = require('./GameplayScene');
 var BaseScene = require('./BaseScene');
+var tutorial1 = require('../levels/tutorial1');
 
 function MainMenuScene() {
   BaseScene.call(this);
@@ -27,7 +28,7 @@ function MainMenuScene() {
 extend(BaseScene, MainMenuScene, {
   update: function update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      game.setScene(new MainGame());
+      game.setScene(new GameplayScene(tutorial1));
     }
   }
 });

@@ -11,23 +11,22 @@ function StageClearScene() {
   var title = assets.sprite('clear');
   this.ui.addChild(title);
   title.anchor.x = 0.5;
-  title.x = constants.SCREEN_WIDTH / 2.0;
+  title.position = game.display.topCenter;
   var play = new pixi.Text('PRESS [RETURN] TO RETURN TO BREAK ROOM', {
     font: '20px monospace',
-    fill: 0xFF00CC,
+    fill: 0x00CCFF,
   });
   this.ui.addChild(play);
   play.anchor.x = 0.5;
-  play.anchor.y = 1;
-  play.x = constants.SCREEN_WIDTH / 2.0;
-  play.y = constants.SCREEN_HEIGHT - 200;
+  play.anchor.y = 4;
+  play.position = game.display.bottomCenter;
 }
 
 extend(BaseScene, StageClearScene, {
   update: function update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
       var MainMenuScene = require('./MainMenuScene');
-      game.setScene(new MainMenuScene());
+      return new MainMenuScene();
     }
   }
 });

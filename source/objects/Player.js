@@ -12,6 +12,7 @@ var attackTextures = [];
 var idleTextures = [];
 var jumpTextures = [];
 var glideTextures = [];
+var runTextures = [];
 
 var JUMP = keyboard.UP;
 var LEFT = keyboard.LEFT;
@@ -38,6 +39,11 @@ for (var i = 1; i <= 1; i++) {
   glideTextures.push(assets.texture(s));
 };
 
+for (var i = 1; i <= 12; i++) {
+  var s = "swishy_run_" + i;
+  runTextures.push(assets.texture(s));
+};
+
 function Player(x, y) {
   PhysicsObject.call(this, x, y, 34, 54);
 
@@ -46,7 +52,12 @@ function Player(x, y) {
   this.idleSprite.loop = true;
   this.idleSprite.animationSpeed = 0.5;
   this.idleSprite.play();
-  
+
+  this.runSprite = new pixi.extras.MovieClip(runTextures);
+  this.runSprite.loop = true;
+  this.runSprite.animationSpeed = 0.5;
+  this.runSprite.play();
+
   this.towelSprite = new pixi.extras.MovieClip(attackTextures);
   this.towelSprite.loop = false;
   this.towelSprite.animationSpeed = 0.8;
@@ -104,7 +115,6 @@ extend(PhysicsObject, Player, {
     // Start Glide
     if (!this.grounded && keyboard.isKeyDown(JUMP) && !this.gliding
         && this.velocity.y > 0) {
-      console.log("SET GLIDE SPRITE");
       this.velocity.y /= 2;
       this.setMainSprite(this.glideSprite, true);
       this.glideSprite.play();
@@ -113,13 +123,11 @@ extend(PhysicsObject, Player, {
     }
     // Cancel glide on keypress
     else if (this.gliding && !keyboard.isKeyDown(JUMP)) {
-      console.log("CANEL GLIDE");
       this.setMainSprite(this.jumpSprite, true);
       this.jumpSprite.play();
       this.gliding = false;
     }
     else if (!this.grounded && !this.gliding && this.currentSprite != this.jumpSprite) {
-      console.log("SET JUMP SPRITE");
       this.setMainSprite(this.jumpSprite, true);
       this.jumpSprite.play();
     }
@@ -159,6 +167,12 @@ extend(PhysicsObject, Player, {
       if (Math.abs(this.velocity.x) < constants.PLAYER_ACCELERATION * delta) {
         this.velocity.x = 0; // IMPORTANT! prevents flipping back and forth at rest
       }
+    }
+
+    if (this.currentSprite == this.idleSprite && Math.abs(this.velocity.x) != 0) {
+      this.setMainSprite(this.runSprite, true);
+    } else if (this.currentSprite == this.runSprite && Math.abs(this.velocity.x) == 0) {
+      this.setMainSprite(this.idleSprite);
     }
 
     if (keyboard.isKeyPressed(ATTACK)) {

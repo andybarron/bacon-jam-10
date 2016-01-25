@@ -14,14 +14,30 @@ function Console(bounds, text) {
 }
 
 Console.prototype = {
-  check: function(playerRect, textBox) {
+  check: function(playerRect, textBox, bg) {
     var touching = Boolean(collision.getRectangleOverlap(playerRect, this.bounds));
     if (touching && !this.active) {
       this.active = true;
       textBox.text = this.text;
+      if (bg) {
+        textBox.updateTransform();
+        var box = textBox.getBounds().clone();
+        var padding = 20;
+        box.x -= padding;
+        box.y -= padding;
+        box.width += padding*2;
+        box.height += padding*2;
+        bg.clear();
+        bg.beginFill(0x001100);
+        bg.drawShape(box);
+        bg.endFill();
+      }
     } else if (!touching && this.active) {
       this.active = false;
       textBox.text = '';
+      if (bg) {
+        bg.clear();
+      }
     }
   }
 }

@@ -11,7 +11,7 @@ var sprites = [
   {name: 'tile_2', url: "/graphics/tiles/tile2.png"},
   {name: 'spill', url: "/graphics/spill.png"},
   {name: 'heart', url: "/graphics/hp.png"},
-  {name: 'empty_heart', url: "/graphics/losthp.pnsg"},
+  {name: 'empty_heart', url: "/graphics/losthp.png"},
   {name: 'title', url: '/graphics/text/title.png'},
   {name: 'clear', url: '/graphics/text/clear.png'},
 ];
@@ -27,8 +27,10 @@ var sounds = {
   }
 }
 
+var currentSong = null;
+var currentSongName = null;
 var music = {
-  backgroundMusic: new howler.Howl({urls: ['../audio/towel_game.mp3'],loop: true, volume: 0.5}),
+  gameplaySong: new howler.Howl({urls: ['../audio/towel_game.mp3'],loop: true, volume: 0.5}),
 }
 
 function addAnimationSet(name, url, start, end) {
@@ -41,6 +43,7 @@ addAnimationSet('towel_attack_#', '/graphics/swishy/attack/l0_sprite_#.png', 1, 
 addAnimationSet('swishy_idle_#', '/graphics/swishy/idle/sprite_#.png', 1, 8);
 addAnimationSet('swishy_jump_#', '/graphics/swishy/jumping/sprite_#.png', 1, 3);
 addAnimationSet('swishy_glide_#', '/graphics/swishy/float/sprite_#.png', 1, 1);
+addAnimationSet('swishy_run_#', '/graphics/swishy/running/sprite_#.png', 1, 12);
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!
@@ -67,5 +70,22 @@ module.exports = {
     return new pixi.Sprite(this.texture(name));
   },
   sounds: sounds,
-  music: music,
+  playMusic: function playMusic(songName) {
+    if (songName != currentSongName) {
+      this.stopMusic();
+      currentSongName = songName;
+      currentSong = music[songName];
+      if (currentSong) {
+        // TODO error on non-existent song
+        currentSong.play();
+      }
+    }
+  },
+  stopMusic: function stopMusic() {
+    if (currentSong) {
+      currentSong.stop();
+      currentSong = null;
+      currentSongName = null;
+    }
+  }
 }

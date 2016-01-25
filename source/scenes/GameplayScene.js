@@ -19,8 +19,8 @@ function GameplayScene(level) {
   BaseScene.call(self);
   // member variables
   self.level = level;
+  self.backgroundColor = 0x222230;
   self.nextLevel = self.level.next;
-  self.init = false;
   self.player = null;
   self.enemySpawns = [];
   self.enemies = [];
@@ -30,21 +30,23 @@ function GameplayScene(level) {
   self.hearts = [];
   self.paused = false;
   self.died = false;
-  self.backgroundMusic = assets.music.backgroundMusic; // TODO re-org...
   self.helpText = new pixi.Text('', {
     font: '24px monospace',
     wordWrap: true,
     wordWrapWidth: 400,
     align: 'center',
-    fill: 0xFFFFFF,
-    stroke: 0x000000,
-    strokeThickness: 4,
+    fill: 0x00DD00,
+    // stroke: 0x000000,
+    // strokeThickness: 4,
   });
   self.helpText.anchor = new pixi.Point(0.5, 0.5);
-  self.helpText.x = constants.SCREEN_WIDTH/2;
-  self.helpText.y = constants.SCREEN_HEIGHT/2;
+  self.helpText.position = game.display.center;
+  self.helpBg = new pixi.Graphics();
+  self.helpBg.alpha = 0.5;
+  self.ui.addChild(self.helpBg);
   self.ui.addChild(self.helpText);
   self.consoles = [];
+  self.restarted = false;
 
   // Load level data
   level.data.forEach(function(row, iRow) {
@@ -129,19 +131,14 @@ function GameplayScene(level) {
     font: '20px monospace',
     fill: 0xFF00CC,
   });
-  self.deathText.anchor = new pixi.Point(0.5, 0.5);
-  self.deathText.x = 400;
-  self.deathText.y = 150;
-  self.deathGraphics.beginFill(0x000000, 0.5);
-  self.deathGraphics.drawRect(0,0,800,600);
-  self.deathGraphics.endFill();
-    self.deathRestartText = new pixi.Text('PRESS [RETURN] TO RESTART', {
+  self.deathText.anchor = new pixi.Point(0.5, -1);
+  self.deathText.position = game.display.topCenter;
+  self.deathRestartText = new pixi.Text('[RETURN] TO RESTART, [Q] TO QUIT', {
     font: '20px monospace',
-    fill: 0x00FFCC,
+    fill: 0xFF00FF,
   });
   self.deathRestartText.anchor = new pixi.Point(0.5, 0.5);
-  self.deathRestartText.x = 400;
-  self.deathRestartText.y = 450;
+  self.deathRestartText.position = game.display.center;
   self.deathOverlay.addChild(self.deathText);
   self.deathOverlay.addChild(self.deathRestartText);
   self.deathOverlay.addChild(self.deathGraphics);  
@@ -150,106 +147,125 @@ function GameplayScene(level) {
   self.pausedOverlay = new pixi.Container();
   self.pauseGraphics = new pixi.Graphics();
   self.pauseText = assets.sprite('pause');
-  self.pauseText.anchor = new pixi.Point(0.5, 0.5);
-  self.pauseText.x = 400;
-  self.pauseText.y = 150;
-  self.pauseGraphics.beginFill(0x000000, 0.5);
-  self.pauseGraphics.drawRect(0,0,800,600);
-  self.pauseGraphics.endFill();
-  self.restartText = new pixi.Text('[RETURN] TO RESTART, [ESC] TO QUIT', {
+  self.pauseText.anchor = new pixi.Point(-0.5, 0.5);
+  self.pauseText.position = game.display.topCenter;
+  self.restartText = new pixi.Text('[ESC] TO CONTINUE, [Q] TO QUIT, [RETURN] TO RESTART', {
     font: '20px monospace',
-    fill: 0x00FFCC,
+    fill: 0xFFFFFF,
+    wordWrap: true,
+    wordWrapWidth: 400,
+    align: 'center',
   });
   self.restartText.anchor = new pixi.Point(0.5, 0.5);
-  self.restartText.x = 400;
-  self.restartText.y = 450;
+  self.restartText.position = game.display.center;
   self.pausedOverlay.addChild(self.pauseText);
   self.pausedOverlay.addChild(self.restartText);
   self.pausedOverlay.addChild(self.pauseGraphics);  
 }
 
-extend(BaseScene, GameplayScene);
+extend(BaseScene, GameplayScene, {
+  initialize: function initialize() {
+    assets.playMusic('gameplaySong');
+  },
+  dispose: function dispose() {
+    if (!this.restarted) {
+      assets.stopMusic();
+    }
+  },
+  resize: function resize(w, h) {
+    this.deathGraphics.clear();
+    this.deathGraphics.beginFill(0x000000, 0.5);
+    this.deathGraphics.drawRect(0,0,w,h);
+    this.deathGraphics.endFill();
+    this.pauseGraphics.clear();
+    this.pauseGraphics.beginFill(0x000000, 0.5);
+    this.pauseGraphics.drawRect(0,0,w,h);
+    this.pauseGraphics.endFill();
+  },
+  update: function update(delta) {
 
-GameplayScene.prototype.update = function update(delta) {
+    var MainMenuScene = require('./MainMenuScene');
+    if(this.died) {
+      if (keyboard.isKeyPressed(keyboard.RETURN)) {
+        this.restarted = true;
+        return new GameplayScene(this.level);
+      }
+      if (keyboard.isKeyPressed(keyboard.Q)) {
+        return new MainMenuScene(this.level);
+      }      
+      return;
+    };
 
-  if (!this.init) {
-    this.init = true;
-    this.backgroundMusic.play();
+    if(this.paused) {
+      if (keyboard.isKeyPressed(keyboard.RETURN)) {
+        this.restarted = true;
+        return new GameplayScene(this.level);
+      } else if (keyboard.isKeyPressed(keyboard.Q)) {
+        var MainMenuScene = require('./MainMenuScene');
+        return new MainMenuScene();
+      }
+    };
+
+
+    if (keyboard.isKeyPressed(keyboard.ESC)) {
+      this.paused = !this.paused;
+
+      if (this.paused) {
+        this.ui.addChild(this.pausedOverlay);
+      }
+      else {
+        this.ui.removeChild(this.pausedOverlay);
+      }
+    }
+
+    if (this.paused) return;
+
+    if (collision.getRectangleOverlap(
+        this.player.getBounds(),
+        this.exitRect)) {
+      var nextScene = null;
+      if (this.nextLevel) {
+        this.restarted = true;
+        nextScene = new GameplayScene(this.nextLevel);
+      } else {
+        nextScene = new StageClearScene(); // TODO this has a next level property
+      }
+      return nextScene;
+    }
+
+    var self = this;
+
+    // Update Player
+    self.player.update(delta, self);
+
+    // update consoles
+    self.consoles.forEach(function(console) {
+      console.check(self.player.getBounds(), self.helpText, self.helpBg);
+    })
+
+
+    // update aliens
+    self.enemies.forEach(function(enemy) {
+      enemy.update(delta, self);
+    });
+
+    //update health
+    while (self.hearts.length > self.player.hitPoints && self.hearts.length > 0) {
+      var last = self.hearts.pop();
+      last.texture = assets.texture('empty_heart');
+    }
+
+    // Have screen follow the player
+    this.world.x = -this.player.getPosition().x + game.display.width / 2;
+    this.world.y = -this.player.getPosition().y + game.display.height / 2;
+
+    // reset on fall
+    // TODO calculate based on level size!!!
+    if (!this.died && this.player.getPosition().y > 1200 || this.player.hitPoints == 0) {
+      this.died = true;
+      this.ui.addChild(this.deathOverlay);
+    }
   }
-
-  if(this.died) {
-    if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      this.backgroundMusic.stop();
-      game.setScene(new GameplayScene(this.level)); // TODO test
-    }
-
-    return;
-  };
-
-  if (keyboard.isKeyPressed(keyboard.ESC)) {
-    this.paused = !this.paused;
-
-    if (this.paused) {
-      this.ui.addChild(this.pausedOverlay);
-    }
-    else {
-      this.ui.removeChild(this.pausedOverlay);
-    }
-  }
-
-  if(this.paused) {
-    if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      this.backgroundMusic.stop();
-      game.setScene(new GameplayScene(this.level));
-    } else if (keyboard.isKeyPressed(keyboard.ESC)) {
-      var MainMenuScene = require('./MainMenuScene');
-      this.backgroundMusic.stop();
-      game.setScene(new MainMenuScene());
-    }
-    return;
-  };
-
-  if (collision.getRectangleOverlap(
-      this.player.getBounds(),
-      this.exitRect)) {
-    this.backgroundMusic.stop();
-    var nextScene = null;
-    if (this.nextLevel) {
-      nextScene = new GameplayScene(this.nextLevel);
-    } else {
-      nextScene = new StageClearScene(); // TODO this has a next level property
-    }
-    game.setScene(nextScene);
-  }
-
-  var self = this;
-
-  // Update Player
-  self.player.update(delta, self);
-
-  // update consoles
-  self.consoles.forEach(function(console) {
-    console.check(self.player.getBounds(), self.helpText);
-  })
-
-
-  // update aliens
-  self.enemies.forEach(function(enemy) {
-    enemy.update(delta, self);
-  });
-
-  //update health
-  // TODO self.health.pop()
-
-  // Have screen follow the player
-  this.world.x = -this.player.getPosition().x + constants.SCREEN_WIDTH / 2;
-  this.world.y = -this.player.getPosition().y + constants.SCREEN_HEIGHT / 2;
-
-  // reset on fall
-  if (!this.died && this.player.getPosition().y > constants.SCREEN_HEIGHT*2 || this.player.hitPoints == 0) {
-    this.died = true;
-    this.ui.addChild(this.deathOverlay);
-  }
-};
+});
 
 module.exports = GameplayScene;

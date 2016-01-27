@@ -279,8 +279,8 @@ extend(BaseScene, GameplayScene, {
     }
 
     // Have screen follow the player
-    this.world.x = -this.player.getPosition().x + game.display.width / 2;
-    this.world.y = -this.player.getPosition().y + game.display.height / 2;
+    this.world.x = -this.player.getCenterX() + game.display.width / 2;
+    this.world.y = -this.player.getCenterY() + game.display.height / 2;
     this.bgSprite.tilePosition.x = this.world.x*3/4;
     this.bgSprite.tilePosition.y = this.world.y*3/4;
 

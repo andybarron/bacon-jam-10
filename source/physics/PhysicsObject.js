@@ -2,6 +2,10 @@ var pixi = require('pixi.js');
 var constants = require('../constants');
 var collision = require('./collision');
 
+var TILE = constants.TILE_SIZE;
+var tempRect = new pixi.Rectangle();
+var tempData = {};
+
 function PhysicsObject(x, y, w, h) {
   this.velocity = new pixi.Point(0, 0);
   this.grounded = true;
@@ -56,6 +60,12 @@ PhysicsObject.prototype = {
   setCenter: function setCenter(x, y) {
     this.setPosition(x - this._bounds.width/2, y - this._bounds.height/2);
   },
+  getCenterX: function getCenterX() {
+    return this._bounds.x + this._bounds.width/2;
+  },
+  getCenterY: function getCenterY() {
+    return this._bounds.y + this._bounds.height/2;
+  },
   getPosition: function getPosition() {
     if (this.centered)
       return new pixi.Point(this._bounds.x + this._bounds.width / 2.0, this._bounds.y + this._bounds.height);
@@ -66,11 +76,29 @@ PhysicsObject.prototype = {
     this.grounded = false;
     this.velocity.y += constants.GRAVITY * this.gravityScale * delta;
     this.translate(this.velocity.x * delta, this.velocity.y * delta);
-    if (tiles) {
-      var self = this;
-      tiles.forEach(function(tile) {
-        collision.collidePhysicsTile(self, tile);
-      });
+    this.updateContainer();
+  },
+  updateWorldCollisions: function(tileGrid, gfx) {
+    var bounds = this.getBounds();
+    var minX = Math.floor(bounds.x/TILE);
+    var maxX = Math.ceil((bounds.x + bounds.width)/TILE);
+    var minY = Math.floor(bounds.y/TILE);
+    var maxY = Math.ceil((bounds.y + bounds.height)/TILE);
+    for (var ix = minX; ix < maxX; ix++) {
+      for (var iy = minY; iy < maxY; iy++) {
+        var solid = tileGrid.get(ix, iy);
+        // if (!solid) continue;
+        tempRect.x = ix * TILE;
+        tempRect.y = iy * TILE;
+        tempRect.width = TILE;
+        tempRect.height = TILE;
+        if (!solid) continue;
+        tempData.ignoreUp = tileGrid.get(ix, iy - 1);
+        tempData.ignoreDown = tileGrid.get(ix, iy + 1);
+        tempData.ignoreLeft = tileGrid.get(ix - 1, iy);
+        tempData.ignoreRight = tileGrid.get(ix + 1, iy);
+        collision.collidePhysicsTile(this, tempRect, tempData);
+      }
     }
     this.updateContainer();
   },

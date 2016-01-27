@@ -10,6 +10,8 @@ var collision = require('../physics/collision');
 var StageClearScene = require('./StageClearScene');
 var game = require('../game');
 var debug = require('../debug');
+var levels = require('../levels');
+var TileGrid = require('../physics/TileGrid');
 var TILE = constants.TILE_SIZE;
 
 function GameplayScene(level) {
@@ -19,11 +21,11 @@ function GameplayScene(level) {
   // member variables
   self.level = level;
   self.backgroundColor = 0x222230;
-  self.nextLevel = self.level.next;
+  self.nextLevel = levels[self.level.next];
   self.player = null;
   self.enemySpawns = [];
   self.enemies = [];
-  self.platforms = []; // TODO more efficient data structure
+  self.tileGrid = null;
   self.exitRect = null;
   self.exit = null;
   self.hearts = [];
@@ -48,6 +50,15 @@ function GameplayScene(level) {
   self.restarted = false;
 
   // Load level data
+  // Get tile dimensions
+  var tilesDown = level.data.length;
+  var tilesAcross = Math.max.apply(Math, level.data.map(function(row) {
+    return row.length;
+  }));
+  // Initalize tile grid
+  self.tileGrid = new TileGrid(tilesAcross, tilesDown, false);
+  window.grid = self.tileGrid;
+  // Set up map
   level.data.forEach(function(row, iRow) {
     var y = iRow * TILE;
     for (var iCol = 0; iCol < row.length; iCol++) {
@@ -55,6 +66,7 @@ function GameplayScene(level) {
       var cx = x + TILE/2;
       var cy = y + TILE/2;
       var char = row.charAt(iCol);
+      // TODO refactor tile processing into another method
       if (char == ' ') {
         // do nothing
       } else if (char == '@') { // Player
@@ -87,8 +99,9 @@ function GameplayScene(level) {
             self.world.addChild(c.sprite);
           }
         } else {
-          var tile = assets.sprite("tile_1");
-          self.platforms.push(new pixi.Rectangle(x, y, TILE, TILE));
+          var tile = assets.sprite("tile_1"); // TODO randomize? different?
+          // self.platforms.push(new pixi.Rectangle(x, y, TILE, TILE));
+          self.tileGrid.set(iCol, iRow, true);
           self.world.addChild(tile);
           tile.x = x;
           tile.y = y;
@@ -112,7 +125,8 @@ function GameplayScene(level) {
   if (!self.exit) debug.error("No level exit!");
   self.world.addChild(self.exit);
 
-
+  self.debugGfx = new pixi.Graphics();
+  self.world.addChild(self.debugGfx);
 
   for (var i = 0; i < constants.PLAYER_MAX_HEALTH; i++) {
     var heart = assets.sprite('heart');

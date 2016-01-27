@@ -15,7 +15,8 @@ function Alien(x, y, player) {
 
 extend(PhysicsObject, Alien, {
   update: function update(delta, game) {
-    this.updatePhysics(delta, game.platforms);
+    this.updatePhysics(delta);
+    this.updateWorldCollisions(game.tileGrid);
     this.chasePlayer(delta);
   },
   chasePlayer: function chasePlayer(delta) {

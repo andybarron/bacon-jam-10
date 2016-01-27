@@ -55,7 +55,8 @@ function Player(x, y) {
 
   this.runSprite = new pixi.extras.MovieClip(runTextures);
   this.runSprite.loop = true;
-  this.runSprite.animationSpeed = 0.5;
+  this.defaultRunAnimSpeed = 0.5;
+  this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
   this.runSprite.play();
 
   this.towelSprite = new pixi.extras.MovieClip(attackTextures);
@@ -82,8 +83,12 @@ extend(PhysicsObject, Player, {
   update: function update(delta, game) {
     this.performActions(delta, game);
     this.removeInactiveSprites();
-    this.updatePhysics(delta, game.platforms);
+    this.updatePhysics(delta);
+    this.updateWorldCollisions(game.tileGrid, game.debugGfx);
     this.updateEnemyCollisions(game.enemies);
+
+    var speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
+    this.runSprite.animationSpeed = this.defaultRunAnimSpeed * speedFactor;
 
     if (this.gliding && this.velocity.y > 0) {
       this.gravityScale = glideGravityScale;
@@ -171,6 +176,8 @@ extend(PhysicsObject, Player, {
 
     if (this.currentSprite == this.idleSprite && Math.abs(this.velocity.x) != 0) {
       this.setMainSprite(this.runSprite, true);
+      this.container.updateTransform();
+      console.log(this.container.getBounds());
     } else if (this.currentSprite == this.runSprite && Math.abs(this.velocity.x) == 0) {
       this.setMainSprite(this.idleSprite);
     }

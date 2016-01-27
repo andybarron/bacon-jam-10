@@ -27,33 +27,34 @@ module.exports = {
   },
   // TODO: platforms/tiles can limit collision direction to avoid
   //       "catching" on walls/floors
-  collidePhysicsTile: function collidePhysicsTile(phys, tileRect) {
+  collidePhysicsTile: function collidePhysicsTile(phys, tileRect, tileData) {
     var overlap = this.getRectangleOverlap(phys.getBounds(), tileRect);
     if (overlap) {
       var charCenter = this.getRectangleCenter(phys.getBounds());
       var tileCenter = this.getRectangleCenter(tileRect);
-      if (overlap.width > overlap.height) { // char moves vertically
-        if (tileCenter.y >= charCenter.y) {
+      var ignoreVertical = tileData.ignoreUp && tileData.ignoreDown;
+      var ignoreHorizontal = tileData.ignoreLeft && tileData.ignoreRight;
+      if (overlap.width > overlap.height && !tileData.ignoreVertical) { // char moves vertically
+        if (tileCenter.y >= charCenter.y && !tileData.ignoreUp) { // move up
           // TODO also set grounded to true???
           phys.grounded = true;
           phys.getBounds().y -= overlap.height;
           if (phys.velocity.y > 0) {
             phys.velocity.y = 0;
           }
-        } else {
+        } else if (!tileData.ignoreDown) { // move down
           phys.getBounds().y += overlap.height;
           if (phys.velocity.y < 0) {
             phys.velocity.y = 0;
           }
         }
-      } else { // char moves horizontally
-        phys.velocity.x = 0;
-        if (tileCenter.x >= charCenter.x) {
+      } else if (!tileData.ignoreHorizontal) { // char moves horizontally
+        if (tileCenter.x >= charCenter.x && !tileData.ignoreLeft) { // move left
           phys.getBounds().x -= overlap.width;
           if (phys.velocity.x > 0) {
             phys.velocity.x = 0;
           }
-        } else {
+        } else if (!tileData.ignoreRight) { // move right
           phys.getBounds().x += overlap.width;
           if (phys.velocity.x < 0) {
             phys.velocity.x = 0;

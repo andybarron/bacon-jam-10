@@ -48,8 +48,9 @@ function GameplayScene(level) {
   self.ui.addChild(self.helpText);
   self.consoles = [];
   self.restarted = false;
+  self.deathY = 0; // to be adjusted later
 
-  var bgTex = assets.texture('tile_1');
+  var bgTex = assets.texture('tile_1'); // TODO prettier BG, multiple layers...
   this.bgSprite = new pixi.extras.TilingSprite(bgTex, 0, 0);
   this.background.addChild(this.bgSprite);
   this.bgSprite.tint = 0x444444;
@@ -61,6 +62,7 @@ function GameplayScene(level) {
   var tilesAcross = Math.max.apply(Math, level.data.map(function(row) {
     return row.length;
   }));
+  self.deathY = (tilesDown + 10) * TILE;
   // Initalize tile grid
   self.tileGrid = new TileGrid(tilesAcross, tilesDown, false);
   window.grid = self.tileGrid;
@@ -284,7 +286,7 @@ extend(BaseScene, GameplayScene, {
 
     // reset on fall
     // TODO calculate based on level size!!!
-    if (!this.died && this.player.getPosition().y > 1200 || this.player.hitPoints == 0) {
+    if (!this.died && this.player.getPosition().y > this.deathY || this.player.hitPoints == 0) {
       this.died = true;
       this.ui.addChild(this.deathOverlay);
     }

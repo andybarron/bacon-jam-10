@@ -5,6 +5,7 @@
 // Anything else will look up "objects" and then
 //   default to a wall
 module.exports = {
+  name: "Glide Carefully",
   data: [
     '                     a                             00000000000000000000000000000000000000000000                        0',
     '             00    000                             0                                          0                        0',

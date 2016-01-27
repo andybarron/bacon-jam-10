@@ -5,6 +5,7 @@
 // Anything else will look up "objects" and then
 //   default to a wall
 module.exports = {
+  name: "Jumpin' Janitor",
   data: [
     '00000000000000000000000000000000',
     '0                              0',

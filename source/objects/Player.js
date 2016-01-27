@@ -34,7 +34,7 @@ for (var i = 1; i <= 3; i++) {
   jumpTextures.push(assets.texture(s));
 };
 
-for (var i = 1; i <= 1; i++) {
+for (var i = 1; i <= 2; i++) {
   var s = "swishy_glide_" + i;
   glideTextures.push(assets.texture(s));
 };
@@ -69,7 +69,7 @@ function Player(x, y) {
 
   this.glideSprite = new pixi.extras.MovieClip(glideTextures);
   this.glideSprite.loop = true;
-  this.glideSprite.animationSpeed = 0.2;
+  this.glideSprite.animationSpeed = 0.1;
 
   this.currentSprite = this.idleSprite;
   this.setSprite(this.idleSprite, true);

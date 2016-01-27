@@ -5,6 +5,7 @@
 // Anything else will look up "objects" and then
 //   default to a wall
 module.exports = {
+  name: "The Mighty Towel",
   data: [
     '0                                     0',
     '0                                     0',

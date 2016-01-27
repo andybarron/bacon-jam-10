@@ -45,7 +45,7 @@ for (var i = 1; i <= 12; i++) {
 };
 
 function Player(x, y) {
-  PhysicsObject.call(this, x, y, 34, 54);
+  PhysicsObject.call(this, x, y, 34, 49);
 
   // Sprite Setup
   this.idleSprite = new pixi.extras.MovieClip(idleTextures);
@@ -125,7 +125,6 @@ extend(PhysicsObject, Player, {
     // Start Glide
     if (!this.grounded && keyboard.isKeyDown(JUMP) && !this.gliding
         && this.velocity.y > 0) {
-      this.velocity.y /= 2;
       this.setMainSprite(this.glideSprite, true);
       this.glideSprite.play();
       this.gliding = true;
@@ -203,7 +202,7 @@ extend(PhysicsObject, Player, {
         if (this.container.scale.x > 0) {
           var diff = enemy.getPosition().x - this.getPosition().x;
 
-          if (diff > 0 && diff < 50) {
+          if (diff > 0 && diff < 60) {
             hit= true;
             game.world.removeChild(enemy.container);
             game.enemies.splice(game.enemies.indexOf(enemy), 1);

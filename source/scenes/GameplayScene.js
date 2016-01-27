@@ -89,6 +89,7 @@ function GameplayScene(level) {
         var FanCurrent = require('../objects/FanCurrent');
         var fc = new FanCurrent(new pixi.Rectangle(x, y, TILE, TILE));
         self.fanCurrents.push(fc);
+        self.world.addChild(fc.sprite);
       } else if (char == '!') { // Exit
         self.exit = assets.sprite("spill");
         self.exit.x = x;
@@ -248,7 +249,7 @@ extend(BaseScene, GameplayScene, {
 
     if (this.paused) return;
 
-    if (collision.getRectangleOverlap(
+    if (this.player.grounded && collision.getRectangleOverlap(
         this.player.getBounds(),
         this.exitRect)) {
       var nextScene = null;

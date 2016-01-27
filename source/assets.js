@@ -44,6 +44,8 @@ addAnimationSet('swishy_idle_#', '/graphics/swishy/idle/sprite_#.png', 1, 8);
 addAnimationSet('swishy_jump_#', '/graphics/swishy/jumping/sprite_#.png', 1, 3);
 addAnimationSet('swishy_glide_#', '/graphics/swishy/float/sprite_#.png', 1, 2);
 addAnimationSet('swishy_run_#', '/graphics/swishy/running/sprite_#.png', 1, 12);
+addAnimationSet('current_#', '/graphics/objects/current/current_#.png', 1, 4);
+addAnimationSet('cleanbot_#', '/graphics/cleanbot/sprite_#.png', 1, 2);
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!
@@ -68,6 +70,15 @@ module.exports = {
   },
   sprite: function sprite(name) {
     return new pixi.Sprite(this.texture(name));
+  },
+  movieClip: function movieClip(name, start, end) {
+    var textures = [];
+    for (var i = start; i <= end; i++) {
+      var realName = name.replace('#', i);
+      var texture = this.texture(realName);
+      textures.push(texture);
+    }
+    return new pixi.extras.MovieClip(textures);
   },
   sounds: sounds,
   playMusic: function playMusic(songName) {

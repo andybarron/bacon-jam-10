@@ -177,7 +177,6 @@ extend(PhysicsObject, Player, {
     if (this.currentSprite == this.idleSprite && Math.abs(this.velocity.x) != 0) {
       this.setMainSprite(this.runSprite, true);
       this.container.updateTransform();
-      console.log(this.container.getBounds());
     } else if (this.currentSprite == this.runSprite && Math.abs(this.velocity.x) == 0) {
       this.setMainSprite(this.idleSprite);
     }

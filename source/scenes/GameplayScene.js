@@ -49,6 +49,12 @@ function GameplayScene(level) {
   self.consoles = [];
   self.restarted = false;
 
+  var bgTex = assets.texture('tile_1');
+  this.bgSprite = new pixi.extras.TilingSprite(bgTex, 0, 0);
+  this.background.addChild(this.bgSprite);
+  this.bgSprite.tint = 0x444444;
+  this.bgSprite.tileScale = new pixi.Point(0.75, 0.75);
+
   // Load level data
   // Get tile dimensions
   var tilesDown = level.data.length;
@@ -194,6 +200,8 @@ extend(BaseScene, GameplayScene, {
     this.pauseGraphics.beginFill(0x000000, 0.5);
     this.pauseGraphics.drawRect(0,0,w,h);
     this.pauseGraphics.endFill();
+    this.bgSprite.width = w;
+    this.bgSprite.height = h;
   },
   update: function update(delta) {
 
@@ -271,6 +279,8 @@ extend(BaseScene, GameplayScene, {
     // Have screen follow the player
     this.world.x = -this.player.getPosition().x + game.display.width / 2;
     this.world.y = -this.player.getPosition().y + game.display.height / 2;
+    this.bgSprite.tilePosition.x = this.world.x*3/4;
+    this.bgSprite.tilePosition.y = this.world.y*3/4;
 
     // reset on fall
     // TODO calculate based on level size!!!

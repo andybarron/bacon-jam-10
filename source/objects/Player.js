@@ -83,6 +83,11 @@ extend(PhysicsObject, Player, {
   update: function update(delta, game) {
     this.performActions(delta, game);
     this.removeInactiveSprites();
+
+    if (this.gliding && this.velocity.y > constants.PLAYER_MAX_FLOAT_FALL_SPEED) {
+      this.velocity.y = constants.PLAYER_MAX_FLOAT_FALL_SPEED;
+    }
+
     this.updatePhysics(delta);
     this.updateWorldCollisions(game.tileGrid, game.debugGfx);
     this.updateEnemyCollisions(game.enemies);
@@ -148,28 +153,30 @@ extend(PhysicsObject, Player, {
     }
 
     // Movement
+    var controlMult = this.grounded ? 1 : constants.PLAYER_AIR_CONTROL_MULT;
+    var accel = constants.PLAYER_ACCELERATION * controlMult;
     if (keyboard.isKeyDown(LEFT)) {
       //Moving left, increase left velocity up to max
       if(this.velocity.x >= -constants.PLAYER_MAX_SPEED){
-        this.velocity.x += -constants.PLAYER_ACCELERATION * delta;
+        this.velocity.x += -accel * delta;
       }
     }
     else if (keyboard.isKeyDown(RIGHT)) {
       //Moving right, increase right velocity up to max
       if(this.velocity.x <= constants.PLAYER_MAX_SPEED){
-        this.velocity.x += constants.PLAYER_ACCELERATION * delta;
+        this.velocity.x += accel * delta;
       }
     }
     else
     {
       //Not moving, velocity moves closer to 0 until stop
       if(this.velocity.x > 0) {
-        this.velocity.x += -constants.PLAYER_ACCELERATION * delta;
+        this.velocity.x += -accel * delta;
       }
       else if (this.velocity.x < 0){
-        this.velocity.x += constants.PLAYER_ACCELERATION * delta;
+        this.velocity.x += accel * delta;
       }
-      if (Math.abs(this.velocity.x) < constants.PLAYER_ACCELERATION * delta) {
+      if (Math.abs(this.velocity.x) < accel * delta) {
         this.velocity.x = 0; // IMPORTANT! prevents flipping back and forth at rest
       }
     }

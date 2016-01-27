@@ -47,6 +47,7 @@ function GameplayScene(level) {
   self.ui.addChild(self.helpBg);
   self.ui.addChild(self.helpText);
   self.consoles = [];
+  self.fanCurrents = []; // TODO refactor into base class/interface
   self.restarted = false;
   self.deathY = 0; // to be adjusted later
 
@@ -84,6 +85,10 @@ function GameplayScene(level) {
         self.player.setCenter(cx, cy);
       } else if (char == '#') { // Enemy
         self.enemySpawns.push(new pixi.Point(cx, cy));
+      } else if (char == '^') { // Fan current
+        var FanCurrent = require('../objects/FanCurrent');
+        var fc = new FanCurrent(new pixi.Rectangle(x, y, TILE, TILE));
+        self.fanCurrents.push(fc);
       } else if (char == '!') { // Exit
         self.exit = assets.sprite("spill");
         self.exit.x = x;
@@ -265,6 +270,11 @@ extend(BaseScene, GameplayScene, {
     self.consoles.forEach(function(console) {
       console.check(self.player.getBounds(), self.helpText, self.helpBg);
     })
+
+    // update fan currents
+    self.fanCurrents.forEach(function(fc) {
+      fc.update(delta, self.player);
+    });
 
 
     // update aliens

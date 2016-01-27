@@ -6,7 +6,7 @@ var constants = require('../constants');
 var assets = require('../assets');
 var collision = require('../physics/collision');
 
-var glideGravityScale = 0.15;
+var glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
 
 var attackTextures = [];
 var idleTextures = [];

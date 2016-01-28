@@ -10,7 +10,7 @@ function Alien(x, y, player) {
   this.player = player;
   this.speed = 75;
   var sprite = assets.movieClip('cleanbot_#', 1, 2);
-  sprite.animationSpeed = 0.4;
+  sprite.animationSpeed = 0.1;
   sprite.loop = true;
   sprite.play();
   this.setSprite(sprite, true);

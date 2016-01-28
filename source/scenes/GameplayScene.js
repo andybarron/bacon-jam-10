@@ -279,6 +279,8 @@ extend(BaseScene, GameplayScene, {
 
     var self = this;
 
+    self.bgSprite.tilePosition.x -= 10 * delta;
+
     // Update Player
     self.player.update(delta, self);
 

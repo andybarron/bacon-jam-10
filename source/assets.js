@@ -14,6 +14,8 @@ var sprites = [
   {name: 'empty_heart', url: "/graphics/losthp.png"},
   {name: 'title', url: '/graphics/text/title.png'},
   {name: 'clear', url: '/graphics/text/clear.png'},
+  {name: 'hull', url: '/graphics/background/hull.png'},
+  {name: 'shipcolumn', url: '/graphics/background/shipcolumn.png'},
 ];
 
 var sounds = {
@@ -46,6 +48,7 @@ addAnimationSet('swishy_glide_#', '/graphics/swishy/float/sprite_#.png', 1, 2);
 addAnimationSet('swishy_run_#', '/graphics/swishy/running/sprite_#.png', 1, 12);
 addAnimationSet('current_#', '/graphics/objects/current/current_#.png', 1, 4);
 addAnimationSet('cleanbot_#', '/graphics/cleanbot/sprite_#.png', 1, 2);
+addAnimationSet('starfield_#', '/graphics/background/starfield/sprite_#.png', 1, 2);
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!

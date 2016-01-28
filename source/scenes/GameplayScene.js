@@ -20,7 +20,7 @@ function GameplayScene(level) {
   BaseScene.call(self);
   // member variables
   self.level = level;
-  self.backgroundColor = 0x222230;
+  self.backgroundColor = 0x0;
   self.nextLevel = levels[self.level.next];
   self.player = null;
   self.enemySpawns = [];
@@ -51,11 +51,22 @@ function GameplayScene(level) {
   self.restarted = false;
   self.deathY = 0; // to be adjusted later
 
-  var bgTex = assets.texture('tile_1'); // TODO prettier BG, multiple layers...
-  this.bgSprite = new pixi.extras.TilingSprite(bgTex, 0, 0);
+  // TODO bg layers
+  this.star1 = assets.texture('starfield_1');
+  this.star2 = assets.texture('starfield_2');
+  this.starClip = new pixi.extras.MovieClip([this.star1, this.star2]);
+  this.starClip.animationSpeed = 1/45;
+  this.starClip.play();
+  this.bgSprite = new pixi.extras.TilingSprite(this.star1, 0, 0);
   this.background.addChild(this.bgSprite);
-  this.bgSprite.tint = 0x444444;
-  this.bgSprite.tileScale = new pixi.Point(0.75, 0.75);
+  this.bgHull = new pixi.extras.TilingSprite(assets.texture('hull'), 0, 0);
+  this.background.addChild(this.bgHull);
+  this.bgCols = new pixi.extras.TilingSprite(assets.texture('shipcolumn'), 0, 0);
+  this.background.addChild(this.bgCols);
+  this.tilingSprites = [this.bgSprite, this.bgHull, this.bgCols];
+  this.bgSprite.tint = 0x666688;
+  this.bgHull.tint = 0x555555;
+  this.bgCols.tint = 0x777777;
 
   // Load level data
   // Get tile dimensions
@@ -208,10 +219,14 @@ extend(BaseScene, GameplayScene, {
     this.pauseGraphics.beginFill(0x000000, 0.5);
     this.pauseGraphics.drawRect(0,0,w,h);
     this.pauseGraphics.endFill();
-    this.bgSprite.width = w;
-    this.bgSprite.height = h;
+    this.tilingSprites.forEach(function(ts) {
+      ts.width = w;
+      ts.height = h;
+    });
   },
   update: function update(delta) {
+
+    this.bgSprite.texture = this.starClip.texture;
 
     var MainMenuScene = require('./MainMenuScene');
     if(this.died) {
@@ -292,8 +307,10 @@ extend(BaseScene, GameplayScene, {
     // Have screen follow the player
     this.world.x = -this.player.getCenterX() + game.display.width / 2;
     this.world.y = -this.player.getCenterY() + game.display.height / 2;
-    this.bgSprite.tilePosition.x = this.world.x*3/4;
-    this.bgSprite.tilePosition.y = this.world.y*3/4;
+    this.bgHull.tilePosition.x = this.world.x*1/5;
+    this.bgHull.tilePosition.y = this.world.y*1/5;
+    this.bgCols.tilePosition.x = this.world.x*1/3;
+    this.bgCols.tilePosition.y = this.world.y*1/3;
 
     // reset on fall
     // TODO calculate based on level size!!!

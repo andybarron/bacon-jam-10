@@ -34,8 +34,8 @@ module.exports = {
     '0 ^                                   0',
     '0 ^                                   0',
     '0000                   00             0',
-    '0      00         0               ^   0',
-    '0                           00    ^   0',
+    '0      00         0          c    ^   0',
+    '0                           000   ^   0',
     '0           00                    ^   0',
     '0                                 ^   0',
     '0                                 ^   0',
@@ -65,8 +65,9 @@ module.exports = {
     '00000000    000                       0',
   ],
   objects: {
-    a: "Console|Fans create air currents. Float in with your towel for a boost.",
-    b: "Console|When you can't figure out where to go, try thinking vertically!",
+    a: "Console|Fans create air currents. Float in with your towel for a boost!",
+    b: "Console|When you can't figure out where to go, try thinking vertically.",
+    c: "Console|You can start and stop gliding multiple times while in midair.",
   },
   next: 'tutorial5',
 }

@@ -118,20 +118,20 @@ extend(PhysicsObject, Player, {
       assets.sounds.player.jump.play();
     }
 
-    if (!keyboard.isKeyDown(JUMP) && this.velocity.y < 0) {
+    if (!keyboard.isKeyDown(JUMP) && !this.gliding && this.velocity.y < 0) {
       this.velocity.y = 0; // cancel jump
     }
 
     // Start Glide
-    if (!this.grounded && keyboard.isKeyDown(JUMP) && !this.gliding
-        && this.velocity.y > 0) {
+    if (!this.grounded && keyboard.isKeyPressed(JUMP) && !this.gliding
+        && this.velocity.y >= 0) {
       this.setMainSprite(this.glideSprite, true);
       this.glideSprite.play();
       this.gliding = true;
       this.gravityScale = glideGravityScale;
     }
     // Cancel glide on keypress
-    else if (this.gliding && !keyboard.isKeyDown(JUMP)) {
+    else if (this.gliding && keyboard.isKeyPressed(JUMP)) {
       this.setMainSprite(this.jumpSprite, true);
       this.jumpSprite.play();
       this.gliding = false;

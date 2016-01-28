@@ -64,7 +64,11 @@ function finishedLoading(){
   var lastTime = Date.now();
   var MainMenuScene = require('./scenes/MainMenuScene');
   scene = new MainMenuScene();
+  // TODO move scene init stuff to a separate method and call it here...
+  //      code dupe is bad!!!
   render.backgroundColor = scene.backgroundColor;
+  scene.initialize();
+  scene.resize(display.width, display.height);
 
   // Animate the Screen
   var animate = function animate() {

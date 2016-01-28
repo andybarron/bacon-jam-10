@@ -2,5 +2,5 @@
 module.exports = console.log.bind(console, '[Debug]');
 module.exports.error = function error(msg) {
   alert(msg);
-  module.exports(msg);
+  module.exports('ERROR: ', msg);
 }

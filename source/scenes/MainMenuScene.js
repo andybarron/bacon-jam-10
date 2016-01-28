@@ -7,6 +7,7 @@ var keyboard = require('../keyboard');
 var GameplayScene = require('./GameplayScene');
 var BaseScene = require('./BaseScene');
 var levels = require('../levels');
+var debug = require('../debug');
 
 function MainMenuScene() {
   BaseScene.call(this);
@@ -28,6 +29,14 @@ extend(BaseScene, MainMenuScene, {
   update: function update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
       return new GameplayScene(levels.first);
+    }
+    if (keyboard.isKeyPressed(keyboard.SHIFT)) {
+      var levelName = prompt("Jump to level?", levels.first);
+      if (levelName in levels) {
+        return new GameplayScene(levels[levelName]);
+      } else {
+        debug.error('The level "' + levelName + '" does not exist!');
+      }
     }
   }
 });

@@ -31,7 +31,7 @@ extend(BaseScene, MainMenuScene, {
       return new GameplayScene(levels.first);
     }
     if (keyboard.isKeyPressed(keyboard.SHIFT)) {
-      var levelName = prompt("Jump to level?", levels.first);
+      var levelName = prompt("Jump to level?", 'tutorial1');
       if (levelName in levels) {
         return new GameplayScene(levels[levelName]);
       } else {

@@ -67,7 +67,7 @@ module.exports = {
   objects: {
     a: "Console|Fans create air currents. Float in with your towel for a boost!",
     b: "Console|When you can't figure out where to go, try thinking vertically.",
-    c: "Console|You can start and stop gliding multiple times while in midair.",
+    c: "Console|You can start and stop floating multiple times while in midair.",
   },
   next: 'tutorial5',
 }

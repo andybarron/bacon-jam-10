@@ -2,6 +2,7 @@
 // '!' Exit
 // ' ' Empty
 // '#' Enemy
+// '^' Air
 // Anything else will look up "objects" and then
 //   default to a wall
 module.exports = {
@@ -67,4 +68,5 @@ module.exports = {
     a: "Console|Fans create air currents. Float in with your towel for a boost.",
     b: "Console|When you can't figure out where to go, try thinking vertically!",
   },
+  next: 'tutorial5',
 }

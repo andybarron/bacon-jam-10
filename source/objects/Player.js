@@ -15,6 +15,7 @@ var ATTACK = keyboard.SHIFT;
 
 function Player(x, y) {
   PhysicsObject.call(this, x, y, 34, 49);
+  this.faceVelocityX = false;
 
   // Sprite Setup
   this.idleSprite = assets.movieClip('player/idle/');
@@ -40,8 +41,7 @@ function Player(x, y) {
   this.glideSprite.loop = true;
   this.glideSprite.animationSpeed = 0.1;
 
-  this.currentSprite = this.idleSprite;
-  this.setSprite(this.idleSprite, true);
+  this.setSprite(this.idleSprite, PhysicsObject.Align.CENTER);
   this.hitPoints = constants.PLAYER_MAX_HEALTH;
   this.recentHit = false;
   this.hitTimeout = 0;
@@ -62,6 +62,9 @@ extend(PhysicsObject, Player, {
     this.updateEnemyCollisions(game.enemies);
 
     var speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
+    if (this.velocity.x != 0 && Math.sign(this.container.scale.x) != Math.sign(this.velocity.x)) {
+      speedFactor *= -1;
+    }
     this.runSprite.animationSpeed = this.defaultRunAnimSpeed * speedFactor;
 
     if (this.gliding && this.velocity.y > 0) {
@@ -94,46 +97,47 @@ extend(PhysicsObject, Player, {
     // Start Glide
     if (!this.grounded && keyboard.isKeyPressed(JUMP) && !this.gliding
         && this.velocity.y >= 0) {
-      this.setMainSprite(this.glideSprite, true);
+      this.setMovieClip(this.glideSprite, PhysicsObject.Align.CENTER, true);
       this.glideSprite.play();
       this.gliding = true;
       this.gravityScale = glideGravityScale;
     }
     // Cancel glide on keypress
     else if (this.gliding && keyboard.isKeyPressed(JUMP)) {
-      this.setMainSprite(this.jumpSprite, true);
+      this.setMovieClip(this.jumpSprite, PhysicsObject.Align.CENTER, true);
       this.jumpSprite.play();
       this.gliding = false;
     }
     else if (!this.grounded && !this.gliding && this.currentSprite != this.jumpSprite) {
-      this.setMainSprite(this.jumpSprite, true);
+      this.setMovieClip(this.jumpSprite, PhysicsObject.Align.CENTER, true);
       this.jumpSprite.play();
     }
     
     if (this.grounded && this.jumpSprite.playing) {
       this.jumpSprite.stop();
-      this.setMainSprite(this.idleSprite, true);
+      this.setMovieClip(this.idleSprite, PhysicsObject.Align.CENTER, true);
     }
     else if (this.grounded && this.glideSprite.playing) {
       this.glideSprite.stop();
-      this.setMainSprite(this.idleSprite, true);
+      this.setMovieClip(this.idleSprite, PhysicsObject.Align.CENTER, true);
       this.gliding = false;
     }
 
     // Movement
     var controlMult = this.grounded ? 1 : constants.PLAYER_AIR_CONTROL_MULT;
     var accel = constants.PLAYER_ACCELERATION * controlMult;
-    if (keyboard.isKeyDown(LEFT)) {
-      //Moving left, increase left velocity up to max
-      if(this.velocity.x >= -constants.PLAYER_MAX_SPEED){
-        this.velocity.x += -accel * delta;
-      }
-    }
-    else if (keyboard.isKeyDown(RIGHT)) {
-      //Moving right, increase right velocity up to max
+    if (keyboard.isKeyDown(RIGHT)) {
+      // Moving right, increase right velocity up to max
       if(this.velocity.x <= constants.PLAYER_MAX_SPEED){
         this.velocity.x += accel * delta;
       }
+      this.container.scale.x = 1;
+    } else if (keyboard.isKeyDown(LEFT)) {
+      // Moving left, increase left velocity up to max
+      if(this.velocity.x >= -constants.PLAYER_MAX_SPEED){
+        this.velocity.x += -accel * delta;
+      }
+      this.container.scale.x = -1;
     }
     else
     {
@@ -150,10 +154,9 @@ extend(PhysicsObject, Player, {
     }
 
     if (this.currentSprite == this.idleSprite && Math.abs(this.velocity.x) != 0) {
-      this.setMainSprite(this.runSprite, true);
-      this.container.updateTransform();
+      this.setMovieClip(this.runSprite, PhysicsObject.Align.CENTER, true);
     } else if (this.currentSprite == this.runSprite && Math.abs(this.velocity.x) == 0) {
-      this.setMainSprite(this.idleSprite);
+      this.setMovieClip(this.idleSprite, PhysicsObject.Align.CENTER, true);
     }
 
     if (keyboard.isKeyPressed(ATTACK)) {
@@ -204,18 +207,6 @@ extend(PhysicsObject, Player, {
         collision.resolveEnemyCollision(self, enemy);
       });
     }
-  },
-  setMainSprite: function setMainSprite(spr, center) {
-    if (center) {
-      this.centered = true;
-      spr.anchor.x = 0.5;
-      spr.anchor.y = 0.5;
-      spr.x = this._bounds.width / 2.0;
-      spr.y = this._bounds.height / 2.0;
-    }
-    this.container.removeChild(this.currentSprite);
-    this.container.addChild(spr);
-    this.currentSprite = spr;
   },
 });
 

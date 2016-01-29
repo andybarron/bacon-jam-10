@@ -12,40 +12,56 @@ function PhysicsObject(x, y, w, h) {
   this.gravityScale = 1.0;
   this._bounds = new pixi.Rectangle(x, y, w, h);
   this.container = new pixi.Container();
-  this.flipLeft = true;
-  this.centered = false;
+  this.faceVelocityX = true;
+  this.currentSprite = null; // TODO consider removing
 }
+
+var Align = PhysicsObject.Align = {
+  TOP_LEFT:      new pixi.Point(0.0, 0.0),
+  TOP_CENTER:    new pixi.Point(0.5, 0.0),
+  TOP_RIGHT:     new pixi.Point(1.0, 0.0),
+  MIDDLE_LEFT:   new pixi.Point(0.0, 0.5),
+  MIDDLE_CENTER: new pixi.Point(0.5, 0.5),
+  MIDDLE_RIGHT:  new pixi.Point(1.0, 0.5),
+  BOTTOM_LEFT:   new pixi.Point(0.0, 1.0),
+  BOTTOM_CENTER: new pixi.Point(0.5, 1.0),
+  BOTTOM_RIGHT:  new pixi.Point(1.0, 1.0),
+}
+
+PhysicsObject.Align.CENTER = 
+  PhysicsObject.Align.MIDDLE_CENTER;
 
 PhysicsObject.prototype = {
   getBounds: function getBounds() {
     return this._bounds;
   },
   updateContainer: function updateContainer() {
-    if (this.flipLeft) {
-      if (this.velocity.x > 0) {
-        this.container.scale.x = 1;
-      } else if (this.velocity.x < 0) {
-        this.container.scale.x = -1;
-      }
+    if (this.faceVelocityX && this.velocity.x != 0 &&
+        Math.sign(this.velocity.x) != Math.sign(this.container.scale.x)) {
+      this.container.scale.x *= -1;
     }
     this.container.x = this._bounds.x;
-    if (this.container.scale.x == -1) {
-      // TODO this is hacky but it works
+    if (this.container.scale.x < 0) {
       this.container.x += this._bounds.width;
     }
     this.container.y = this._bounds.y;
   },
-  setSprite: function setSprite(spr, center) {
+  setSprite: function setSprite(spr, anchor) {
     // TODO center? yes? no? maybe?
-    if (center) {
-      this.centered = true;
-      spr.anchor.x = 0.5;
-      spr.anchor.y = 0.5;
-      spr.x = this._bounds.width / 2.0;
-      spr.y = this._bounds.height / 2.0;
+    if (anchor) {
+      spr.anchor.copy(anchor);
+      spr.x = this._bounds.width * anchor.x;
+      spr.y = this._bounds.height * anchor.y;
     }
     this.container.removeChildren();
     this.container.addChild(spr);
+    this.currentSprite = spr;
+  },
+  setMovieClip: function setMovieClip(clip, anchor, restart) {
+    this.setSprite(clip, anchor);
+    if (restart) {
+      clip.gotoAndPlay(0);
+    }
   },
   translate: function translate(dx, dy) {
     this._bounds.x += dx;
@@ -67,9 +83,6 @@ PhysicsObject.prototype = {
     return this._bounds.y + this._bounds.height/2;
   },
   getPosition: function getPosition() {
-    if (this.centered)
-      return new pixi.Point(this._bounds.x + this._bounds.width / 2.0, this._bounds.y + this._bounds.height);
-    else 
       return new pixi.Point(this._bounds.x, this._bounds.y);
   },
   updatePhysics: function(delta, tiles) {

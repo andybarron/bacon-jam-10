@@ -14,7 +14,7 @@ function Alien(x, y, player) {
     loop: true,
   });
   sprite.play();
-  this.setSprite(sprite, true);
+  this.setSprite(sprite, PhysicsObject.Align.CENTER);
 }
 
 extend(PhysicsObject, Alien, {

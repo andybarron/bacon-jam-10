@@ -59,7 +59,7 @@ module.exports = {
   movieClip: function movieClip(clipName, options) {
     var names = [];
     options = options || {};
-    for (var texName in pixi.TextureCache) {
+    for (var texName in pixi.utils.TextureCache) {
       // check if texName starts with clipName
       if (texName.lastIndexOf(clipName, 0) == 0) {
         names.push(texName);

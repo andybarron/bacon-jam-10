@@ -9,9 +9,10 @@ function Alien(x, y, player) {
   PhysicsObject.call(this, x, y, 40, 47);
   this.player = player;
   this.speed = 75;
-  var sprite = assets.movieClip('cleanbot_#', 1, 2);
-  sprite.animationSpeed = 0.1;
-  sprite.loop = true;
+  var sprite = assets.movieClip('cleanbot/idle/', {
+    animationSpeed: 0.1,
+    loop: true,
+  });
   sprite.play();
   this.setSprite(sprite, true);
 }

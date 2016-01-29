@@ -4,7 +4,7 @@ var collision = require('../physics/collision');
 
 function Console(bounds, text) {
   this.bounds = bounds;
-  this.sprite = assets.sprite('console');
+  this.sprite = assets.sprite('objects/console');
   this.sprite.x = bounds.x;
   this.sprite.y = bounds.y;
   this.sprite.width = bounds.width;

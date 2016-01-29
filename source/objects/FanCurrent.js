@@ -5,7 +5,7 @@ var assets = require('../assets');
 
 function FanCurrent(bounds) {
   this.bounds = bounds;
-  this.sprite = assets.movieClip('current_#', 1, 4);
+  this.sprite = assets.movieClip('objects/current/');
   this.sprite.x = bounds.x;
   this.sprite.y = bounds.y;
   this.sprite.width = bounds.width;

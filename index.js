@@ -32,11 +32,8 @@ b.bundle((err, buf) => {
     res.send(script);
   });
 
-  // Serve up graphics
-  app.use('/graphics', express.static('graphics'));
-
-  // Serve up graphics
-  app.use('/audio', express.static('audio'));
+  // Serve static files
+  app.use('/static', express.static('static'));
 
   // Serve home page with game
   app.get('/', (req, res) => {

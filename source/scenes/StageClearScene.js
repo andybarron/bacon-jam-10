@@ -8,7 +8,7 @@ var BaseScene = require('./BaseScene');
 
 function StageClearScene() {
   BaseScene.call(this);
-  var title = assets.sprite('clear');
+  var title = assets.sprite('text/clear');
   this.ui.addChild(title);
   title.anchor.x = 0.5;
   title.position = game.display.topCenter;

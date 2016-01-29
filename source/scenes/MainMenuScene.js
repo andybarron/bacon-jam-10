@@ -11,7 +11,7 @@ var debug = require('../debug');
 
 function MainMenuScene() {
   BaseScene.call(this);
-  var title = assets.sprite('title');
+  var title = assets.sprite('text/title');
   this.ui.addChild(title);
   title.anchor.x = 0.5;
   title.position = game.display.topCenter;

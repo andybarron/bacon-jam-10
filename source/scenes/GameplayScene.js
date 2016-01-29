@@ -51,17 +51,16 @@ function GameplayScene(level) {
   self.restarted = false;
   self.deathY = 0; // to be adjusted later
 
-  // TODO bg layers
-  this.star1 = assets.texture('starfield_1');
-  this.star2 = assets.texture('starfield_2');
-  this.starClip = new pixi.extras.MovieClip([this.star1, this.star2]);
-  this.starClip.animationSpeed = 1/45;
+  // TODO generic bg layer system?
+  this.starClip = assets.movieClip('bg/starfield/', {
+    animationSpeed: 1/45,
+  })
   this.starClip.play();
   this.bgSprite = new pixi.extras.TilingSprite(this.star1, 0, 0);
   this.background.addChild(this.bgSprite);
-  this.bgHull = new pixi.extras.TilingSprite(assets.texture('hull'), 0, 0);
+  this.bgHull = new pixi.extras.TilingSprite(assets.texture('bg/hull'), 0, 0);
   this.background.addChild(this.bgHull);
-  this.bgCols = new pixi.extras.TilingSprite(assets.texture('shipcolumn'), 0, 0);
+  this.bgCols = new pixi.extras.TilingSprite(assets.texture('bg/column'), 0, 0);
   this.background.addChild(this.bgCols);
   this.tilingSprites = [this.bgSprite, this.bgHull, this.bgCols];
   this.bgSprite.tint = 0x666688;
@@ -102,7 +101,7 @@ function GameplayScene(level) {
         self.fanCurrents.push(fc);
         self.world.addChild(fc.sprite);
       } else if (char == '!') { // Exit
-        self.exit = assets.sprite("spill");
+        self.exit = assets.sprite("objects/spill");
         self.exit.x = x;
         self.exit.y = y;
         self.exitRect = new pixi.Rectangle(
@@ -124,7 +123,7 @@ function GameplayScene(level) {
             self.world.addChild(c.sprite);
           }
         } else {
-          var tile = assets.sprite("tile_1"); // TODO randomize? different?
+          var tile = assets.sprite("tiles/block"); // TODO randomize? different?
           // self.platforms.push(new pixi.Rectangle(x, y, TILE, TILE));
           self.tileGrid.set(iCol, iRow, true);
           self.world.addChild(tile);
@@ -154,7 +153,7 @@ function GameplayScene(level) {
   self.world.addChild(self.debugGfx);
 
   for (var i = 0; i < constants.PLAYER_MAX_HEALTH; i++) {
-    var heart = assets.sprite('heart');
+    var heart = assets.sprite('ui/heart/full');
     heart.x = 15 + i * heart.width;
     heart.y = 15;
     self.hearts.push(heart);
@@ -184,7 +183,7 @@ function GameplayScene(level) {
   // Pause Overlay
   self.pausedOverlay = new pixi.Container();
   self.pauseGraphics = new pixi.Graphics();
-  self.pauseText = assets.sprite('pause');
+  self.pauseText = assets.sprite('text/pause');
   self.pauseText.anchor = new pixi.Point(-0.5, 0.5);
   self.pauseText.position = game.display.topCenter;
   self.restartText = new pixi.Text('[ESC] TO CONTINUE, [Q] TO QUIT, [RETURN] TO RESTART', {
@@ -303,7 +302,7 @@ extend(BaseScene, GameplayScene, {
     //update health
     while (self.hearts.length > self.player.hitPoints && self.hearts.length > 0) {
       var last = self.hearts.pop();
-      last.texture = assets.texture('empty_heart');
+      last.texture = assets.texture('ui/heart/empty');
     }
 
     // Have screen follow the player

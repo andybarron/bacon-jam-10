@@ -8,66 +8,35 @@ var collision = require('../physics/collision');
 
 var glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
 
-var attackTextures = [];
-var idleTextures = [];
-var jumpTextures = [];
-var glideTextures = [];
-var runTextures = [];
-
 var JUMP = keyboard.UP;
 var LEFT = keyboard.LEFT;
 var RIGHT = keyboard.RIGHT;
 var ATTACK = keyboard.SHIFT;
 
-for (var i = 1; i <= 8; i++) {
-  var s = "towel_attack_" + i;
-  attackTextures.push(assets.texture(s));
-};
-
-for (var i = 1; i <= 8; i++) {
-  var s = "swishy_idle_" + i;
-  idleTextures.push(assets.texture(s));
-};
-
-for (var i = 1; i <= 3; i++) {
-  var s = "swishy_jump_" + i;
-  jumpTextures.push(assets.texture(s));
-};
-
-for (var i = 1; i <= 2; i++) {
-  var s = "swishy_glide_" + i;
-  glideTextures.push(assets.texture(s));
-};
-
-for (var i = 1; i <= 12; i++) {
-  var s = "swishy_run_" + i;
-  runTextures.push(assets.texture(s));
-};
-
 function Player(x, y) {
   PhysicsObject.call(this, x, y, 34, 49);
 
   // Sprite Setup
-  this.idleSprite = new pixi.extras.MovieClip(idleTextures);
+  this.idleSprite = assets.movieClip('player/idle/');
   this.idleSprite.loop = true;
   this.idleSprite.animationSpeed = 0.5;
   this.idleSprite.play();
 
-  this.runSprite = new pixi.extras.MovieClip(runTextures);
+  this.runSprite = assets.movieClip('player/run/');
   this.runSprite.loop = true;
   this.defaultRunAnimSpeed = 0.5;
   this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
   this.runSprite.play();
 
-  this.towelSprite = new pixi.extras.MovieClip(attackTextures);
+  this.towelSprite = assets.movieClip('player/attack/arm/');
   this.towelSprite.loop = false;
   this.towelSprite.animationSpeed = 0.8;
 
-  this.jumpSprite = new pixi.extras.MovieClip(jumpTextures);
+  this.jumpSprite = assets.movieClip('player/jump/');
   this.jumpSprite.loop = true;
   this.jumpSprite.animationSpeed = 0.2;
 
-  this.glideSprite = new pixi.extras.MovieClip(glideTextures);
+  this.glideSprite = assets.movieClip('player/float/');
   this.glideSprite.loop = true;
   this.glideSprite.animationSpeed = 0.1;
 

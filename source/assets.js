@@ -1,54 +1,36 @@
 var pixi = require('pixi.js');
 var debug = require('./debug');
 var howler = require("howler");
+var naturalSort = require('javascript-natural-sort');
 
-var sprites = [
-  {name: 'avatar', url: "/graphics/space_guy.png"},
-  {name: 'alien', url: "/graphics/alien.png"},
-  {name: 'pause', url: "/graphics/text/pause.png"},
-  {name: 'tile_1', url: "/graphics/tiles/tile1.png"},
-  {name: 'console', url: "/graphics/tiles/console.png"},
-  {name: 'tile_2', url: "/graphics/tiles/tile2.png"},
-  {name: 'spill', url: "/graphics/spill.png"},
-  {name: 'heart', url: "/graphics/hp.png"},
-  {name: 'empty_heart', url: "/graphics/losthp.png"},
-  {name: 'title', url: '/graphics/text/title.png'},
-  {name: 'clear', url: '/graphics/text/clear.png'},
-  {name: 'hull', url: '/graphics/background/hull.png'},
-  {name: 'shipcolumn', url: '/graphics/background/shipcolumn.png'},
-];
 
+// TODO support array of paths for different codecs
+// TODO add preload hooks here?
+function createHowl(path, options) {
+  var cfg = {};
+  options = options || {};
+  for (var prop in (options)) {
+    cfg[prop] = options[prop];
+  }
+  cfg.urls = ['/static/audio/' + path];
+  return new howler.Howl(cfg);
+}
 var sounds = {
   player: {
-    'jump': new howler.Howl({ urls: ['../audio/jump/jump.wav'], volume: 0.33 }),
-    'attack': new howler.Howl({ urls: ['../audio/towelattack/towelhit.wav'] }),
-    'attackHit': new howler.Howl({ urls: ['../audio/hit/hit_hurt5.wav'] }),
-    'fly': new howler.Howl({ urls: ['../audio/flying.mp3'] }),
-    'hide': new howler.Howl({ urls: ['../audio/hiding.mp3'] }),
-    'ouch': new howler.Howl({ urls: ['../audio/ouch.mp3'] })
+    jump: createHowl('jump/jump.wav', {volume: 0.33}),
+    attack: createHowl('towelattack/towelhit.wav'),
+    attackHit: createHowl('hit/hit_hurt5.wav'),
+    fly: createHowl('flying.mp3'),
+    hide: createHowl('hiding.mp3'),
+    ouch: createHowl('ouch.mp3'),
   }
 }
 
 var currentSong = null;
 var currentSongName = null;
 var music = {
-  gameplaySong: new howler.Howl({urls: ['../audio/towel_game.mp3'],loop: true, volume: 0.5}),
-}
-
-function addAnimationSet(name, url, start, end) {
-  for (var i = start; i <= end; i++) {
-    sprites.push({name: name.replace('#', i), url: url.replace('#', i)});
-  }
-}
-
-addAnimationSet('towel_attack_#', '/graphics/swishy/attack/l0_sprite_#.png', 1, 8);
-addAnimationSet('swishy_idle_#', '/graphics/swishy/idle/sprite_#.png', 1, 8);
-addAnimationSet('swishy_jump_#', '/graphics/swishy/jumping/sprite_#.png', 1, 3);
-addAnimationSet('swishy_glide_#', '/graphics/swishy/float/sprite_#.png', 1, 2);
-addAnimationSet('swishy_run_#', '/graphics/swishy/running/sprite_#.png', 1, 12);
-addAnimationSet('current_#', '/graphics/objects/current/current_#.png', 1, 4);
-addAnimationSet('cleanbot_#', '/graphics/cleanbot/sprite_#.png', 1, 2);
-addAnimationSet('starfield_#', '/graphics/background/starfield/sprite_#.png', 1, 2);
+  gameplaySong: createHowl('towel_game.mp3', {loop: true, volume: 0.5}),
+} // TODO preload sounds as well
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!
@@ -57,7 +39,7 @@ function onLoadResource(loader, resource) {
 
 module.exports = {
   load: function load(callback) {
-    pixi.loader.add(sprites);
+    pixi.loader.add(['/static/atlas.json']);
     pixi.loader.on('progress', onLoadResource);
     pixi.loader.after(function(resource, next) {
       if (resource && resource.texture && resource.texture.baseTexture) {
@@ -69,19 +51,27 @@ module.exports = {
     pixi.loader.load(callback);
   },
   texture: function texture(name) {
-    return pixi.loader.resources[name].texture;
+    return pixi.Texture.fromFrame(name);
   },
   sprite: function sprite(name) {
-    return new pixi.Sprite(this.texture(name));
+    return pixi.Sprite.fromFrame(name);
   },
-  movieClip: function movieClip(name, start, end) {
-    var textures = [];
-    for (var i = start; i <= end; i++) {
-      var realName = name.replace('#', i);
-      var texture = this.texture(realName);
-      textures.push(texture);
+  movieClip: function movieClip(clipName, options) {
+    var names = [];
+    options = options || {};
+    for (var texName in pixi.TextureCache) {
+      // check if texName starts with clipName
+      if (texName.lastIndexOf(clipName, 0) == 0) {
+        names.push(texName);
+      }
     }
-    return new pixi.extras.MovieClip(textures);
+    names.sort(naturalSort); // avoid numbering issues!
+    var textures = names.map(this.texture, this);
+    var clip = new pixi.extras.MovieClip(textures);
+    for (var prop in options) {
+      clip[prop] = options[prop];
+    }
+    return clip;
   },
   sounds: sounds,
   playMusic: function playMusic(songName) {

@@ -57,11 +57,16 @@ document.querySelector('#display-wrapper').appendChild(render.view);
 debug('loading assets');
 assets.load(finishedLoading);
 
+var game = module.exports = {
+  display: display,
+  timeScale: 1, // change this for e.g. slow-mo
+}
+
 function finishedLoading(){
   debug("All assets loaded");
   debug('Setting up animation loop');
 
-  var lastTime = Date.now();
+  var lastTime = performance.now();
   var MainMenuScene = require('./scenes/MainMenuScene');
   scene = new MainMenuScene();
   // TODO move scene init stuff to a separate method and call it here...
@@ -72,8 +77,10 @@ function finishedLoading(){
 
   // Animate the Screen
   var animate = function animate() {
-    var time = Date.now();
+    var time = performance.now();
     var delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );
+    delta *= game.timeScale;
+    pixi.ticker.shared.speed = game.timeScale;
     lastTime = time;
     if (scene) {
       var nextScene = scene.update(delta);
@@ -91,8 +98,4 @@ function finishedLoading(){
   };
   animate();
   debug('End setup phase');
-}
-
-module.exports = {
-  display: display,
 }

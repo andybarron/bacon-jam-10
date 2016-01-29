@@ -5,6 +5,7 @@ var keyboard = require('../keyboard');
 var constants = require('../constants');
 var assets = require('../assets');
 var collision = require('../physics/collision');
+var colors = require('../colors');
 
 var glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
 
@@ -61,6 +62,25 @@ extend(PhysicsObject, Player, {
     this.updateWorldCollisions(game.tileGrid, game.debugGfx);
     this.updateEnemyCollisions(game.enemies);
 
+    if (this.recentHit) {
+      // goes from 0 to 1 after hit
+      var alpha = this.hitTimeout / constants.PLAYER_HURT_SECONDS;
+      var tint = colors.lerp(0xFF0000, 0xFFFFFF, alpha);
+      // TODO just set container.tint if it ever gets implemented...
+      this.container.children.forEach(function(child) {
+        if ('tint' in child) {
+          child.tint = tint;
+        }
+      });
+    } else {
+      this.container.alpha = 1;
+      this.container.children.forEach(function(child) {
+        if ('tint' in child) {
+          child.tint = 0xFFFFFF;
+        }
+      });
+    }
+
     var speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
     if (this.velocity.x != 0 && Math.sign(this.container.scale.x) != Math.sign(this.velocity.x)) {
       speedFactor *= -1;
@@ -75,8 +95,8 @@ extend(PhysicsObject, Player, {
     }
 
     if(this.recentHit){
-      this.hitTimeout += 1;
-      if (this.hitTimeout >= constants.PLAYER_HIT_TIMEOUT){
+      this.hitTimeout += delta;
+      if (this.hitTimeout >= constants.PLAYER_HURT_SECONDS){
         this.hitTimeout = 0;
         this.recentHit = false;
       }

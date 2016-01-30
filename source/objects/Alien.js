@@ -5,8 +5,12 @@ var keyboard = require('../keyboard');
 var constants = require('../constants');
 var assets = require('../assets');
 
+var WIDTH = constants.TILE_SIZE * .75;
+var HEIGHT = constants.TILE_SIZE;
+var PADDING = constants.TILE_SIZE - WIDTH;
+
 function Alien(x, y, player) {
-  PhysicsObject.call(this, x, y, 40, 47);
+  PhysicsObject.call(this, x, y, WIDTH, HEIGHT, PADDING);
   this.player = player;
   this.speed = 75;
   var sprite = assets.movieClip('cleanbot/idle/', {
@@ -14,7 +18,7 @@ function Alien(x, y, player) {
     loop: true,
   });
   sprite.play();
-  this.setSprite(sprite, PhysicsObject.Align.CENTER);
+  this.setSprite(sprite, PhysicsObject.Align.BOTTOM_LEFT);
 }
 
 extend(PhysicsObject, Alien, {

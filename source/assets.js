@@ -19,7 +19,7 @@ var sounds = {
   player: {
     jump: createHowl('jump/jump.wav', {volume: 0.33}),
     attack: createHowl('towelattack/towelhit.wav'),
-    attackHit: createHowl('hit/hit_hurt5.wav'),
+    attackHit: createHowl('hit/hit_hurt5.wav', {volume: 1.5}),
     fly: createHowl('flying.mp3'),
     hide: createHowl('hiding.mp3'),
     ouch: createHowl('ouch.mp3'),

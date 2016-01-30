@@ -1,3 +1,4 @@
+require('./extensions');
 var pixi = require('pixi.js');
 var debug = require('./debug');
 var constants = require('./constants');
@@ -23,12 +24,43 @@ var display = {
   bottomRight: new pixi.Point(),
   width: 0,
   height: 0,
+  bounds: new pixi.Rectangle(0,0,0,0),
 };
 display.center = display.middleCenter;
+var scale = 2;
+
+var game = module.exports = {
+  display: display,
+  timeScale: 1, // change this for e.g. slow-mo
+  getScale: function getScale() {
+    return scale;
+  },
+  setScale: function setScale(s) {
+    scale = s;
+    resizeRenderer();
+  },
+  screenPixelsFromWorld: function screenPixelsFromWorld(n) {
+    return n * scale;
+  },
+  worldPixelsFromScreen: function worldPixelsFromScreen(n) {
+    return n / scale;
+  },
+  worldRectFromScreen: function worldRectFromScreen(r) {
+    var box = r.clone();
+    box.x /= scale;
+    box.y /= scale;
+    box.width /= scale;
+    box.height /= scale;
+    return box;
+  },
+}
+window.game = game;
 
 function resizeRenderer() {
-  var w = document.documentElement.clientWidth;
-  var h = document.documentElement.clientHeight;
+  var rw = document.documentElement.clientWidth;
+  var rh = document.documentElement.clientHeight;
+  var w = rw / scale;
+  var h = rh / scale;
   display.topLeft.set(0, 0);
   display.topCenter.set(w/2, 0);
   display.topRight.set(w, 0);
@@ -40,8 +72,11 @@ function resizeRenderer() {
   display.bottomRight.set(w, h);
   display.width = w;
   display.height = h;
-  render.resize(w, h);
+  display.bounds.width = w;
+  display.bounds.height = h;
+  render.resize(rw, rh);
   if (scene) {
+    scene.container.scale = new pixi.Point(scale, scale);
     scene.resize(w, h);
   }
 }
@@ -57,11 +92,6 @@ document.querySelector('#display-wrapper').appendChild(render.view);
 debug('loading assets');
 assets.load(finishedLoading);
 
-var game = module.exports = {
-  display: display,
-  timeScale: 1, // change this for e.g. slow-mo
-}
-
 function finishedLoading(){
   debug("All assets loaded");
   debug('Setting up animation loop');
@@ -73,7 +103,7 @@ function finishedLoading(){
   //      code dupe is bad!!!
   render.backgroundColor = scene.backgroundColor;
   scene.initialize();
-  scene.resize(display.width, display.height);
+  resizeRenderer();
 
   // Animate the Screen
   var animate = function animate() {
@@ -89,8 +119,8 @@ function finishedLoading(){
         scene.dispose();
         render.backgroundColor = nextScene.backgroundColor;
         nextScene.initialize();
-        nextScene.resize(display.width, display.height);
         scene = nextScene;
+        resizeRenderer();
       }
     }
     keyboard.update();

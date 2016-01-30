@@ -29,7 +29,7 @@ module.exports = {
   ],
   objects: {
     a: "Console|Defective cleaning robots may mistake you for a deadly microbe and attack.",
-    b: "Console|Press [Shift] to whip rogue cleaning bots with your trusty towel!",
+    b: "Console|Press the [Z] key to whip rogue cleaning bots with your trusty towel!",
     c: "Console|Be careful around patented OSHA-compliant Endless Pits(TM).",
     d: "Console|If you fail to use caution, a clone will be dispatched to try again.",
   },

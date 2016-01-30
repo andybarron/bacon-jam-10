@@ -6,7 +6,7 @@ var TILE = constants.TILE_SIZE;
 var tempRect = new pixi.Rectangle();
 var tempData = {};
 
-function PhysicsObject(x, y, w, h) {
+function PhysicsObject(x, y, w, h, spriteWidthPadding) {
   this.velocity = new pixi.Point(0, 0);
   this.grounded = true;
   this.gravityScale = 1.0;
@@ -14,6 +14,7 @@ function PhysicsObject(x, y, w, h) {
   this.container = new pixi.Container();
   this.faceVelocityX = true;
   this.currentSprite = null; // TODO consider removing
+  this.padding = (spriteWidthPadding || 0)/2;
 }
 
 var Align = PhysicsObject.Align = {
@@ -35,22 +36,30 @@ PhysicsObject.prototype = {
   getBounds: function getBounds() {
     return this._bounds;
   },
+  getWidth: function getWidth() {
+    return this._bounds.width;
+  },
+  getHeight: function getHeight() {
+    return this._bounds.height;
+  },
   updateContainer: function updateContainer() {
     if (this.faceVelocityX && this.velocity.x != 0 &&
         Math.sign(this.velocity.x) != Math.sign(this.container.scale.x)) {
       this.container.scale.x *= -1;
     }
-    this.container.x = this._bounds.x;
+    this.container.x = this._bounds.x - this.padding;
     if (this.container.scale.x < 0) {
-      this.container.x += this._bounds.width;
+      this.container.x = this._bounds.x + this._bounds.width + this.padding;
     }
     this.container.y = this._bounds.y;
+    this.container.x = Math.round(this.container.x);
+    this.container.y = Math.round(this.container.y);
   },
   setSprite: function setSprite(spr, anchor) {
     // TODO center? yes? no? maybe?
     if (anchor) {
       spr.anchor.copy(anchor);
-      spr.x = this._bounds.width * anchor.x;
+      spr.x = (this._bounds.width + this.padding * 2) * anchor.x;
       spr.y = this._bounds.height * anchor.y;
     }
     this.container.removeChildren();
@@ -61,6 +70,11 @@ PhysicsObject.prototype = {
     this.setSprite(clip, anchor);
     if (restart) {
       clip.gotoAndPlay(0);
+    }
+  },
+  changeMovieClip: function changeMovieClip(clip /* varargs */) {
+    if (this.currentSprite != clip) {
+      this.setMovieClip.apply(this, arguments);
     }
   },
   translate: function translate(dx, dy) {

@@ -31,19 +31,24 @@ function GameplayScene(level) {
   self.hearts = [];
   self.paused = false;
   self.died = false;
+  self.helpTextFontLabel = 'px monospace';
   self.helpText = new pixi.Text('', {
-    font: '24px monospace',
+    font: '0' + self.helpTextFontLabel,
     wordWrap: true,
-    wordWrapWidth: 400,
+    wordWrapWidth: 0,
     align: 'center',
     fill: 0x00DD00,
     // stroke: 0x000000,
     // strokeThickness: 4,
   });
-  self.helpText.anchor = new pixi.Point(0.5, 0.5);
-  self.helpText.position = game.display.center;
+  self.helpText.anchor = new pixi.Point(0.5, 1.0);
+  self.helpText.position = game.display.bottomCenter;
   self.helpBg = new pixi.Graphics();
-  self.helpBg.alpha = 0.5;
+  self.helpBg.boundsPadding = 0;
+  self.helpBg.alpha = 0;
+  self.helpBg.beginFill(0x001100);
+  self.helpBg.drawRect(0,0,1,1);
+  self.helpBg.endFill();
   self.ui.addChild(self.helpBg);
   self.ui.addChild(self.helpText);
   self.consoles = [];
@@ -102,13 +107,14 @@ function GameplayScene(level) {
         self.world.addChild(fc.sprite);
       } else if (char == '!') { // Exit
         self.exit = assets.sprite("objects/spill");
-        self.exit.x = x;
-        self.exit.y = y;
+        self.exit.x = x + TILE/2;
+        self.exit.y = y + TILE + 3;
+        self.exit.anchor = new pixi.Point(0.5, 1.0);
         self.exitRect = new pixi.Rectangle(
-          self.exit.x,
-          self.exit.y,
-          self.exit.width,
-          self.exit.height);
+          x,
+          y,
+          TILE,
+          TILE);
       } else {
         var object = level.objects[char];
         if (object) {
@@ -154,8 +160,8 @@ function GameplayScene(level) {
 
   for (var i = 0; i < constants.PLAYER_MAX_HEALTH; i++) {
     var heart = assets.sprite('ui/heart/full');
-    heart.x = 15 + i * heart.width;
-    heart.y = 15;
+    heart.x = 5 + i * heart.width + (i * 1);
+    heart.y = 5;
     self.hearts.push(heart);
     self.ui.addChild(heart);
   }
@@ -210,6 +216,14 @@ extend(BaseScene, GameplayScene, {
     }
   },
   resize: function resize(w, h) {
+    this.helpText.style.wordWrapWidth = w;
+    var fontSize = game.worldPixelsFromScreen(36);
+    this.helpText.style.font = fontSize.toString() + this.helpTextFontLabel;
+    // Render at native res, regardless of game scale
+    this.helpText.resolution = game.getScale();
+    if (this.helpText.text) {
+      this.helpText.dirty = true;
+    }
     this.deathGraphics.clear();
     this.deathGraphics.beginFill(0x000000, 0.5);
     this.deathGraphics.drawRect(0,0,w,h);
@@ -284,8 +298,8 @@ extend(BaseScene, GameplayScene, {
     self.player.update(delta, self);
 
     // update consoles
-    self.consoles.forEach(function(console) {
-      console.check(self.player.getBounds(), self.helpText, self.helpBg);
+    self.consoles.forEach(function(cons) {
+      cons.check(self.player.getBounds(), self.helpText, self.helpBg);
     })
 
     // update fan currents
@@ -306,8 +320,16 @@ extend(BaseScene, GameplayScene, {
     }
 
     // Have screen follow the player
-    this.world.x = -this.player.getCenterX() + game.display.width / 2;
-    this.world.y = -this.player.getCenterY() + game.display.height / 2;
+    this.world.x = Math.round(-this.player.getCenterX() + game.display.width / 2);
+    this.world.y = Math.round(-this.player.getCenterY() + game.display.height / 2);
+    this.world.x =
+      -Math.round(this.player.getBounds().x) +
+      -Math.round(this.player.getWidth() / 2) +
+      Math.round(+ game.display.width / 2);
+    this.world.y =
+      -Math.round(this.player.getBounds().y) +
+      -Math.round(this.player.getHeight() / 2) +
+      Math.round(+ game.display.height / 2);
     this.bgHull.tilePosition.x = this.world.x*1/5;
     this.bgHull.tilePosition.y = this.world.y*1/5;
     this.bgCols.tilePosition.x = this.world.x*1/3;

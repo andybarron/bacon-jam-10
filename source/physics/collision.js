@@ -20,6 +20,13 @@ module.exports = {
     }
     return result;
   },
+  rectanglesEqual: function rectanglesEqual(a, b) {
+    if (a == b) return true;
+    if (!a || !b) return false;
+    return ['x', 'y', 'width', 'height'].every(function(prop) {
+      return a[prop] == b[prop];
+    });
+  },
   getSpriteOverlap: function getSpriteOverlap(a, b) {
     a.updateTransform();
     b.updateTransform();
@@ -112,6 +119,7 @@ module.exports = {
       var enemyCenter = this.getRectangleCenter(enemy.getBounds());
       player.hitPoints-=1;
       player.recentHit = true;
+      player.grounded = false;
 
       if(enemyCenter.x > charCenter.x){
         player.velocity.x = -constants.PLAYER_BOUNCE_SPEED_X;
@@ -120,12 +128,8 @@ module.exports = {
         player.velocity.x = constants.PLAYER_BOUNCE_SPEED_X;
       }
 
-      if(enemyCenter.y > charCenter.y){
-        player.velocity.y = constants.PLAYER_BOUNCE_SPEED_Y;
-      }
-      else{
-        player.velocity.y = -constants.PLAYER_BOUNCE_SPEED_Y;
-      }
+      player.velocity.y = -constants.PLAYER_BOUNCE_SPEED_Y;
+      player.translate(0, -2);
     }
     return overlap;
   },

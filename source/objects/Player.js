@@ -124,7 +124,7 @@ extend(PhysicsObject, Player, {
   },
   performActions: function performActions(delta, game) {
     // Jump action
-    if (keyboard.isKeyPressed(JUMP) && this.grounded) {
+    if (keyboard.isKeyPressed(JUMP) && this.grounded && !this.attacking) {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
       assets.sounds.player.jump.play();

@@ -21,7 +21,7 @@ function MainMenuScene() {
   });
   this.ui.addChild(play);
   play.anchor.x = 0.5;
-  play.anchor.y = 4;
+  play.anchor.y = 1;
   play.position = game.display.bottomCenter;
 }
 

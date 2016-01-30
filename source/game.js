@@ -89,11 +89,11 @@ debug('Adding view to DOM');
 document.querySelector('#display-wrapper').appendChild(render.view);
 
 // Load Assets
-debug('loading assets');
+debug('Loading assets...');
 assets.load(finishedLoading);
 
 function finishedLoading(){
-  debug("All assets loaded");
+  debug("...All assets loaded!");
   debug('Setting up animation loop');
 
   var lastTime = performance.now();

@@ -5,50 +5,70 @@ var naturalSort = require('javascript-natural-sort');
 
 
 // TODO support array of paths for different codecs
-// TODO add preload hooks here?
+var nHowls = 0;
 function createHowl(path, options) {
+  debug('Loading sound: ' + path);
+  nHowls++;
   var cfg = {};
   options = options || {};
   for (var prop in (options)) {
     cfg[prop] = options[prop];
   }
   cfg.urls = ['/static/audio/' + path];
+  cfg.onload = function() {
+    nHowls--;
+    debug('Completed sound: ' + path);
+  }
   return new howler.Howl(cfg);
 }
-var sounds = {
-  player: {
+
+var sounds = {};
+var music = {};
+
+function beginLoadingSounds() {
+  sounds.player = {
     jump: createHowl('jump/jump.wav', {volume: 0.33}),
     attack: createHowl('towelattack/towelhit.wav'),
     attackHit: createHowl('hit/hit_hurt5.wav', {volume: 1.5}),
     fly: createHowl('flying.mp3'),
     hide: createHowl('hiding.mp3'),
     ouch: createHowl('ouch.mp3'),
-  }
+  };
+
+  music.gameplaySong = createHowl('towel_game.mp3', {loop: true, volume: 0.5});
 }
 
 var currentSong = null;
 var currentSongName = null;
-var music = {
-  gameplaySong: createHowl('towel_game.mp3', {loop: true, volume: 0.5}),
-} // TODO preload sounds as well
+
 
 function onLoadResource(loader, resource) {
   // TODO add loading bar to game!
-  debug('Loading ' + resource.url + '...');
+  debug('Loading resource: ' + resource.url);
 }
 
 module.exports = {
   load: function load(callback) {
+    debug('Begin assets.load()');
+    beginLoadingSounds();
     pixi.loader.add(['/static/atlas.json']);
     pixi.loader.on('progress', onLoadResource);
     pixi.loader.after(function(resource, next) {
       if (resource && resource.texture && resource.texture.baseTexture) {
         resource.texture.baseTexture.scaleMode = pixi.SCALE_MODES.NEAREST;
       }
-      debug('Done loading ' + resource.url);
+      debug('Completed resource: ' + resource.url);
       next();
     });
-    pixi.loader.load(callback);
+    var soundInterval = setInterval(function() {
+      if (nHowls == 0) {
+        clearInterval(soundInterval);
+        pixi.loader.load(function() {
+          debug('Completed assets.load(), firing callback');
+          callback();
+        });
+      }
+    }, 50);
   },
   texture: function texture(name) {
     return pixi.Texture.fromFrame(name);

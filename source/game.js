@@ -81,19 +81,23 @@ function resizeRenderer() {
   }
 }
 
-window.addEventListener('resize', resizeRenderer);
-
-resizeRenderer();
-
-debug('Adding view to DOM');
-document.querySelector('#display-wrapper').appendChild(render.view);
-
 // Load Assets
 debug('Loading assets...');
 assets.load(finishedLoading);
 
 function finishedLoading(){
   debug("...All assets loaded!");
+
+  debug('Adding view to DOM');
+  var wrapper = document.querySelector('#display-wrapper');
+  wrapper.innerHTML = '';
+  wrapper.appendChild(render.view);
+
+  debug('Adding resize listener');
+  window.addEventListener('resize', resizeRenderer);
+
+  resizeRenderer();
+
   debug('Setting up animation loop');
 
   var lastTime = performance.now();

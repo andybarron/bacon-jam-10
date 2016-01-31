@@ -81,7 +81,6 @@ function GameplayScene(level) {
   self.deathY = (tilesDown + 10) * TILE;
   // Initalize tile grid
   self.tileGrid = new TileGrid(tilesAcross, tilesDown, false);
-  window.grid = self.tileGrid;
   // Set up map
   level.data.forEach(function(row, iRow) {
     var y = iRow * TILE;

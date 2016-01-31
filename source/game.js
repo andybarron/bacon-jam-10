@@ -54,7 +54,6 @@ var game = module.exports = {
     return box;
   },
 }
-window.game = game;
 
 function resizeRenderer() {
   var rw = document.documentElement.clientWidth;

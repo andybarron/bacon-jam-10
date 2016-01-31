@@ -7,5 +7,12 @@ var levels = {
 }
 
 levels.first = levels.tutorial1;
+levels.list = [];
+var currentLevel = levels.first;
+while (currentLevel) {
+  levels.list.push(currentLevel);
+  currentLevel = levels[currentLevel.next];
+}
 
+window.levels = levels;
 module.exports = levels;

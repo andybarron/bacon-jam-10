@@ -2,7 +2,7 @@ var keysDown = {};
 var keysPressed = {};
 var keysReleased = {};
 
-window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', function(e) {
   var keyCode = e.keyCode;
 
   if (!(keysDown[keyCode])) {
@@ -12,7 +12,7 @@ window.addEventListener('keydown', (e) => {
   keysDown[keyCode] = true;  
 });
 
-window.addEventListener('keyup', (e) => {
+window.addEventListener('keyup', function(e) {
   var keyCode = e.keyCode;
 
   keysDown[keyCode] = false;

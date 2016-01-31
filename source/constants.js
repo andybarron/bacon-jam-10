@@ -25,4 +25,3 @@ c.FAN_MAX_SPEED = c.PLAYER_MAX_SPEED;
 
 
 module.exports = c;
-window.constants = c;

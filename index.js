@@ -1,6 +1,7 @@
 // Load dependencies
 var express = require('express');
 var browserify = require('browserify');
+var uglify = require('uglify-js');
 
 // Load environment config
 var env = process.env;
@@ -14,8 +15,6 @@ app.set('view engine', 'ejs');
 console.info("Compiling game source...");
 var b = browserify('source/main.js', {
   debug: DEV,
-  // TODO breaks pixi build; use bin? makes compilation faster
-  // noParse: [require.resolve('./node_modules/pixi.js')],
 });
 b.bundle((err, buf) => {
   if (err) {
@@ -24,6 +23,9 @@ b.bundle((err, buf) => {
     process.exit(1);
   }
   var script = buf.toString('utf8');
+  if (!DEV) {
+    script = uglify.minify(script, {fromString: true}).code;
+  }
   console.info("Done!");
 
   // Serve concatenated js

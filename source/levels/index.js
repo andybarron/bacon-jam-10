@@ -14,5 +14,4 @@ while (currentLevel) {
   currentLevel = levels[currentLevel.next];
 }
 
-window.levels = levels;
 module.exports = levels;

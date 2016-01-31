@@ -1,6 +1,8 @@
 var pixi = require('pixi.js');
 var constants = require('../constants');
 var collision = require('./collision');
+var EventEmitter = require('eventemitter3');
+var extend = require('../extend');
 
 var TILE = constants.TILE_SIZE;
 var tempRect = new pixi.Rectangle();
@@ -32,7 +34,12 @@ var Align = PhysicsObject.Align = {
 PhysicsObject.Align.CENTER = 
   PhysicsObject.Align.MIDDLE_CENTER;
 
-PhysicsObject.prototype = {
+var Events = PhysicsObject.Events = {
+  GROUNDED: 'grounded',
+  UNGROUNDED: 'ungrounded',
+}
+
+extend(EventEmitter, PhysicsObject, {
   getBounds: function getBounds() {
     return this._bounds;
   },
@@ -100,12 +107,19 @@ PhysicsObject.prototype = {
       return new pixi.Point(this._bounds.x, this._bounds.y);
   },
   updatePhysics: function(delta, tiles) {
+    var wasGrounded = this.grounded;
     this.grounded = false;
     this.velocity.y += constants.GRAVITY * this.gravityScale * delta;
     this.translate(this.velocity.x * delta, this.velocity.y * delta);
+    if (tiles) {
+      this.updateWorldCollisions(tiles);
+    }
+    if (this.grounded != wasGrounded) {
+      this.emit(this.grounded ? Events.GROUNDED : Events.UNGROUNDED);
+    }
     this.updateContainer();
   },
-  updateWorldCollisions: function(tileGrid, gfx) {
+  updateWorldCollisions: function(tileGrid) {
     var bounds = this.getBounds();
     var minX = Math.floor(bounds.x/TILE);
     var maxX = Math.ceil((bounds.x + bounds.width)/TILE);
@@ -129,6 +143,6 @@ PhysicsObject.prototype = {
     }
     this.updateContainer();
   },
-};
+});
 
 module.exports = PhysicsObject;

@@ -19,9 +19,29 @@ var ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
 var ATK_W = constants.PLAYER_ATTACK_WIDTH;
 var ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
+var Events = {
+  JUMP: 'jump',
+  GLIDE: 'glide',
+  UNGLIDE: 'unglide',
+  ATTACK: 'attack',
+  ATTACK_HIT: 'attackHit',
+}
+
 function Player(x, y) {
   PhysicsObject.call(this, x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
   this.faceVelocityX = false;
+  this.on(PhysicsObject.Events.GROUNDED, function() {
+    assets.sounds.player.land.play();
+  });
+  this.on(Events.JUMP, function() {
+    assets.sounds.player.jump.play();
+  });
+  this.on(Events.ATTACK, function() {
+    assets.sounds.player.attack.play();
+  });
+  this.on(Events.ATTACK_HIT, function() {
+    assets.sounds.player.attackHit.play();
+  });
 
   // Sprite Setup
   this.idleSprite = assets.movieClip('player/idle/');
@@ -68,8 +88,7 @@ extend(PhysicsObject, Player, {
       this.velocity.y = constants.PLAYER_MAX_FLOAT_FALL_SPEED;
     }
 
-    this.updatePhysics(delta);
-    this.updateWorldCollisions(game.tileGrid, game.debugGfx);
+    this.updatePhysics(delta, game.tileGrid);
     this.updateEnemyCollisions(game.enemies);
     this.setState();
 
@@ -127,7 +146,7 @@ extend(PhysicsObject, Player, {
     if (keyboard.isKeyPressed(JUMP) && this.grounded && !this.attacking) {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
-      assets.sounds.player.jump.play();
+      this.emit(Events.JUMP);
     }
 
     // check recentHit so player can't cancel bounce when they are hurt
@@ -140,14 +159,12 @@ extend(PhysicsObject, Player, {
         && this.velocity.y >= 0) {
       this.gliding = true;
       this.gravityScale = glideGravityScale;
+      this.emit(Events.GLIDE);
     }
     // Cancel glide on keypress
-    else if (this.gliding && keyboard.isKeyPressed(JUMP)) {
+    else if (this.gliding && (keyboard.isKeyPressed(JUMP) || this.grounded)) {
       this.gliding = false;
-    }
-    
-    if (this.grounded) {
-      this.gliding = false;
+      this.emit(Events.UNGLIDE);
     }
 
     // Movement
@@ -183,8 +200,8 @@ extend(PhysicsObject, Player, {
     }
 
     if (this.grounded && keyboard.isKeyPressed(ATTACK) && !this.attacking) {
+      this.emit(Events.ATTACK);
       this.attacking = true;
-      assets.sounds.player.attack.play();
       this.attackBox.setCenter(this.getCenterX(), this.getCenterY());
       this.attackBox.x += ATK_OFFSET_X * this.container.scale.x;
       this.attackBox.y += ATK_OFFSET_Y;
@@ -194,7 +211,7 @@ extend(PhysicsObject, Player, {
           game.world.removeChild(enemy.container);
           game.enemies.splice(iEnemy, 1);
           iEnemy--;
-          assets.sounds.player.attackHit.play();
+          this.emit(Events.ATTACK_HIT);
         }
       }
     }

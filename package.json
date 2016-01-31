@@ -20,6 +20,7 @@
   "dependencies": {
     "browserify": "13.0.0",
     "ejs": "2.3.4",
+    "eventemitter3": "1.1.1",
     "express": "4.13.4",
     "howler": "1.1.29",
     "javascript-natural-sort": "0.7.1",

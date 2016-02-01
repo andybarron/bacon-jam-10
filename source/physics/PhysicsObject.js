@@ -34,11 +34,6 @@ var Align = PhysicsObject.Align = {
 PhysicsObject.Align.CENTER = 
   PhysicsObject.Align.MIDDLE_CENTER;
 
-var Events = PhysicsObject.Events = {
-  GROUNDED: 'grounded',
-  UNGROUNDED: 'ungrounded',
-}
-
 extend(EventEmitter, PhysicsObject, {
   getBounds: function getBounds() {
     return this._bounds;
@@ -115,7 +110,7 @@ extend(EventEmitter, PhysicsObject, {
       this.updateWorldCollisions(tiles);
     }
     if (this.grounded != wasGrounded) {
-      this.emit(this.grounded ? Events.GROUNDED : Events.UNGROUNDED);
+      this.emit(this.grounded ? 'grounded' : 'ungrounded');
     }
     this.updateContainer();
   },

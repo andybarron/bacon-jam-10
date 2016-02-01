@@ -19,27 +19,20 @@ var ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
 var ATK_W = constants.PLAYER_ATTACK_WIDTH;
 var ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
-var Events = {
-  JUMP: 'jump',
-  GLIDE: 'glide',
-  UNGLIDE: 'unglide',
-  ATTACK: 'attack',
-  ATTACK_HIT: 'attackHit',
-}
 
 function Player(x, y) {
   PhysicsObject.call(this, x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
   this.faceVelocityX = false;
-  this.on(PhysicsObject.Events.GROUNDED, function() {
+  this.on('grounded', function() {
     assets.sounds.player.land.play();
   });
-  this.on(Events.JUMP, function() {
+  this.on('jump', function() {
     assets.sounds.player.jump.play();
   });
-  this.on(Events.ATTACK, function() {
+  this.on('attack', function() {
     assets.sounds.player.attack.play();
   });
-  this.on(Events.ATTACK_HIT, function() {
+  this.on('attackHit', function() {
     assets.sounds.player.attackHit.play();
   });
 
@@ -146,7 +139,7 @@ extend(PhysicsObject, Player, {
     if (keyboard.isKeyPressed(JUMP) && this.grounded && !this.attacking) {
       this.grounded = false;
       this.velocity.y = -constants.PLAYER_JUMP_SPEED;
-      this.emit(Events.JUMP);
+      this.emit('jump');
     }
 
     // check recentHit so player can't cancel bounce when they are hurt
@@ -159,12 +152,12 @@ extend(PhysicsObject, Player, {
         && this.velocity.y >= 0) {
       this.gliding = true;
       this.gravityScale = glideGravityScale;
-      this.emit(Events.GLIDE);
+      this.emit('glide');
     }
     // Cancel glide on keypress
     else if (this.gliding && (keyboard.isKeyPressed(JUMP) || this.grounded)) {
       this.gliding = false;
-      this.emit(Events.UNGLIDE);
+      this.emit('unglide');
     }
 
     // Movement
@@ -200,7 +193,7 @@ extend(PhysicsObject, Player, {
     }
 
     if (this.grounded && keyboard.isKeyPressed(ATTACK) && !this.attacking) {
-      this.emit(Events.ATTACK);
+      this.emit('attack');
       this.attacking = true;
       this.attackBox.setCenter(this.getCenterX(), this.getCenterY());
       this.attackBox.x += ATK_OFFSET_X * this.container.scale.x;
@@ -211,7 +204,7 @@ extend(PhysicsObject, Player, {
           game.world.removeChild(enemy.container);
           game.enemies.splice(iEnemy, 1);
           iEnemy--;
-          this.emit(Events.ATTACK_HIT);
+          this.emit('attackHit');
         }
       }
     }

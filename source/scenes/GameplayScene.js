@@ -207,7 +207,7 @@ function GameplayScene(level) {
 
 extend(BaseScene, GameplayScene, {
   initialize: function initialize() {
-    assets.playMusic('gameplaySong');
+    assets.playMusic('music/gameplay/action');
   },
   dispose: function dispose() {
     if (!this.restarted) {

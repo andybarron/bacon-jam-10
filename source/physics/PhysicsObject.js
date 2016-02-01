@@ -1,7 +1,7 @@
 var pixi = require('pixi.js');
 var constants = require('../constants');
 var collision = require('./collision');
-var EventEmitter = require('eventemitter3');
+var BaseObject = require('../objects/BaseObject');
 var extend = require('../extend');
 
 var TILE = constants.TILE_SIZE;
@@ -9,6 +9,7 @@ var tempRect = new pixi.Rectangle();
 var tempData = {};
 
 function PhysicsObject(x, y, w, h, spriteWidthPadding) {
+  BaseObject.call(this);
   this.velocity = new pixi.Point(0, 0);
   this.grounded = true;
   this.gravityScale = 1.0;
@@ -34,7 +35,7 @@ var Align = PhysicsObject.Align = {
 PhysicsObject.Align.CENTER = 
   PhysicsObject.Align.MIDDLE_CENTER;
 
-extend(EventEmitter, PhysicsObject, {
+extend(BaseObject, PhysicsObject, {
   getBounds: function getBounds() {
     return this._bounds;
   },

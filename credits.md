@@ -18,3 +18,5 @@
 * Alex Tyler
 * http://opengameart.org/content/ui-and-item-sounds-sample-1
 * http://opengameart.org/content/3-melee-sounds
+* http://opengameart.org/content/jump-landing-sound
+* http://opengameart.org/content/punch

@@ -23,18 +23,11 @@ var ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 function Player(x, y) {
   PhysicsObject.call(this, x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
   this.faceVelocityX = false;
-  this.on('grounded', function() {
-    assets.sounds.player.land.play();
-  });
-  this.on('jump', function() {
-    assets.sounds.player.jump.play();
-  });
-  this.on('attack', function() {
-    assets.sounds.player.attack.play();
-  });
-  this.on('attackHit', function() {
-    assets.sounds.player.attackHit.play();
-  });
+  this.linkEventToSound('grounded', 'player/land');
+  this.linkEventToSound('jump', 'player/jump');
+  this.linkEventToSound('glide', 'player/glide');
+  this.linkEventToSound('attack', 'player/attack');
+  this.linkEventToSound('attack-hit', 'player/attack-hit');
 
   // Sprite Setup
   this.idleSprite = assets.movieClip('player/idle/');
@@ -204,7 +197,7 @@ extend(PhysicsObject, Player, {
           game.world.removeChild(enemy.container);
           game.enemies.splice(iEnemy, 1);
           iEnemy--;
-          this.emit('attackHit');
+          this.emit('attack-hit');
         }
       }
     }

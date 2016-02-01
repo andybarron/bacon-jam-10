@@ -2,38 +2,37 @@ var pixi = require('pixi.js');
 var debug = require('./debug');
 var howler = require("howler");
 var naturalSort = require('javascript-natural-sort');
-
+var qajax = require('qajax');
 
 // TODO support array of paths for different codecs
-var nHowls = 0;
-function createHowl(path, options) {
-  debug('Loading sound: ' + path);
+var nHowls = -1;
+function createHowl(cfg) {
+  var path = cfg.urls.join(', ');
+  debug('Loading audio: ' + path);
   nHowls++;
-  var cfg = {};
-  options = options || {};
-  for (var prop in (options)) {
-    cfg[prop] = options[prop];
-  }
-  cfg.urls = ['/static/audio/' + path];
   cfg.onload = function() {
     nHowls--;
-    debug('Completed sound: ' + path);
+    debug('Completed audio: ' + path);
   }
   return new howler.Howl(cfg);
 }
 
 var sounds = {};
-var music = {};
 
 function beginLoadingSounds() {
-  sounds.player = {
-    jump: createHowl('jump/jump.wav', {volume: 0.33}),
-    land: createHowl('jump/landing.wav', {volume: 0.75}),
-    attack: createHowl('towelattack/towelhit.wav'),
-    attackHit: createHowl('hit/hit_hurt5.wav', {volume: 1.5}),
-  };
-
-  music.gameplaySong = createHowl('towel_game.mp3', {loop: true, volume: 0.5});
+  debug('Fetching sound preload list');
+  qajax.getJSON('/sounds.json')
+    .then(function(data) {
+      debug('Got sound preload list, loading sounds');
+      nHowls = 0;
+      for (var soundKey in data) {
+        var info = data[soundKey];
+        sounds[soundKey] = createHowl({urls: info.urls});
+      }
+    })
+    .catch(function(e) {
+      debug.error('Failed to get sound preload list!', e);
+    });
 }
 
 var currentSong = null;
@@ -45,6 +44,7 @@ function onLoadResource(loader, resource) {
   debug('Loading resource: ' + resource.url);
 }
 
+var pixiLoaded = false;
 module.exports = {
   load: function load(callback) {
     debug('Begin assets.load()');
@@ -58,13 +58,14 @@ module.exports = {
       debug('Completed resource: ' + resource.url);
       next();
     });
-    var soundInterval = setInterval(function() {
-      if (nHowls == 0) {
-        clearInterval(soundInterval);
-        pixi.loader.load(function() {
-          debug('Completed assets.load(), firing callback');
-          callback();
-        });
+    pixi.loader.load(function() {
+      pixiLoaded = true;
+    });
+    var loadInterval = setInterval(function() {
+      if (pixiLoaded && nHowls == 0) {
+        debug('Completed assets.load(), firing callback');
+        clearInterval(loadInterval);
+        callback();
       }
     }, 50);
   },
@@ -91,16 +92,18 @@ module.exports = {
     }
     return clip;
   },
-  sounds: sounds,
+  playSound: function playSound(soundKey) {
+    sounds[soundKey].play();
+  },
   playMusic: function playMusic(songName) {
     if (songName != currentSongName) {
       this.stopMusic();
       currentSongName = songName;
-      currentSong = music[songName];
-      if (currentSong) {
-        // TODO error on non-existent song
-        currentSong.play();
-      }
+      currentSong = sounds[songName];
+      // TODO error on non-existent song
+      currentSong.loop(true);
+      currentSong.volume(0.1);
+      currentSong.play();
     }
   },
   stopMusic: function stopMusic() {

@@ -1,18 +1,18 @@
 // add ES6 polyfills
-require('babel-polyfill');
+import 'babel-polyfill';
 
-// remove global export from pixi
-require('pixi.js');
+// remove global exports from modules
+import 'pixi.js';
+import 'howler';
 delete window.PIXI;
-
-require('howler');
 delete window.Howler;
 delete window.Howl;
 
 // Load extension methods
-require('./extensions');
+import './extensions';
 
 // then actually do everything else
-let StartScene = require('./scenes/MainMenuScene');
+import StartScene from './scenes/MainMenuScene';
 import gameLoop from './game-loop';
-require('./assets').load(() => gameLoop(new StartScene()));
+import {load} from './assets';
+load(() => gameLoop(new StartScene()));

@@ -1,4 +1,5 @@
-let pixi = require('pixi.js');
+import {animationSpeedFromFps} from '../game';
+import * as pixi from 'pixi.js';
 let PhysicsObject = require('../physics/PhysicsObject');
 let keyboard = require('../keyboard');
 let constants = require('../constants');
@@ -35,7 +36,7 @@ module.exports = class Player extends PhysicsObject {
 
     this.runSprite = assets.movieClip('player/run/');
     this.runSprite.loop = true;
-    this.defaultRunAnimSpeed = pixi.animationSpeedFromFps(8);
+    this.defaultRunAnimSpeed = animationSpeedFromFps(8);
     this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
 
     this.attackSprite = assets.movieClip('player/attack/');

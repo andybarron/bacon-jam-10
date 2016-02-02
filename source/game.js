@@ -1,4 +1,4 @@
-import {Point, Rectangle} from 'pixi.js';
+import {Point, Rectangle, ticker} from 'pixi.js';
 
 export let delta = 0.0;
 export let scale = 2;
@@ -44,4 +44,10 @@ export function worldRectFromScreen(r) {
   box.width /= scale;
   box.height /= scale;
   return box;
+}
+export function animationSpeedFromFps(fps) {
+  return fps / ticker.shared.FPS;
+}
+export function fpsFromAnimationSpeed(speed) {
+  return speed * ticker.shared.FPS;
 }

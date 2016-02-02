@@ -1,9 +1,9 @@
 import {Point, autoDetectRenderer, ticker} from 'pixi.js';
-import debug from './debug';
+import {update as updateKeyboard} from './keyboard';
+import * as debug from './debug';
 import * as game from './game';
 import * as assets from './assets';
 import * as constants from './constants';
-import keyboard from './keyboard';
 
 let render = null;
 let scene = null;
@@ -34,19 +34,19 @@ function setScene(nextScene) {
 }
 
 export default function gameLoop(startScene) {
-  debug('Initializing renderer');
+  debug.print('Initializing renderer');
   render = new autoDetectRenderer(100, 100, {
     transparent: false,
   });
-  debug("Adding view to DOM");
+  debug.print("Adding view to DOM");
   let wrapper = document.querySelector('#display-wrapper');
   wrapper.innerHTML = '';
   wrapper.appendChild(render.view);
-  debug("Setting up resize listener");
+  debug.print("Setting up resize listener");
   window.addEventListener('resize', resizeRenderer);
-  debug("Sizing renderer");
+  debug.print("Sizing renderer");
   resizeRenderer();
-  debug("Initializing game loop");
+  debug.print("Initializing game loop");
   let lastTime = performance.now();
   let lastScale = game.scale;
   setScene(startScene);
@@ -67,11 +67,11 @@ export default function gameLoop(startScene) {
       if (nextScene && nextScene != scene) {
         setScene(nextScene);
       }
-      keyboard.update();
+      updateKeyboard();
       // TODO use polyfill
       window.requestAnimationFrame(animate);
     }
   }
   animate();
-  debug('Game loop setup complete!');
+  debug.print('Game loop setup complete!');
 }

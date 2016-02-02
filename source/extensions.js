@@ -1,24 +1,17 @@
-let pixi = require('pixi.js');
+import {animationSpeedFromFps, fpsFromAnimationSpeed} from './game';
+import * as pixi from 'pixi.js';
+let MovieClip = pixi.extras.MovieClip;
 
-Object.assign(pixi, {
-  animationSpeedFromFps(fps) {
-    return fps / pixi.ticker.shared.FPS;
-  },
-  fpsFromAnimationSpeed(speed) {
-    return speed * pixi.ticker.shared.FPS;
-  },
-});
-
-Object.defineProperty(pixi.extras.MovieClip.prototype, 'fps', {
+Object.defineProperty(MovieClip.prototype, 'fps', {
   get: function() {
-    return pixi.fpsFromAnimationSpeed(this.animationSpeed);
+    return fpsFromAnimationSpeed(this.animationSpeed);
   },
   set: function(targetFps) {
-    this.animationSpeed = pixi.animationSpeedFromFps(targetFps);
+    this.animationSpeed = animationSpeedFromFps(targetFps);
   },
 });
 
-Object.defineProperty(pixi.extras.MovieClip.prototype, 'duration', {
+Object.defineProperty(MovieClip.prototype, 'duration', {
   get: function() {
     return this.totalFrames / this.fps;
   },

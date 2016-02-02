@@ -1,3 +1,5 @@
+import * as debug from '../debug';
+
 let pixi = require('pixi.js');
 let assets = require('../assets');
 let constants = require('../constants');
@@ -6,7 +8,6 @@ let keyboard = require('../keyboard');
 let GameplayScene = require('./GameplayScene');
 let BaseScene = require('./BaseScene');
 let levels = require('../levels');
-let debug = require('../debug');
 
 module.exports = class MainMenuScene extends BaseScene {
   constructor() {

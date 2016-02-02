@@ -1,3 +1,4 @@
+import * as debug from '../debug';
 import FanCurrent from '../objects/FanCurrent';
 
 let pixi = require('pixi.js');
@@ -10,7 +11,6 @@ let constants = require('../constants');
 let collision = require('../physics/collision');
 let StageClearScene = require('./StageClearScene');
 let game = require('../game');
-let debug = require('../debug');
 let levels = require('../levels');
 let TileGrid = require('../physics/TileGrid');
 let TILE = constants.TILE_SIZE;

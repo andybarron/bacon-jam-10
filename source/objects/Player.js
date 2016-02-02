@@ -31,7 +31,7 @@ module.exports = class Player extends PhysicsObject {
     // Sprite Setup
     this.idleSprite = assets.movieClip('player/idle/');
     this.idleSprite.loop = true;
-    this.idleSprite.setFps(3);
+    this.idleSprite.fps = 3;
 
     this.runSprite = assets.movieClip('player/run/');
     this.runSprite.loop = true;
@@ -40,19 +40,19 @@ module.exports = class Player extends PhysicsObject {
 
     this.attackSprite = assets.movieClip('player/attack/');
     this.attackSprite.loop = false;
-    this.attackSprite.setFps(15);
+    this.attackSprite.fps = 15;
 
     this.jumpSprite = assets.movieClip('player/jump/');
     this.jumpSprite.loop = true;
-    this.jumpSprite.setFps(4);
+    this.jumpSprite.fps = 4;
 
     this.fallSprite = assets.movieClip('player/fall/');
     this.fallSprite.loop = true;
-    this.fallSprite.setFps(8);
+    this.fallSprite.fps = 8;
 
     this.glideSprite = assets.movieClip('player/float/');
     this.glideSprite.loop = true;
-    this.glideSprite.setFps(12);
+    this.glideSprite.fps = 12;
 
     this.setSprite(this.idleSprite, PhysicsObject.Align.BOTTOM_LEFT);
     this.hitPoints = constants.PLAYER_MAX_HEALTH;
@@ -60,7 +60,7 @@ module.exports = class Player extends PhysicsObject {
     this.hitTimeout = 0;
     this.gliding = false;
     this.attacking = false;
-    this.attackDuration = this.attackSprite.getDuration() + 1/60;
+    this.attackDuration = this.attackSprite.duration + 1/60;
     this.attackTimer = 0;
     this.attackBox = new pixi.Rectangle(0, 0, ATK_W, ATK_H);
   }

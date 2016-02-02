@@ -20,7 +20,7 @@ module.exports = class CleanBot extends PhysicsObject {
     this.deathSprite = assets.movieClip('cleanbot/die/', {
       loop: false,
     })
-    this.deathSprite.setFps(12);
+    this.deathSprite.fps = 12;
     sprite.play();
     this.setSprite(sprite, PhysicsObject.Align.BOTTOM_LEFT);
   }

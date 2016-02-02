@@ -1,3 +1,6 @@
+// add ES6 polyfills
+require('babel-polyfill');
+
 // remove global export from pixi
 require('pixi.js');
 delete window.PIXI;

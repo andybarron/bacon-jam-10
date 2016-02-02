@@ -1,5 +1,5 @@
 let pixi = require('pixi.js');
-let constants = require('../constants');
+import * as constants from '../constants';
 
 export function getRectangleOverlap(a, b) {
   let l = Math.max(a.x, b.x); // rightmost left

@@ -1,6 +1,6 @@
 let pixi = require('pixi.js');
 let collision = require('../physics/collision');
-let constants = require('../constants');
+import * as constants from '../constants';
 let assets = require('../assets');
 import ColliderObject from './ColliderObject';
 import {delta} from '../game';

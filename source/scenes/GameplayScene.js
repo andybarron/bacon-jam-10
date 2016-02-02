@@ -7,7 +7,7 @@ let objects = require('../objects');
 let keyboard = require("../keyboard");
 let howler = require("howler");
 let assets = require('../assets');
-let constants = require('../constants');
+import * as constants from '../constants';
 let collision = require('../physics/collision');
 let StageClearScene = require('./StageClearScene');
 let game = require('../game');

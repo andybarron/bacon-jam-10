@@ -1,5 +1,5 @@
 let pixi = require('pixi.js');
-let constants = require('../constants');
+import * as constants from '../constants';
 let collision = require('./collision');
 let BaseObject = require('../objects/BaseObject');
 

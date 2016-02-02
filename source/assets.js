@@ -1,9 +1,9 @@
 import * as debug from './debug';
 
-let pixi = require('pixi.js');
-let howler = require("howler");
-let naturalSort = require('javascript-natural-sort');
-let qajax = require('qajax');
+import * as pixi from 'pixi.js';
+import * as howler from "howler";
+import * as naturalSort from 'javascript-natural-sort';
+import * as qajax from 'qajax';
 
 // TODO support array of paths for different codecs
 let nHowls = -1;
@@ -46,72 +46,72 @@ function onLoadResource(loader, resource) {
 }
 
 let pixiLoaded = false;
-module.exports = {
-  load: function load(callback) {
-    debug.print('Loading assets...');
-    beginLoadingSounds();
-    pixi.loader.add(['/static/atlas.json']);
-    pixi.loader.on('progress', onLoadResource);
-    pixi.loader.after(function(resource, next) {
-      if (resource && resource.texture && resource.texture.baseTexture) {
-        resource.texture.baseTexture.scaleMode = pixi.SCALE_MODES.NEAREST;
-      }
-      debug.print('Completed resource: ' + resource.url);
-      next();
-    });
-    pixi.loader.load(function() {
-      pixiLoaded = true;
-    });
-    let loadInterval = setInterval(function() {
-      if (pixiLoaded && nHowls == 0) {
-        debug.print('Assets loaded!');
-        clearInterval(loadInterval);
-        callback();
-      }
-    }, 50);
-  },
-  texture: function texture(name) {
-    return pixi.Texture.fromFrame(name);
-  },
-  sprite: function sprite(name) {
-    return pixi.Sprite.fromFrame(name);
-  },
-  movieClip: function movieClip(clipName, options) {
-    let names = [];
-    options = options || {};
-    for (let texName in pixi.utils.TextureCache) {
-      // check if texName starts with clipName
-      if (texName.lastIndexOf(clipName, 0) == 0) {
-        names.push(texName);
-      }
+
+
+export function load(callback) {
+  debug.print('Loading assets...');
+  beginLoadingSounds();
+  pixi.loader.add(['/static/atlas.json']);
+  pixi.loader.on('progress', onLoadResource);
+  pixi.loader.after(function(resource, next) {
+    if (resource && resource.texture && resource.texture.baseTexture) {
+      resource.texture.baseTexture.scaleMode = pixi.SCALE_MODES.NEAREST;
     }
-    names.sort(naturalSort); // avoid numbering issues!
-    let textures = names.map(this.texture, this);
-    let clip = new pixi.extras.MovieClip(textures);
-    for (let prop in options) {
-      clip[prop] = options[prop];
+    debug.print('Completed resource: ' + resource.url);
+    next();
+  });
+  pixi.loader.load(function() {
+    pixiLoaded = true;
+  });
+  let loadInterval = setInterval(function() {
+    if (pixiLoaded && nHowls == 0) {
+      debug.print('Assets loaded!');
+      clearInterval(loadInterval);
+      callback();
     }
-    return clip;
-  },
-  playSound: function playSound(soundKey) {
-    sounds[soundKey].play();
-  },
-  playMusic: function playMusic(songName) {
-    if (songName != currentSongName) {
-      this.stopMusic();
-      currentSongName = songName;
-      currentSong = sounds[songName];
-      // TODO error on non-existent song
-      currentSong.loop(true);
-      currentSong.volume(0.1);
-      currentSong.play();
+  }, 50);
+}
+export function texture(name) {
+  return pixi.Texture.fromFrame(name);
+}
+export function sprite(name) {
+  return pixi.Sprite.fromFrame(name);
+}
+export function movieClip(clipName, options) {
+  let names = [];
+  options = options || {};
+  for (let texName in pixi.utils.TextureCache) {
+    // check if texName starts with clipName
+    if (texName.lastIndexOf(clipName, 0) == 0) {
+      names.push(texName);
     }
-  },
-  stopMusic: function stopMusic() {
-    if (currentSong) {
-      currentSong.stop();
-      currentSong = null;
-      currentSongName = null;
-    }
+  }
+  names.sort(naturalSort); // avoid numbering issues!
+  let textures = names.map(texture);
+  let clip = new pixi.extras.MovieClip(textures);
+  for (let prop in options) {
+    clip[prop] = options[prop];
+  }
+  return clip;
+}
+export function playSound(soundKey) {
+  sounds[soundKey].play();
+}
+export function playMusic(songName) {
+  if (songName != currentSongName) {
+    stopMusic();
+    currentSongName = songName;
+    currentSong = sounds[songName];
+    // TODO error on non-existent song
+    currentSong.loop(true);
+    currentSong.volume(0.1);
+    currentSong.play();
+  }
+}
+export function stopMusic() {
+  if (currentSong) {
+    currentSong.stop();
+    currentSong = null;
+    currentSongName = null;
   }
 }

@@ -2,10 +2,10 @@ import {animationSpeedFromFps} from '../game';
 import * as pixi from 'pixi.js';
 let PhysicsObject = require('../physics/PhysicsObject');
 let keyboard = require('../keyboard');
-let constants = require('../constants');
+import * as constants from '../constants';
 let assets = require('../assets');
 let collision = require('../physics/collision');
-let colors = require('../colors');
+import * as colors from '../colors';
 
 let glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
 

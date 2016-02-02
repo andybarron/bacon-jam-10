@@ -1,6 +1,6 @@
 let pixi = require('pixi.js');
 let assets = require('../assets');
-let constants = require('../constants');
+import * as constants from '../constants';
 let game = require('../game');
 let keyboard = require('../keyboard');
 let BaseScene = require('./BaseScene');

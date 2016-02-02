@@ -1,7 +1,7 @@
 let pixi = require('pixi.js');
 let PhysicsObject = require('../physics/PhysicsObject');
 let keyboard = require('../keyboard');
-let constants = require('../constants');
+import * as constants from '../constants';
 let assets = require('../assets');
 
 let WIDTH = constants.TILE_SIZE * .75;

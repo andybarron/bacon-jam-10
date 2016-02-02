@@ -20,5 +20,6 @@ export default class ColliderObject extends BaseObject {
       this.emit('collide-end', target);
       this.touching.delete(target);
     }
+    return overlap;
   }
 }

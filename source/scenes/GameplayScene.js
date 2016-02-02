@@ -1,3 +1,5 @@
+import FanCurrent from '../objects/FanCurrent';
+
 let pixi = require('pixi.js');
 let BaseScene = require('./BaseScene');
 let objects = require('../objects');
@@ -105,7 +107,6 @@ module.exports = class GameplayScene extends BaseScene {
         } else if (char == '#') { // Enemy
           self.enemySpawns.push(new pixi.Point(cx, cy));
         } else if (char == '^') { // Fan current
-          let FanCurrent = require('../objects/FanCurrent');
           let fc = new FanCurrent(new pixi.Rectangle(x, y, TILE, TILE));
           self.fanCurrents.push(fc);
           self.world.addChild(fc.sprite);
@@ -327,7 +328,7 @@ module.exports = class GameplayScene extends BaseScene {
 
     // update fan currents
     self.fanCurrents.forEach(function(fc) {
-      fc.update(delta, self.player);
+      fc.testCollision(self.player, self.player.getBounds());
     });
 
 

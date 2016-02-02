@@ -1,17 +1,17 @@
-var pixi = require('pixi.js');
-var BaseScene = require('./BaseScene');
-var objects = require('../objects');
-var keyboard = require("../keyboard");
-var howler = require("howler");
-var assets = require('../assets');
-var constants = require('../constants');
-var collision = require('../physics/collision');
-var StageClearScene = require('./StageClearScene');
-var game = require('../game');
-var debug = require('../debug');
-var levels = require('../levels');
-var TileGrid = require('../physics/TileGrid');
-var TILE = constants.TILE_SIZE;
+let pixi = require('pixi.js');
+let BaseScene = require('./BaseScene');
+let objects = require('../objects');
+let keyboard = require("../keyboard");
+let howler = require("howler");
+let assets = require('../assets');
+let constants = require('../constants');
+let collision = require('../physics/collision');
+let StageClearScene = require('./StageClearScene');
+let game = require('../game');
+let debug = require('../debug');
+let levels = require('../levels');
+let TileGrid = require('../physics/TileGrid');
+let TILE = constants.TILE_SIZE;
 
 module.exports = class GameplayScene extends BaseScene {
 
@@ -19,7 +19,7 @@ module.exports = class GameplayScene extends BaseScene {
   constructor(level) {
     super()
     if (!level) debug.error("No level data!");
-    var self = this; // TODO remove binding, use arrow functions!!!
+    let self = this; // TODO remove binding, use arrow functions!!!
     // member variables
     self.level = level;
     self.backgroundColor = 0x0;
@@ -76,8 +76,8 @@ module.exports = class GameplayScene extends BaseScene {
 
     // Load level data
     // Get tile dimensions
-    var tilesDown = level.data.length;
-    var tilesAcross = Math.max.apply(Math, level.data.map(function(row) {
+    let tilesDown = level.data.length;
+    let tilesAcross = Math.max.apply(Math, level.data.map(function(row) {
       return row.length;
     }));
     self.deathY = (tilesDown + 10) * TILE;
@@ -85,12 +85,12 @@ module.exports = class GameplayScene extends BaseScene {
     self.tileGrid = new TileGrid(tilesAcross, tilesDown, false);
     // Set up map
     level.data.forEach(function(row, iRow) {
-      var y = iRow * TILE;
-      for (var iCol = 0; iCol < row.length; iCol++) {
-        var x = iCol * TILE;
-        var cx = x + TILE/2;
-        var cy = y + TILE/2;
-        var char = row.charAt(iCol);
+      let y = iRow * TILE;
+      for (let iCol = 0; iCol < row.length; iCol++) {
+        let x = iCol * TILE;
+        let cx = x + TILE/2;
+        let cy = y + TILE/2;
+        let char = row.charAt(iCol);
         // TODO refactor tile processing into another method
         if (char == ' ') {
           // do nothing
@@ -102,8 +102,8 @@ module.exports = class GameplayScene extends BaseScene {
         } else if (char == '#') { // Enemy
           self.enemySpawns.push(new pixi.Point(cx, cy));
         } else if (char == '^') { // Fan current
-          var FanCurrent = require('../objects/FanCurrent');
-          var fc = new FanCurrent(new pixi.Rectangle(x, y, TILE, TILE));
+          let FanCurrent = require('../objects/FanCurrent');
+          let fc = new FanCurrent(new pixi.Rectangle(x, y, TILE, TILE));
           self.fanCurrents.push(fc);
           self.world.addChild(fc.sprite);
         } else if (char == '!') { // Exit
@@ -117,20 +117,20 @@ module.exports = class GameplayScene extends BaseScene {
             TILE,
             TILE);
         } else {
-          var object = level.objects[char];
+          let object = level.objects[char];
           if (object) {
-            var data = object.split('|');
-            var type = data[0];
-            var contents = data[1];
+            let data = object.split('|');
+            let type = data[0];
+            let contents = data[1];
             if (type == 'Console') {
-              var Console = require('../objects/Console');
-              var bounds = new pixi.Rectangle(x, y, TILE, TILE);
-              var c = new Console(bounds, contents);
+              let Console = require('../objects/Console');
+              let bounds = new pixi.Rectangle(x, y, TILE, TILE);
+              let c = new Console(bounds, contents);
               self.consoles.push(c);
               self.world.addChild(c.sprite);
             }
           } else {
-            var tile = assets.sprite("tiles/block"); // TODO randomize? different?
+            let tile = assets.sprite("tiles/block"); // TODO randomize? different?
             // self.platforms.push(new pixi.Rectangle(x, y, TILE, TILE));
             self.tileGrid.set(iCol, iRow, true);
             self.world.addChild(tile);
@@ -144,7 +144,7 @@ module.exports = class GameplayScene extends BaseScene {
     });
 
     self.enemySpawns.forEach(function(center) {
-      var enemy = new objects.Alien(0, 0, self.player);
+      let enemy = new objects.Alien(0, 0, self.player);
       enemy.setCenter(center.x, center.y);
       self.enemies.push(enemy);
       self.world.addChild(enemy.container);
@@ -159,8 +159,8 @@ module.exports = class GameplayScene extends BaseScene {
     self.debugGfx = new pixi.Graphics();
     self.world.addChild(self.debugGfx);
 
-    for (var i = 0; i < constants.PLAYER_MAX_HEALTH; i++) {
-      var heart = assets.sprite('ui/heart/full');
+    for (let i = 0; i < constants.PLAYER_MAX_HEALTH; i++) {
+      let heart = assets.sprite('ui/heart/full');
       heart.x = 5 + i * heart.width + (i * 1);
       heart.y = 5;
       self.hearts.push(heart);
@@ -217,7 +217,7 @@ module.exports = class GameplayScene extends BaseScene {
   }
   resize(w, h) {
     this.helpText.style.wordWrapWidth = w;
-    var fontSize = game.worldPixelsFromScreen(36);
+    let fontSize = game.worldPixelsFromScreen(36);
     this.helpText.style.font = fontSize.toString() + this.helpTextFontLabel;
     // Render at native res, regardless of game scale
     this.helpText.resolution = game.getScale();
@@ -241,7 +241,7 @@ module.exports = class GameplayScene extends BaseScene {
 
     this.bgSprite.texture = this.starClip.texture;
 
-    var MainMenuScene = require('./MainMenuScene');
+    let MainMenuScene = require('./MainMenuScene');
     if(this.died) {
       if (keyboard.isKeyPressed(keyboard.RETURN)) {
         this.restarted = true;
@@ -258,7 +258,7 @@ module.exports = class GameplayScene extends BaseScene {
         this.restarted = true;
         return new GameplayScene(this.level);
       } else if (keyboard.isKeyPressed(keyboard.Q)) {
-        var MainMenuScene = require('./MainMenuScene');
+        let MainMenuScene = require('./MainMenuScene');
         return new MainMenuScene();
       }
     };
@@ -280,7 +280,7 @@ module.exports = class GameplayScene extends BaseScene {
     if (this.player.grounded && collision.getRectangleOverlap(
         this.player.getBounds(),
         this.exitRect)) {
-      var nextScene = null;
+      let nextScene = null;
       if (this.nextLevel) {
         this.restarted = true;
         nextScene = new GameplayScene(this.nextLevel);
@@ -290,7 +290,7 @@ module.exports = class GameplayScene extends BaseScene {
       return nextScene;
     }
 
-    var self = this;
+    let self = this;
 
     self.bgSprite.tilePosition.x -= 10 * delta;
 
@@ -315,7 +315,7 @@ module.exports = class GameplayScene extends BaseScene {
 
     //update health
     while (self.hearts.length > self.player.hitPoints && self.hearts.length > 0) {
-      var last = self.hearts.pop();
+      let last = self.hearts.pop();
       last.texture = assets.texture('ui/heart/empty');
     }
 

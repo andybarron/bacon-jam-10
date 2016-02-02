@@ -1,7 +1,7 @@
-var pixi = require('pixi.js');
-var collision = require('../physics/collision');
-var constants = require('../constants');
-var assets = require('../assets');
+let pixi = require('pixi.js');
+let collision = require('../physics/collision');
+let constants = require('../constants');
+let assets = require('../assets');
 
 function FanCurrent(bounds) {
   this.bounds = bounds;
@@ -18,7 +18,7 @@ function FanCurrent(bounds) {
 FanCurrent.prototype = {
   update: function(delta, player) {
     if (player.grounded || !player.gliding) return;
-    var overlap = collision.getRectangleOverlap(player.getBounds(), this.bounds);
+    let overlap = collision.getRectangleOverlap(player.getBounds(), this.bounds);
     if (overlap && overlap.width >= player.getBounds().width/2) {
       if (player.velocity.y < -constants.FAN_MAX_SPEED) return;
       player.velocity.y -= constants.FAN_ACCELERATION * delta;

@@ -6,8 +6,8 @@ function TileGrid(width, height, empty) {
     empty = null;
   }
   this.empty = empty;
-  for (var tx = 0; tx < width; tx++) {
-    var column = [];
+  for (let tx = 0; tx < width; tx++) {
+    let column = [];
     column.length = height;
     column.fill(empty);
     this.grid.push(column);
@@ -24,7 +24,7 @@ TileGrid.prototype = {
         return this.empty;
       }
     } else if (arguments.length == 1) {
-      var point = x;
+      let point = x;
       return this.get(point.x, point.y);
     } else {
       throw new Error("TileGrid#get() requires 1 or 2 arguments, got " + arguments.length);
@@ -36,8 +36,8 @@ TileGrid.prototype = {
         this.grid[x][y] = value;
       } // TODO what to do if setting invalid coords?
     } else if (arguments.length == 2) {
-      var point = arguments[0];
-      var value = arguments[1];
+      let point = arguments[0];
+      let value = arguments[1];
       return this.set(value, point.x, point.y);
     } else {
       throw new Error("TileGrid#set() requires 2 or 3 arguments, got " + arguments.length);

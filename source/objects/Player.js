@@ -1,22 +1,22 @@
-var pixi = require('pixi.js');
-var PhysicsObject = require('../physics/PhysicsObject');
-var keyboard = require('../keyboard');
-var constants = require('../constants');
-var assets = require('../assets');
-var collision = require('../physics/collision');
-var colors = require('../colors');
+let pixi = require('pixi.js');
+let PhysicsObject = require('../physics/PhysicsObject');
+let keyboard = require('../keyboard');
+let constants = require('../constants');
+let assets = require('../assets');
+let collision = require('../physics/collision');
+let colors = require('../colors');
 
-var glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
+let glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
 
-var JUMP = keyboard.UP;
-var LEFT = keyboard.LEFT;
-var RIGHT = keyboard.RIGHT;
-var ATTACK = keyboard.Z;
+let JUMP = keyboard.UP;
+let LEFT = keyboard.LEFT;
+let RIGHT = keyboard.RIGHT;
+let ATTACK = keyboard.Z;
 
-var ATK_OFFSET_X = constants.PLAYER_ATTACK_OFFSET_X;
-var ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
-var ATK_W = constants.PLAYER_ATTACK_WIDTH;
-var ATK_H = constants.PLAYER_ATTACK_HEIGHT;
+let ATK_OFFSET_X = constants.PLAYER_ATTACK_OFFSET_X;
+let ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
+let ATK_W = constants.PLAYER_ATTACK_WIDTH;
+let ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
 module.exports = class Player extends PhysicsObject {
   constructor(x, y) {
@@ -77,8 +77,8 @@ module.exports = class Player extends PhysicsObject {
 
     if (this.recentHit) {
       // goes from 0 to 1 after hit
-      var alpha = this.hitTimeout / constants.PLAYER_HURT_SECONDS;
-      var tint = colors.lerp(0xFF0000, 0xFFFFFF, alpha);
+      let alpha = this.hitTimeout / constants.PLAYER_HURT_SECONDS;
+      let tint = colors.lerp(0xFF0000, 0xFFFFFF, alpha);
       // TODO just set container.tint if it ever gets implemented...
       this.container.children.forEach(function(child) {
         if ('tint' in child) {
@@ -94,11 +94,11 @@ module.exports = class Player extends PhysicsObject {
       });
     }
 
-    // var speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
+    // let speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
     // if (this.velocity.x != 0 && Math.sign(this.container.scale.x) != Math.sign(this.velocity.x)) {
     //   speedFactor *= -1;
     // }
-    var speedFactor = this.velocity.x/(constants.PLAYER_MAX_SPEED * Math.sign(this.container.scale.x));
+    let speedFactor = this.velocity.x/(constants.PLAYER_MAX_SPEED * Math.sign(this.container.scale.x));
     this.runSprite.animationSpeed = this.defaultRunAnimSpeed * speedFactor;
 
     if (this.gliding && this.velocity.y > 0) {
@@ -153,8 +153,8 @@ module.exports = class Player extends PhysicsObject {
     // Movement
     // TODO make this make more sense
     // TODO disable movement while attacking (and possibly velocity.x = 0 as well?)
-    var controlMult = this.grounded ? 1 : constants.PLAYER_AIR_CONTROL_MULT;
-    var accel = constants.PLAYER_ACCELERATION * controlMult;
+    let controlMult = this.grounded ? 1 : constants.PLAYER_AIR_CONTROL_MULT;
+    let accel = constants.PLAYER_ACCELERATION * controlMult;
     if (keyboard.isKeyDown(RIGHT) && !this.attacking) {
       // Moving right, increase right velocity up to max
       if(this.velocity.x <= constants.PLAYER_MAX_SPEED){
@@ -188,8 +188,8 @@ module.exports = class Player extends PhysicsObject {
       this.attackBox.setCenter(this.getCenterX(), this.getCenterY());
       this.attackBox.x += ATK_OFFSET_X * this.container.scale.x;
       this.attackBox.y += ATK_OFFSET_Y;
-      for (var iEnemy = 0; iEnemy < game.enemies.length; iEnemy++) {
-        var enemy = game.enemies[iEnemy];
+      for (let iEnemy = 0; iEnemy < game.enemies.length; iEnemy++) {
+        let enemy = game.enemies[iEnemy];
         if (collision.getRectangleOverlap(this.attackBox, enemy.getBounds())) {
           enemy.setMovieClip(enemy.deathSprite, enemy.currentAlign, true);
           game.enemies.splice(iEnemy, 1);
@@ -200,7 +200,7 @@ module.exports = class Player extends PhysicsObject {
     }
   }
   setState() {
-    var s = this.idleSprite;
+    let s = this.idleSprite;
     if (this.attacking) {
       s = this.attackSprite;
     } else if (this.grounded) {
@@ -217,7 +217,7 @@ module.exports = class Player extends PhysicsObject {
   }
   updateEnemyCollisions(enemies) {
     if(enemies){
-      var self = this;
+      let self = this;
       enemies.forEach(function(enemy){
         collision.resolveEnemyCollision(self, enemy);
       });

@@ -1,5 +1,5 @@
-var EventEmitter = require('eventemitter3');
-var assets = require('../assets');
+let EventEmitter = require('eventemitter3');
+let assets = require('../assets');
 
 module.exports = class BaseObject extends EventEmitter {
   constructor() {

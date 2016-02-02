@@ -1,4 +1,4 @@
-var pixi = require('pixi.js');
+let pixi = require('pixi.js');
 
 pixi.animationSpeedFromFps = function animationSpeedFromFps(fps) {
   return fps / pixi.ticker.shared.FPS;

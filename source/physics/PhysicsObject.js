@@ -1,13 +1,13 @@
-var pixi = require('pixi.js');
-var constants = require('../constants');
-var collision = require('./collision');
-var BaseObject = require('../objects/BaseObject');
+let pixi = require('pixi.js');
+let constants = require('../constants');
+let collision = require('./collision');
+let BaseObject = require('../objects/BaseObject');
 
-var TILE = constants.TILE_SIZE;
-var tempRect = new pixi.Rectangle();
-var tempData = {};
+let TILE = constants.TILE_SIZE;
+let tempRect = new pixi.Rectangle();
+let tempData = {};
 
-var Align = {
+let Align = {
   TOP_LEFT:      new pixi.Point(0.0, 0.0),
   TOP_CENTER:    new pixi.Point(0.5, 0.0),
   TOP_RIGHT:     new pixi.Point(1.0, 0.0),
@@ -102,7 +102,7 @@ module.exports = class PhysicsObject extends BaseObject {
       return new pixi.Point(this._bounds.x, this._bounds.y);
   }
   updatePhysics(delta, tiles) {
-    var wasGrounded = this.grounded;
+    let wasGrounded = this.grounded;
     this.grounded = false;
     this.velocity.y += constants.GRAVITY * this.gravityScale * delta;
     this.translate(this.velocity.x * delta, this.velocity.y * delta);
@@ -115,14 +115,14 @@ module.exports = class PhysicsObject extends BaseObject {
     this.updateContainer();
   }
   updateWorldCollisions(tileGrid) {
-    var bounds = this.getBounds();
-    var minX = Math.floor(bounds.x/TILE);
-    var maxX = Math.ceil((bounds.x + bounds.width)/TILE);
-    var minY = Math.floor(bounds.y/TILE);
-    var maxY = Math.ceil((bounds.y + bounds.height)/TILE);
-    for (var ix = minX; ix < maxX; ix++) {
-      for (var iy = minY; iy < maxY; iy++) {
-        var solid = tileGrid.get(ix, iy);
+    let bounds = this.getBounds();
+    let minX = Math.floor(bounds.x/TILE);
+    let maxX = Math.ceil((bounds.x + bounds.width)/TILE);
+    let minY = Math.floor(bounds.y/TILE);
+    let maxY = Math.ceil((bounds.y + bounds.height)/TILE);
+    for (let ix = minX; ix < maxX; ix++) {
+      for (let iy = minY; iy < maxY; iy++) {
+        let solid = tileGrid.get(ix, iy);
         // if (!solid) continue;
         tempRect.x = ix * TILE;
         tempRect.y = iy * TILE;

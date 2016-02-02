@@ -1,9 +1,9 @@
-var keysDown = {};
-var keysPressed = {};
-var keysReleased = {};
+let keysDown = {};
+let keysPressed = {};
+let keysReleased = {};
 
 window.addEventListener('keydown', function(e) {
-  var keyCode = e.keyCode;
+  let keyCode = e.keyCode;
 
   if (!(keysDown[keyCode])) {
     keysPressed[keyCode] = true;  
@@ -13,7 +13,7 @@ window.addEventListener('keydown', function(e) {
 });
 
 window.addEventListener('keyup', function(e) {
-  var keyCode = e.keyCode;
+  let keyCode = e.keyCode;
 
   keysDown[keyCode] = false;
   keysReleased[keyCode] = true;

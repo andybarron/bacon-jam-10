@@ -1,19 +1,19 @@
-var pixi = require('pixi.js');
-var PhysicsObject = require('../physics/PhysicsObject');
-var keyboard = require('../keyboard');
-var constants = require('../constants');
-var assets = require('../assets');
+let pixi = require('pixi.js');
+let PhysicsObject = require('../physics/PhysicsObject');
+let keyboard = require('../keyboard');
+let constants = require('../constants');
+let assets = require('../assets');
 
-var WIDTH = constants.TILE_SIZE * .75;
-var HEIGHT = constants.TILE_SIZE;
-var PADDING = constants.TILE_SIZE - WIDTH;
+let WIDTH = constants.TILE_SIZE * .75;
+let HEIGHT = constants.TILE_SIZE;
+let PADDING = constants.TILE_SIZE - WIDTH;
 
 module.exports = class CleanBot extends PhysicsObject {
   constructor(x, y, player) {
     super(x, y, WIDTH, HEIGHT, PADDING);
     this.player = player;
     this.speed = 75;
-    var sprite = assets.movieClip('cleanbot/idle/', {
+    let sprite = assets.movieClip('cleanbot/idle/', {
       animationSpeed: 0.1,
       loop: true,
     });
@@ -29,8 +29,8 @@ module.exports = class CleanBot extends PhysicsObject {
     this.chasePlayer(delta);
   }
   chasePlayer(delta) {
-    var position = this.getPosition();
-    var playerPosition = this.player.getPosition();
+    let position = this.getPosition();
+    let playerPosition = this.player.getPosition();
     if (playerPosition.x < position.x) {
       this.velocity.x = -this.speed;
     }

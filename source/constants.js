@@ -1,4 +1,4 @@
-var c = {
+let c = {
   MAX_DELTA: 1/30,
   PLAYER_MAX_HEALTH: 3,
   PLAYER_HURT_SECONDS: 1.5,

@@ -1,7 +1,7 @@
-var pixi = require('pixi.js');
-var assets = require('../assets');
-var collision = require('../physics/collision');
-var game = require('../game');
+let pixi = require('pixi.js');
+let assets = require('../assets');
+let collision = require('../physics/collision');
+let game = require('../game');
 
 function Console(bounds, text) {
   this.bounds = bounds;
@@ -17,7 +17,7 @@ function Console(bounds, text) {
 
 Console.prototype = {
   check: function(playerRect, textBox, bg) {
-    var touching = Boolean(collision.getRectangleOverlap(playerRect, this.bounds));
+    let touching = Boolean(collision.getRectangleOverlap(playerRect, this.bounds));
     if (touching) {
       if (!this.active) {
         this.active = true;
@@ -25,9 +25,9 @@ Console.prototype = {
       }
       if (bg) {
         textBox.updateTransform();
-        var box = textBox.getBounds();
+        let box = textBox.getBounds();
         box = game.worldRectFromScreen(box);
-        var padding = 20;
+        let padding = 20;
         box.x -= padding;
         box.y -= padding;
         box.width += padding*2;

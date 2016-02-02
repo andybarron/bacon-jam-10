@@ -1,21 +1,21 @@
-var pixi = require('pixi.js');
-var assets = require('../assets');
-var constants = require('../constants');
-var game = require('../game');
-var keyboard = require('../keyboard');
-var GameplayScene = require('./GameplayScene');
-var BaseScene = require('./BaseScene');
-var levels = require('../levels');
-var debug = require('../debug');
+let pixi = require('pixi.js');
+let assets = require('../assets');
+let constants = require('../constants');
+let game = require('../game');
+let keyboard = require('../keyboard');
+let GameplayScene = require('./GameplayScene');
+let BaseScene = require('./BaseScene');
+let levels = require('../levels');
+let debug = require('../debug');
 
 module.exports = class MainMenuScene extends BaseScene {
   constructor() {
     super();
-    var title = assets.sprite('text/title');
+    let title = assets.sprite('text/title');
     this.ui.addChild(title);
     title.anchor.x = 0.5;
     title.position = game.display.topCenter;
-    var play = new pixi.Text('PRESS [RETURN] TO ENGAGE SANITATION PROCEDURE', {
+    let play = new pixi.Text('PRESS [RETURN] TO ENGAGE SANITATION PROCEDURE', {
       font: '20px monospace',
       fill: 0xFF00CC,
     });
@@ -29,7 +29,7 @@ module.exports = class MainMenuScene extends BaseScene {
       return new GameplayScene(levels.first);
     }
     if (keyboard.isKeyPressed(keyboard.SHIFT)) {
-      var levelName = prompt("Jump to level?", 'tutorial1');
+      let levelName = prompt("Jump to level?", 'tutorial1');
       if (levelName in levels) {
         return new GameplayScene(levels[levelName]);
       } else {

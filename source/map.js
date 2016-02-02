@@ -1,10 +1,10 @@
-var pixi = require('pixi.js');
+let pixi = require('pixi.js');
 
-var currmap = [];
-var xpixlen = 50;
-var ypixlen = 50;
+let currmap = [];
+let xpixlen = 50;
+let ypixlen = 50;
 
-var map1 = [0,0,0,0,0,0,0,0,0,0,
+let map1 = [0,0,0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0,0,1,
             0,0,0,0,0,0,0,0,0,1,

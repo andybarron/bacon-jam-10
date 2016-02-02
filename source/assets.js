@@ -1,13 +1,13 @@
-var pixi = require('pixi.js');
-var debug = require('./debug');
-var howler = require("howler");
-var naturalSort = require('javascript-natural-sort');
-var qajax = require('qajax');
+let pixi = require('pixi.js');
+let debug = require('./debug');
+let howler = require("howler");
+let naturalSort = require('javascript-natural-sort');
+let qajax = require('qajax');
 
 // TODO support array of paths for different codecs
-var nHowls = -1;
+let nHowls = -1;
 function createHowl(cfg) {
-  var path = cfg.urls.join(', ');
+  let path = cfg.urls.join(', ');
   debug('Loading audio: ' + path);
   nHowls++;
   cfg.onload = function() {
@@ -17,7 +17,7 @@ function createHowl(cfg) {
   return new howler.Howl(cfg);
 }
 
-var sounds = {};
+let sounds = {};
 
 function beginLoadingSounds() {
   debug('Fetching sound preload list');
@@ -25,8 +25,8 @@ function beginLoadingSounds() {
     .then(function(data) {
       debug('Got sound preload list, loading sounds');
       nHowls = 0;
-      for (var soundKey in data) {
-        var info = data[soundKey];
+      for (let soundKey in data) {
+        let info = data[soundKey];
         sounds[soundKey] = createHowl({urls: info.urls});
       }
     })
@@ -35,8 +35,8 @@ function beginLoadingSounds() {
     });
 }
 
-var currentSong = null;
-var currentSongName = null;
+let currentSong = null;
+let currentSongName = null;
 
 
 function onLoadResource(loader, resource) {
@@ -44,7 +44,7 @@ function onLoadResource(loader, resource) {
   debug('Loading resource: ' + resource.url);
 }
 
-var pixiLoaded = false;
+let pixiLoaded = false;
 module.exports = {
   load: function load(callback) {
     debug('Begin assets.load()');
@@ -61,7 +61,7 @@ module.exports = {
     pixi.loader.load(function() {
       pixiLoaded = true;
     });
-    var loadInterval = setInterval(function() {
+    let loadInterval = setInterval(function() {
       if (pixiLoaded && nHowls == 0) {
         debug('Completed assets.load(), firing callback');
         clearInterval(loadInterval);
@@ -76,18 +76,18 @@ module.exports = {
     return pixi.Sprite.fromFrame(name);
   },
   movieClip: function movieClip(clipName, options) {
-    var names = [];
+    let names = [];
     options = options || {};
-    for (var texName in pixi.utils.TextureCache) {
+    for (let texName in pixi.utils.TextureCache) {
       // check if texName starts with clipName
       if (texName.lastIndexOf(clipName, 0) == 0) {
         names.push(texName);
       }
     }
     names.sort(naturalSort); // avoid numbering issues!
-    var textures = names.map(this.texture, this);
-    var clip = new pixi.extras.MovieClip(textures);
-    for (var prop in options) {
+    let textures = names.map(this.texture, this);
+    let clip = new pixi.extras.MovieClip(textures);
+    for (let prop in options) {
       clip[prop] = options[prop];
     }
     return clip;

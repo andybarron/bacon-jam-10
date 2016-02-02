@@ -1,18 +1,18 @@
 require('./extensions');
-var pixi = require('pixi.js');
-var debug = require('./debug');
-var constants = require('./constants');
-var keyboard = require('./keyboard');
-var assets = require('./assets');
+let pixi = require('pixi.js');
+let debug = require('./debug');
+let constants = require('./constants');
+let keyboard = require('./keyboard');
+let assets = require('./assets');
 debug('Begin game setup!');
 
 debug('Initializing renderer');
-var render = new pixi.autoDetectRenderer(800, 600, {
+let render = new pixi.autoDetectRenderer(800, 600, {
   transparent: false,
 });
-var scene = null;
+let scene = null;
 
-var display = {
+let display = {
   topLeft: new pixi.Point(),
   topCenter: new pixi.Point(),
   topRight: new pixi.Point(),
@@ -27,9 +27,9 @@ var display = {
   bounds: new pixi.Rectangle(0,0,0,0),
 };
 display.center = display.middleCenter;
-var scale = 2;
+let scale = 2;
 
-var game = module.exports = {
+let game = module.exports = {
   display: display,
   timeScale: 1, // change this for e.g. slow-mo
   getScale: function getScale() {
@@ -46,7 +46,7 @@ var game = module.exports = {
     return n / scale;
   },
   worldRectFromScreen: function worldRectFromScreen(r) {
-    var box = r.clone();
+    let box = r.clone();
     box.x /= scale;
     box.y /= scale;
     box.width /= scale;
@@ -56,10 +56,10 @@ var game = module.exports = {
 }
 
 function resizeRenderer() {
-  var rw = document.documentElement.clientWidth;
-  var rh = document.documentElement.clientHeight;
-  var w = rw / scale;
-  var h = rh / scale;
+  let rw = document.documentElement.clientWidth;
+  let rh = document.documentElement.clientHeight;
+  let w = rw / scale;
+  let h = rh / scale;
   display.topLeft.set(0, 0);
   display.topCenter.set(w/2, 0);
   display.topRight.set(w, 0);
@@ -88,7 +88,7 @@ function finishedLoading(){
   debug("...All assets loaded!");
 
   debug('Adding view to DOM');
-  var wrapper = document.querySelector('#display-wrapper');
+  let wrapper = document.querySelector('#display-wrapper');
   wrapper.innerHTML = '';
   wrapper.appendChild(render.view);
 
@@ -99,8 +99,8 @@ function finishedLoading(){
 
   debug('Setting up animation loop');
 
-  var lastTime = performance.now();
-  var MainMenuScene = require('./scenes/MainMenuScene');
+  let lastTime = performance.now();
+  let MainMenuScene = require('./scenes/MainMenuScene');
   scene = new MainMenuScene();
   // TODO move scene init stuff to a separate method and call it here...
   //      code dupe is bad!!!
@@ -109,14 +109,14 @@ function finishedLoading(){
   resizeRenderer();
 
   // Animate the Screen
-  var animate = function animate() {
-    var time = performance.now();
-    var delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );
+  let animate = function animate() {
+    let time = performance.now();
+    let delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );
     delta *= game.timeScale;
     pixi.ticker.shared.speed = game.timeScale;
     lastTime = time;
     if (scene) {
-      var nextScene = scene.update(delta);
+      let nextScene = scene.update(delta);
       render.render(scene.getStage());
       if (nextScene && (nextScene != scene)) {
         scene.dispose();

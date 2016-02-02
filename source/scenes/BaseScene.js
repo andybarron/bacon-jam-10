@@ -1,4 +1,4 @@
-var pixi = require('pixi.js');
+let pixi = require('pixi.js');
 
 function BaseScene() {
   this.backgroundColor = 0x0; // black

@@ -1,18 +1,18 @@
-var pixi = require('pixi.js');
-var assets = require('../assets');
-var constants = require('../constants');
-var game = require('../game');
-var keyboard = require('../keyboard');
-var BaseScene = require('./BaseScene');
+let pixi = require('pixi.js');
+let assets = require('../assets');
+let constants = require('../constants');
+let game = require('../game');
+let keyboard = require('../keyboard');
+let BaseScene = require('./BaseScene');
 
 module.exports = class StageClearScene extends BaseScene {
   constructor() {
     super();
-    var title = assets.sprite('text/clear');
+    let title = assets.sprite('text/clear');
     this.ui.addChild(title);
     title.anchor.x = 0.5;
     title.position = game.display.topCenter;
-    var play = new pixi.Text('PRESS [RETURN] TO RETURN TO BREAK ROOM', {
+    let play = new pixi.Text('PRESS [RETURN] TO RETURN TO BREAK ROOM', {
       font: '20px monospace',
       fill: 0x00CCFF,
     });
@@ -23,7 +23,7 @@ module.exports = class StageClearScene extends BaseScene {
   }
   update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      var MainMenuScene = require('./MainMenuScene');
+      let MainMenuScene = require('./MainMenuScene');
       return new MainMenuScene();
     }
   }

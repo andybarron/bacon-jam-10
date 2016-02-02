@@ -1,23 +1,26 @@
 import * as debug from '../debug';
 import FanCurrent from '../objects/FanCurrent';
 
-let pixi = require('pixi.js');
-let BaseScene = require('./BaseScene');
-let objects = require('../objects');
-let keyboard = require("../keyboard");
-let howler = require("howler");
-let assets = require('../assets');
+import * as pixi from 'pixi.js';
+import BaseScene from './BaseScene';
+import Player from '../objects/Player';
+import CleanBot from '../objects/CleanBot';
+import * as keyboard from "../keyboard";
+import * as howler from "howler";
+import * as assets from '../assets';
 import * as constants from '../constants';
-let collision = require('../physics/collision');
-let StageClearScene = require('./StageClearScene');
-let game = require('../game');
-let levels = require('../levels');
-let TileGrid = require('../physics/TileGrid');
+import * as collision from '../physics/collision';
+import StageClearScene from './StageClearScene';
+import * as game from '../game';
+import * as levels from '../levels';
+import TileGrid from '../physics/TileGrid';
+import Console from '../objects/Console';
+import MainMenuScene from './MainMenuScene';
 let TILE = constants.TILE_SIZE;
 
 let HELP_TEXT_PADDING = 10;
 
-module.exports = class GameplayScene extends BaseScene {
+export default class GameplayScene extends BaseScene {
 
   // TODO slim this bad boy down, yeesh
   constructor(level) {
@@ -102,7 +105,7 @@ module.exports = class GameplayScene extends BaseScene {
         } else if (char == '@') { // Player
           // TODO multiple player error
           if (self.player) debug.error("Duplicate player!");
-          self.player = new objects.Player(0, 0);
+          self.player = new Player(0, 0);
           self.player.setCenter(cx, cy);
         } else if (char == '#') { // Enemy
           self.enemySpawns.push(new pixi.Point(cx, cy));
@@ -127,7 +130,6 @@ module.exports = class GameplayScene extends BaseScene {
             let type = data[0];
             let contents = data[1];
             if (type == 'Console') {
-              let Console = require('../objects/Console');
               let bounds = new pixi.Rectangle(x, y, TILE, TILE);
               let c = new Console(bounds, contents, self.helpText, self.helpBg, null);
               self.consoles.push(c);
@@ -148,7 +150,7 @@ module.exports = class GameplayScene extends BaseScene {
     });
 
     self.enemySpawns.forEach(function(center) {
-      let enemy = new objects.CleanBot(0, 0, self.player);
+      let enemy = new CleanBot(0, 0, self.player);
       enemy.setCenter(center.x, center.y);
       self.enemies.push(enemy);
       self.world.addChild(enemy.container);
@@ -265,7 +267,6 @@ module.exports = class GameplayScene extends BaseScene {
       this.helpBg.height = box.height;
     }
 
-    let MainMenuScene = require('./MainMenuScene');
     if(this.died) {
       if (keyboard.isKeyPressed(keyboard.RETURN)) {
         this.restarted = true;
@@ -282,7 +283,6 @@ module.exports = class GameplayScene extends BaseScene {
         this.restarted = true;
         return new GameplayScene(this.level);
       } else if (keyboard.isKeyPressed(keyboard.Q)) {
-        let MainMenuScene = require('./MainMenuScene');
         return new MainMenuScene();
       }
     };

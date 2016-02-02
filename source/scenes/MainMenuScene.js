@@ -1,15 +1,14 @@
 import * as debug from '../debug';
-
-let pixi = require('pixi.js');
-let assets = require('../assets');
+import * as pixi from 'pixi.js';
+import * as assets from '../assets';
 import * as constants from '../constants';
-let game = require('../game');
-let keyboard = require('../keyboard');
-let GameplayScene = require('./GameplayScene');
-let BaseScene = require('./BaseScene');
-let levels = require('../levels');
+import * as game from '../game';
+import * as keyboard from '../keyboard';
+import GameplayScene from './GameplayScene';
+import BaseScene from './BaseScene';
+import * as levels from '../levels';
 
-module.exports = class MainMenuScene extends BaseScene {
+export default class MainMenuScene extends BaseScene {
   constructor() {
     super();
     let title = assets.sprite('text/title');
@@ -27,6 +26,7 @@ module.exports = class MainMenuScene extends BaseScene {
   }
   update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
+      console.log(levels);
       return new GameplayScene(levels.first);
     }
     if (keyboard.isKeyPressed(keyboard.SHIFT)) {

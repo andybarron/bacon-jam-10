@@ -1,11 +1,12 @@
-let pixi = require('pixi.js');
-let assets = require('../assets');
+import * as pixi from 'pixi.js';
+import * as assets from '../assets';
 import * as constants from '../constants';
-let game = require('../game');
-let keyboard = require('../keyboard');
-let BaseScene = require('./BaseScene');
+import * as game from '../game';
+import * as keyboard from '../keyboard';
+import BaseScene from './BaseScene';
+import MainMenuScene from './MainMenuScene';
 
-module.exports = class StageClearScene extends BaseScene {
+export default class StageClearScene extends BaseScene {
   constructor() {
     super();
     let title = assets.sprite('text/clear');
@@ -23,7 +24,6 @@ module.exports = class StageClearScene extends BaseScene {
   }
   update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      let MainMenuScene = require('./MainMenuScene');
       return new MainMenuScene();
     }
   }

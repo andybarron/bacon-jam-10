@@ -1,14 +1,14 @@
-let pixi = require('pixi.js');
-let PhysicsObject = require('../physics/PhysicsObject');
-let keyboard = require('../keyboard');
+import * as pixi from 'pixi.js';
+import PhysicsObject from '../physics/PhysicsObject';
+import * as keyboard from '../keyboard';
 import * as constants from '../constants';
-let assets = require('../assets');
+import * as assets from '../assets';
 
 let WIDTH = constants.TILE_SIZE * .75;
 let HEIGHT = constants.TILE_SIZE;
 let PADDING = constants.TILE_SIZE - WIDTH;
 
-module.exports = class CleanBot extends PhysicsObject {
+export default class CleanBot extends PhysicsObject {
   constructor(x, y, player) {
     super(x, y, WIDTH, HEIGHT, PADDING);
     this.player = player;

@@ -1,7 +1,7 @@
-let EventEmitter = require('eventemitter3');
-let assets = require('../assets');
+import EventEmitter from 'eventemitter3';
+import * as assets from '../assets';
 
-module.exports = class BaseObject extends EventEmitter {
+export default class BaseObject extends EventEmitter {
   constructor() {
     super()
   }

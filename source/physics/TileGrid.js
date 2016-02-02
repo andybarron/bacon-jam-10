@@ -27,7 +27,7 @@ class TileGrid {
       let point = x;
       return this.get(point.x, point.y);
     } else {
-      throw new Error("TileGrid#get() requires 1 or 2 arguments, got " + arguments.length);
+      throw new Error("TileGrid#get() takes 1 or 2 arguments, got " + arguments.length);
     }
   }
   set(x, y, value) {
@@ -51,4 +51,4 @@ class TileGrid {
   }
 }
 
-module.exports = TileGrid;
+export default TileGrid;

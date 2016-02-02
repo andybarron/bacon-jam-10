@@ -1,10 +1,10 @@
 import {animationSpeedFromFps} from '../game';
 import * as pixi from 'pixi.js';
-let PhysicsObject = require('../physics/PhysicsObject');
-let keyboard = require('../keyboard');
+import PhysicsObject from '../physics/PhysicsObject';
+import * as keyboard from '../keyboard';
 import * as constants from '../constants';
-let assets = require('../assets');
-let collision = require('../physics/collision');
+import * as assets from '../assets';
+import * as collision from '../physics/collision';
 import * as colors from '../colors';
 
 let glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
@@ -19,7 +19,7 @@ let ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
 let ATK_W = constants.PLAYER_ATTACK_WIDTH;
 let ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
-module.exports = class Player extends PhysicsObject {
+export default class Player extends PhysicsObject {
   constructor(x, y) {
     super(x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
     this.faceVelocityX = false;

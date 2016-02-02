@@ -1,7 +1,7 @@
-let pixi = require('pixi.js');
+import * as pixi from 'pixi.js';
 import * as constants from '../constants';
-let collision = require('./collision');
-let BaseObject = require('../objects/BaseObject');
+import * as collision from './collision';
+import BaseObject from '../objects/BaseObject';
 
 let TILE = constants.TILE_SIZE;
 let tempRect = new pixi.Rectangle();
@@ -20,7 +20,7 @@ let Align = {
 }
 Align.CENTER = Align.MIDDLE_CENTER;
 
-module.exports = class PhysicsObject extends BaseObject {
+export default class PhysicsObject extends BaseObject {
   // TODO change x/y/w/h to `bounds = new Pixi.Rectangle()`
   constructor(x, y, w, h, spriteWidthPadding = 0) {
     super();
@@ -140,4 +140,4 @@ module.exports = class PhysicsObject extends BaseObject {
   }
 }
 
-module.exports.Align = Align;
+PhysicsObject.Align = Align;

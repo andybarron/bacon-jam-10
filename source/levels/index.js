@@ -1,3 +1,5 @@
+// TODO still using CommonJS here because these will change
+//      to load async from the server
 let levels = {
   tutorial1: require('./tutorial1.js'),
   tutorial2: require('./tutorial2.js'),

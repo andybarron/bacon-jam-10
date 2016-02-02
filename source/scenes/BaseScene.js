@@ -1,6 +1,6 @@
-let pixi = require('pixi.js');
+import * as pixi from 'pixi.js';
 
-module.exports = class BaseScene {
+export default class BaseScene {
   constructor() {
     this.backgroundColor = 0x0; // black
     this.container = new pixi.Container();

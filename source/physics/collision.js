@@ -1,4 +1,4 @@
-let pixi = require('pixi.js');
+import * as pixi from 'pixi.js';
 import * as constants from '../constants';
 
 export function getRectangleOverlap(a, b) {

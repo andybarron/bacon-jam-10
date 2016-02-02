@@ -1,10 +1,10 @@
-let pixi = require('pixi.js');
-let assets = require('../assets');
-let collision = require('../physics/collision');
-let game = require('../game');
+import * as pixi from 'pixi.js';
+import * as assets from '../assets';
+import * as collision from '../physics/collision';
+import * as game from '../game';
 import ColliderObject from './ColliderObject';
 
-module.exports = class Console extends ColliderObject {
+export default class Console extends ColliderObject {
   constructor(bounds, text, textBox, bg, player) {
     super(bounds);
     this.sprite = assets.sprite('objects/console');
@@ -31,10 +31,10 @@ module.exports = class Console extends ColliderObject {
   }
 }
 
-// let pixi = require('pixi.js');
-// let assets = require('../assets');
-// let collision = require('../physics/collision');
-// let game = require('../game');
+// import * as pixi from 'pixi.js';
+// import * as assets from '../assets';
+// import * as collision from '../physics/collision';
+// import * as game from '../game';
 
 // function Console(bounds, text) {
 //   this.bounds = bounds;
@@ -81,4 +81,4 @@ module.exports = class Console extends ColliderObject {
 //   }
 // }
 
-// module.exports = Console;
+// export default Console;

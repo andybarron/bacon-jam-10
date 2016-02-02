@@ -1,9 +1,9 @@
 "use strict";
 // Load dependencies
-let express = require('express');
-let browserify = require('browserify');
-let uglify = require('uglify-js');
-let glob = require('glob');
+var express = require('express');
+var browserify = require('browserify');
+var uglify = require('uglify-js');
+var glob = require('glob');
 
 // Load environment config
 let env = process.env;

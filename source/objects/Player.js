@@ -1,5 +1,4 @@
 var pixi = require('pixi.js');
-var extend = require('../extend');
 var PhysicsObject = require('../physics/PhysicsObject');
 var keyboard = require('../keyboard');
 var constants = require('../constants');
@@ -19,55 +18,53 @@ var ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
 var ATK_W = constants.PLAYER_ATTACK_WIDTH;
 var ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
+module.exports = class Player extends PhysicsObject {
+  constructor(x, y) {
+    super(x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
+    this.faceVelocityX = false;
+    this.linkEventToSound('grounded', 'player/land');
+    this.linkEventToSound('jump', 'player/jump');
+    this.linkEventToSound('glide', 'player/glide');
+    this.linkEventToSound('attack', 'player/attack');
+    this.linkEventToSound('attack-hit', 'player/attack-hit');
 
-function Player(x, y) {
-  PhysicsObject.call(this, x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
-  this.faceVelocityX = false;
-  this.linkEventToSound('grounded', 'player/land');
-  this.linkEventToSound('jump', 'player/jump');
-  this.linkEventToSound('glide', 'player/glide');
-  this.linkEventToSound('attack', 'player/attack');
-  this.linkEventToSound('attack-hit', 'player/attack-hit');
+    // Sprite Setup
+    this.idleSprite = assets.movieClip('player/idle/');
+    this.idleSprite.loop = true;
+    this.idleSprite.setFps(3);
 
-  // Sprite Setup
-  this.idleSprite = assets.movieClip('player/idle/');
-  this.idleSprite.loop = true;
-  this.idleSprite.setFps(3);
+    this.runSprite = assets.movieClip('player/run/');
+    this.runSprite.loop = true;
+    this.defaultRunAnimSpeed = pixi.animationSpeedFromFps(8);
+    this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
 
-  this.runSprite = assets.movieClip('player/run/');
-  this.runSprite.loop = true;
-  this.defaultRunAnimSpeed = pixi.animationSpeedFromFps(8);
-  this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
+    this.attackSprite = assets.movieClip('player/attack/');
+    this.attackSprite.loop = false;
+    this.attackSprite.setFps(15);
 
-  this.attackSprite = assets.movieClip('player/attack/');
-  this.attackSprite.loop = false;
-  this.attackSprite.setFps(15);
+    this.jumpSprite = assets.movieClip('player/jump/');
+    this.jumpSprite.loop = true;
+    this.jumpSprite.setFps(4);
 
-  this.jumpSprite = assets.movieClip('player/jump/');
-  this.jumpSprite.loop = true;
-  this.jumpSprite.setFps(4);
+    this.fallSprite = assets.movieClip('player/fall/');
+    this.fallSprite.loop = true;
+    this.fallSprite.setFps(8);
 
-  this.fallSprite = assets.movieClip('player/fall/');
-  this.fallSprite.loop = true;
-  this.fallSprite.setFps(8);
+    this.glideSprite = assets.movieClip('player/float/');
+    this.glideSprite.loop = true;
+    this.glideSprite.setFps(12);
 
-  this.glideSprite = assets.movieClip('player/float/');
-  this.glideSprite.loop = true;
-  this.glideSprite.setFps(12);
-
-  this.setSprite(this.idleSprite, PhysicsObject.Align.BOTTOM_LEFT);
-  this.hitPoints = constants.PLAYER_MAX_HEALTH;
-  this.recentHit = false;
-  this.hitTimeout = 0;
-  this.gliding = false;
-  this.attacking = false;
-  this.attackDuration = this.attackSprite.getDuration() + 1/60;
-  this.attackTimer = 0;
-  this.attackBox = new pixi.Rectangle(0, 0, ATK_W, ATK_H);
-}
-
-extend(PhysicsObject, Player, {
-  update: function update(delta, game) {
+    this.setSprite(this.idleSprite, PhysicsObject.Align.BOTTOM_LEFT);
+    this.hitPoints = constants.PLAYER_MAX_HEALTH;
+    this.recentHit = false;
+    this.hitTimeout = 0;
+    this.gliding = false;
+    this.attacking = false;
+    this.attackDuration = this.attackSprite.getDuration() + 1/60;
+    this.attackTimer = 0;
+    this.attackBox = new pixi.Rectangle(0, 0, ATK_W, ATK_H);
+  }
+  update(delta, game) {
     this.performActions(delta, game);
 
     if (this.gliding && this.velocity.y > constants.PLAYER_MAX_FLOAT_FALL_SPEED) {
@@ -126,8 +123,8 @@ extend(PhysicsObject, Player, {
         this.attacking = false;
       }
     }
-  },
-  performActions: function performActions(delta, game) {
+  }
+  performActions(delta, game) {
     // Jump action
     if (keyboard.isKeyPressed(JUMP) && this.grounded && !this.attacking) {
       this.grounded = false;
@@ -201,8 +198,8 @@ extend(PhysicsObject, Player, {
         }
       }
     }
-  },
-  setState: function setState() {
+  }
+  setState() {
     var s = this.idleSprite;
     if (this.attacking) {
       s = this.attackSprite;
@@ -217,15 +214,13 @@ extend(PhysicsObject, Player, {
     }
     this.changeMovieClip(s, PhysicsObject.Align.BOTTOM_LEFT, true);
     this.container.updateTransform();
-  },
-  updateEnemyCollisions: function updateEnemyCollisions(enemies) {
+  }
+  updateEnemyCollisions(enemies) {
     if(enemies){
       var self = this;
       enemies.forEach(function(enemy){
         collision.resolveEnemyCollision(self, enemy);
       });
     }
-  },
-});
-
-module.exports = Player;
+  }
+}

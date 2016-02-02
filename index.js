@@ -43,7 +43,7 @@ console.info("Compiling game source...");
 var b = browserify('source/main.js', {
   debug: DEV,
 });
-b.transform("babelify", {presets: ["es2015", "stage-0"]})
+b.transform("babelify", {presets: ["es2015"]})
 b.bundle((err, buf) => {
   if (err) {
     console.error(err.toString());

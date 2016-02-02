@@ -13,6 +13,8 @@ let levels = require('../levels');
 let TileGrid = require('../physics/TileGrid');
 let TILE = constants.TILE_SIZE;
 
+let HELP_TEXT_PADDING = 10;
+
 module.exports = class GameplayScene extends BaseScene {
 
   // TODO slim this bad boy down, yeesh
@@ -44,10 +46,9 @@ module.exports = class GameplayScene extends BaseScene {
       // strokeThickness: 4,
     });
     self.helpText.anchor = new pixi.Point(0.5, 1.0);
-    self.helpText.position = game.display.bottomCenter;
     self.helpBg = new pixi.Graphics();
     self.helpBg.boundsPadding = 0;
-    self.helpBg.alpha = 0;
+    self.helpBg.alpha = 0.5;
     self.helpBg.beginFill(0x001100);
     self.helpBg.drawRect(0,0,1,1);
     self.helpBg.endFill();
@@ -125,7 +126,7 @@ module.exports = class GameplayScene extends BaseScene {
             if (type == 'Console') {
               let Console = require('../objects/Console');
               let bounds = new pixi.Rectangle(x, y, TILE, TILE);
-              let c = new Console(bounds, contents);
+              let c = new Console(bounds, contents, self.helpText, self.helpBg, self.player);
               self.consoles.push(c);
               self.world.addChild(c.sprite);
             }
@@ -216,12 +217,12 @@ module.exports = class GameplayScene extends BaseScene {
     }
   }
   resize(w, h) {
-    this.helpText.style.wordWrapWidth = w;
+    this.helpText.style.wordWrapWidth = w - HELP_TEXT_PADDING * 2;
     let fontSize = game.worldPixelsFromScreen(36);
     this.helpText.style.font = fontSize.toString() + this.helpTextFontLabel;
     // Render at native res, regardless of game scale
     this.helpText.resolution = game.getScale();
-    if (this.helpText.text) {
+    if (this.helpText.visible) {
       this.helpText.dirty = true;
     }
     this.deathGraphics.clear();
@@ -240,6 +241,22 @@ module.exports = class GameplayScene extends BaseScene {
   update(delta) {
 
     this.bgSprite.texture = this.starClip.texture;
+    if (this.helpText.visible) {
+      let padding = HELP_TEXT_PADDING;
+      this.helpText.position.copy(game.display.bottomCenter);
+      this.helpText.position.y -= padding;
+      this.helpText.updateTransform();
+      let box = this.helpText.getBounds();
+      box = game.worldRectFromScreen(box);
+      box.pad(padding); // TODO world or screen pixels?
+      let wDiff = this.helpText.style.wordWrapWidth + HELP_TEXT_PADDING * 2 - box.width;
+      box.x -= wDiff / 2;
+      box.width += wDiff;
+      this.helpBg.x = box.x
+      this.helpBg.y = box.y;
+      this.helpBg.width = box.width;
+      this.helpBg.height = box.height;
+    }
 
     let MainMenuScene = require('./MainMenuScene');
     if(this.died) {
@@ -299,7 +316,7 @@ module.exports = class GameplayScene extends BaseScene {
 
     // update consoles
     self.consoles.forEach(function(cons) {
-      cons.check(self.player.getBounds(), self.helpText, self.helpBg);
+      cons.update();
     })
 
     // update fan currents

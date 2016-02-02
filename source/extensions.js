@@ -1,3 +1,4 @@
+// TODO Object.assign on prototypes
 let pixi = require('pixi.js');
 
 pixi.animationSpeedFromFps = function animationSpeedFromFps(fps) {
@@ -27,4 +28,11 @@ pixi.Rectangle.prototype.getCenter = function getCenter() {
 pixi.Rectangle.prototype.setCenter = function setCenter(x, y) {
   this.x = x - this.width/2;
   this.y = y - this.height/2;
+}
+
+pixi.Rectangle.prototype.pad = function pad(padding) {
+  this.x -= padding;
+  this.y -= padding;
+  this.width += padding * 2;
+  this.height += padding * 2;
 }

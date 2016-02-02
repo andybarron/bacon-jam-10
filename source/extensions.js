@@ -1,30 +1,37 @@
-var pixi = require('pixi.js');
+import {animationSpeedFromFps, fpsFromAnimationSpeed} from './game';
+import * as pixi from 'pixi.js';
+let MovieClip = pixi.extras.MovieClip;
 
-pixi.animationSpeedFromFps = function animationSpeedFromFps(fps) {
-  return fps / pixi.ticker.shared.FPS;
-};
+Object.defineProperty(MovieClip.prototype, 'fps', {
+  get: function() {
+    return fpsFromAnimationSpeed(this.animationSpeed);
+  },
+  set: function(targetFps) {
+    this.animationSpeed = animationSpeedFromFps(targetFps);
+  },
+});
 
-pixi.fpsFromAnimationSpeed = function fpsFromAnimationSpeed(speed) {
-  return speed * pixi.ticker.shared.FPS;
-};
+Object.defineProperty(MovieClip.prototype, 'duration', {
+  get: function() {
+    return this.totalFrames / this.fps;
+  },
+  set: function(duration) {
+    this.fps = this.totalFrames / duration;
+  },
+});
 
-pixi.extras.MovieClip.prototype.setFps = function setFps(fps) {
-  this.animationSpeed = pixi.animationSpeedFromFps(fps);
-};
-
-pixi.extras.MovieClip.prototype.getFps = function getFps() {
-  return pixi.fpsFromAnimationSpeed(this.animationSpeed);
-};
-
-pixi.extras.MovieClip.prototype.getDuration = function getDuration() {
-  return this.totalFrames / this.getFps();
-};
-
-pixi.Rectangle.prototype.getCenter = function getCenter() {
-  return new pixi.Point(this.x + this.width/2, this.y + this.height/2);
-}
-
-pixi.Rectangle.prototype.setCenter = function setCenter(x, y) {
-  this.x = x - this.width/2;
-  this.y = y - this.height/2;
-}
+Object.assign(pixi.Rectangle.prototype, {
+  getCenter() {
+    return new pixi.Point(this.x + this.width/2, this.y + this.height/2);
+  },
+  setCenter(x, y) {
+    this.x = x - this.width/2;
+    this.y = y - this.height/2;
+  },
+  pad(padding) {
+    this.x -= padding;
+    this.y -= padding;
+    this.width += padding * 2;
+    this.height += padding * 2;
+  },
+});

@@ -1,9 +1,10 @@
 // TODO disable when debug mode is off
-module.exports = console.log.bind(console, '[Debug]');
-module.exports.error = function error(msg, e) {
+// TODO separate exports
+export let print = console.log.bind(console, '[Debug]');
+export function error(msg, e) {
   alert(msg);
-  module.exports('[Error]', msg);
+  console.log('[Error]', msg);
   if (e) {
-    module.exports('[Exception]', e);
+    console.log('[Exception]', e);
   }
-}
+};

@@ -1,17 +1,13 @@
-var EventEmitter = require('eventemitter3');
-var extend = require('../extend');
-var assets = require('../assets');
+import EventEmitter from 'eventemitter3';
+import * as assets from '../assets';
 
-function BaseObject() {
-  EventEmitter.call(this);
-}
-
-extend(EventEmitter, BaseObject, {
-  linkEventToSound: function linkEventToSound(event, sound) {
+export default class BaseObject extends EventEmitter {
+  constructor() {
+    super()
+  }
+  linkEventToSound(event, sound) {
     this.on(event, function() {
       assets.playSound(sound);
     })
-  },
-});
-
-module.exports = BaseObject;
+  }
+}

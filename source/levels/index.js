@@ -1,4 +1,6 @@
-var levels = {
+// TODO still using CommonJS here because these will change
+//      to load async from the server
+let levels = {
   tutorial1: require('./tutorial1.js'),
   tutorial2: require('./tutorial2.js'),
   tutorial3: require('./tutorial3.js'),
@@ -8,7 +10,7 @@ var levels = {
 
 levels.first = levels.tutorial1;
 levels.list = [];
-var currentLevel = levels.first;
+let currentLevel = levels.first;
 while (currentLevel) {
   levels.list.push(currentLevel);
   currentLevel = levels[currentLevel.next];

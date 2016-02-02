@@ -1,32 +1,29 @@
-var pixi = require('pixi.js');
+import * as pixi from 'pixi.js';
 
-function BaseScene() {
-  this.backgroundColor = 0x0; // black
-  this.container = new pixi.Container();
-  this.background = new pixi.Container();
-  this.world = new pixi.Container();
-  this.ui = new pixi.Container();
-  this.container.addChild(this.background);
-  this.container.addChild(this.world);
-  this.container.addChild(this.ui);
-}
-
-BaseScene.prototype = {
-  initialize: function initialize() {
+export default class BaseScene {
+  constructor() {
+    this.backgroundColor = 0x0; // black
+    this.container = new pixi.Container();
+    this.background = new pixi.Container();
+    this.world = new pixi.Container();
+    this.ui = new pixi.Container();
+    this.container.addChild(this.background);
+    this.container.addChild(this.world);
+    this.container.addChild(this.ui);
+  }
+  initialize() {
     // no-op
-  },
-  resize: function resize() {
+  }
+  resize() {
     // no-op, ignore args
-  },
-  dispose: function dispose() {
+  }
+  dispose() {
     // no-op
-  },
-  update: function update() {
+  }
+  update() {
     // no-op, ignore args
-  },
-  getStage: function getStage() {
+  }
+  getStage() { // TODO make property?
     return this.container;
   }
-};
-
-module.exports = BaseScene;
+}

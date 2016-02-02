@@ -1,73 +1,71 @@
-var pixi = require('pixi.js');
-var extend = require('../extend');
-var PhysicsObject = require('../physics/PhysicsObject');
-var keyboard = require('../keyboard');
-var constants = require('../constants');
-var assets = require('../assets');
-var collision = require('../physics/collision');
-var colors = require('../colors');
+import {animationSpeedFromFps} from '../game';
+import * as pixi from 'pixi.js';
+import PhysicsObject from '../physics/PhysicsObject';
+import * as keyboard from '../keyboard';
+import * as constants from '../constants';
+import * as assets from '../assets';
+import * as collision from '../physics/collision';
+import * as colors from '../colors';
 
-var glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
+let glideGravityScale = constants.PLAYER_GLIDE_GRAVITY_SCALE;
 
-var JUMP = keyboard.UP;
-var LEFT = keyboard.LEFT;
-var RIGHT = keyboard.RIGHT;
-var ATTACK = keyboard.Z;
+let JUMP = keyboard.UP;
+let LEFT = keyboard.LEFT;
+let RIGHT = keyboard.RIGHT;
+let ATTACK = keyboard.Z;
 
-var ATK_OFFSET_X = constants.PLAYER_ATTACK_OFFSET_X;
-var ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
-var ATK_W = constants.PLAYER_ATTACK_WIDTH;
-var ATK_H = constants.PLAYER_ATTACK_HEIGHT;
+let ATK_OFFSET_X = constants.PLAYER_ATTACK_OFFSET_X;
+let ATK_OFFSET_Y = constants.PLAYER_ATTACK_OFFSET_Y;
+let ATK_W = constants.PLAYER_ATTACK_WIDTH;
+let ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
+export default class Player extends PhysicsObject {
+  constructor(x, y) {
+    super(x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
+    this.faceVelocityX = false;
+    this.linkEventToSound('grounded', 'player/land');
+    this.linkEventToSound('jump', 'player/jump');
+    this.linkEventToSound('glide', 'player/glide');
+    this.linkEventToSound('attack', 'player/attack');
+    this.linkEventToSound('attack-hit', 'player/attack-hit');
 
-function Player(x, y) {
-  PhysicsObject.call(this, x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
-  this.faceVelocityX = false;
-  this.linkEventToSound('grounded', 'player/land');
-  this.linkEventToSound('jump', 'player/jump');
-  this.linkEventToSound('glide', 'player/glide');
-  this.linkEventToSound('attack', 'player/attack');
-  this.linkEventToSound('attack-hit', 'player/attack-hit');
+    // Sprite Setup
+    this.idleSprite = assets.movieClip('player/idle/');
+    this.idleSprite.loop = true;
+    this.idleSprite.fps = 3;
 
-  // Sprite Setup
-  this.idleSprite = assets.movieClip('player/idle/');
-  this.idleSprite.loop = true;
-  this.idleSprite.setFps(3);
+    this.runSprite = assets.movieClip('player/run/');
+    this.runSprite.loop = true;
+    this.defaultRunAnimSpeed = animationSpeedFromFps(8);
+    this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
 
-  this.runSprite = assets.movieClip('player/run/');
-  this.runSprite.loop = true;
-  this.defaultRunAnimSpeed = pixi.animationSpeedFromFps(8);
-  this.runSprite.animationSpeed = this.defaultRunAnimSpeed;
+    this.attackSprite = assets.movieClip('player/attack/');
+    this.attackSprite.loop = false;
+    this.attackSprite.fps = 15;
 
-  this.attackSprite = assets.movieClip('player/attack/');
-  this.attackSprite.loop = false;
-  this.attackSprite.setFps(15);
+    this.jumpSprite = assets.movieClip('player/jump/');
+    this.jumpSprite.loop = true;
+    this.jumpSprite.fps = 4;
 
-  this.jumpSprite = assets.movieClip('player/jump/');
-  this.jumpSprite.loop = true;
-  this.jumpSprite.setFps(4);
+    this.fallSprite = assets.movieClip('player/fall/');
+    this.fallSprite.loop = true;
+    this.fallSprite.fps = 8;
 
-  this.fallSprite = assets.movieClip('player/fall/');
-  this.fallSprite.loop = true;
-  this.fallSprite.setFps(8);
+    this.glideSprite = assets.movieClip('player/float/');
+    this.glideSprite.loop = true;
+    this.glideSprite.fps = 12;
 
-  this.glideSprite = assets.movieClip('player/float/');
-  this.glideSprite.loop = true;
-  this.glideSprite.setFps(12);
-
-  this.setSprite(this.idleSprite, PhysicsObject.Align.BOTTOM_LEFT);
-  this.hitPoints = constants.PLAYER_MAX_HEALTH;
-  this.recentHit = false;
-  this.hitTimeout = 0;
-  this.gliding = false;
-  this.attacking = false;
-  this.attackDuration = this.attackSprite.getDuration() + 1/60;
-  this.attackTimer = 0;
-  this.attackBox = new pixi.Rectangle(0, 0, ATK_W, ATK_H);
-}
-
-extend(PhysicsObject, Player, {
-  update: function update(delta, game) {
+    this.setSprite(this.idleSprite, PhysicsObject.Align.BOTTOM_LEFT);
+    this.hitPoints = constants.PLAYER_MAX_HEALTH;
+    this.recentHit = false;
+    this.hitTimeout = 0;
+    this.gliding = false;
+    this.attacking = false;
+    this.attackDuration = this.attackSprite.duration + 1/60;
+    this.attackTimer = 0;
+    this.attackBox = new pixi.Rectangle(0, 0, ATK_W, ATK_H);
+  }
+  update(delta, game) {
     this.performActions(delta, game);
 
     if (this.gliding && this.velocity.y > constants.PLAYER_MAX_FLOAT_FALL_SPEED) {
@@ -80,8 +78,8 @@ extend(PhysicsObject, Player, {
 
     if (this.recentHit) {
       // goes from 0 to 1 after hit
-      var alpha = this.hitTimeout / constants.PLAYER_HURT_SECONDS;
-      var tint = colors.lerp(0xFF0000, 0xFFFFFF, alpha);
+      let alpha = this.hitTimeout / constants.PLAYER_HURT_SECONDS;
+      let tint = colors.lerp(0xFF0000, 0xFFFFFF, alpha);
       // TODO just set container.tint if it ever gets implemented...
       this.container.children.forEach(function(child) {
         if ('tint' in child) {
@@ -97,11 +95,11 @@ extend(PhysicsObject, Player, {
       });
     }
 
-    // var speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
+    // let speedFactor = Math.abs(this.velocity.x/constants.PLAYER_MAX_SPEED);
     // if (this.velocity.x != 0 && Math.sign(this.container.scale.x) != Math.sign(this.velocity.x)) {
     //   speedFactor *= -1;
     // }
-    var speedFactor = this.velocity.x/(constants.PLAYER_MAX_SPEED * Math.sign(this.container.scale.x));
+    let speedFactor = this.velocity.x/(constants.PLAYER_MAX_SPEED * Math.sign(this.container.scale.x));
     this.runSprite.animationSpeed = this.defaultRunAnimSpeed * speedFactor;
 
     if (this.gliding && this.velocity.y > 0) {
@@ -126,8 +124,8 @@ extend(PhysicsObject, Player, {
         this.attacking = false;
       }
     }
-  },
-  performActions: function performActions(delta, game) {
+  }
+  performActions(delta, game) {
     // Jump action
     if (keyboard.isKeyPressed(JUMP) && this.grounded && !this.attacking) {
       this.grounded = false;
@@ -156,8 +154,8 @@ extend(PhysicsObject, Player, {
     // Movement
     // TODO make this make more sense
     // TODO disable movement while attacking (and possibly velocity.x = 0 as well?)
-    var controlMult = this.grounded ? 1 : constants.PLAYER_AIR_CONTROL_MULT;
-    var accel = constants.PLAYER_ACCELERATION * controlMult;
+    let controlMult = this.grounded ? 1 : constants.PLAYER_AIR_CONTROL_MULT;
+    let accel = constants.PLAYER_ACCELERATION * controlMult;
     if (keyboard.isKeyDown(RIGHT) && !this.attacking) {
       // Moving right, increase right velocity up to max
       if(this.velocity.x <= constants.PLAYER_MAX_SPEED){
@@ -191,8 +189,8 @@ extend(PhysicsObject, Player, {
       this.attackBox.setCenter(this.getCenterX(), this.getCenterY());
       this.attackBox.x += ATK_OFFSET_X * this.container.scale.x;
       this.attackBox.y += ATK_OFFSET_Y;
-      for (var iEnemy = 0; iEnemy < game.enemies.length; iEnemy++) {
-        var enemy = game.enemies[iEnemy];
+      for (let iEnemy = 0; iEnemy < game.enemies.length; iEnemy++) {
+        let enemy = game.enemies[iEnemy];
         if (collision.getRectangleOverlap(this.attackBox, enemy.getBounds())) {
           enemy.setMovieClip(enemy.deathSprite, enemy.currentAlign, true);
           game.enemies.splice(iEnemy, 1);
@@ -201,9 +199,9 @@ extend(PhysicsObject, Player, {
         }
       }
     }
-  },
-  setState: function setState() {
-    var s = this.idleSprite;
+  }
+  setState() {
+    let s = this.idleSprite;
     if (this.attacking) {
       s = this.attackSprite;
     } else if (this.grounded) {
@@ -217,15 +215,13 @@ extend(PhysicsObject, Player, {
     }
     this.changeMovieClip(s, PhysicsObject.Align.BOTTOM_LEFT, true);
     this.container.updateTransform();
-  },
-  updateEnemyCollisions: function updateEnemyCollisions(enemies) {
+  }
+  updateEnemyCollisions(enemies) {
     if(enemies){
-      var self = this;
+      let self = this;
       enemies.forEach(function(enemy){
         collision.resolveEnemyCollision(self, enemy);
       });
     }
-  },
-});
-
-module.exports = Player;
+  }
+}

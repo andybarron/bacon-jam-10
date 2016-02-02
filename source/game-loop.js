@@ -55,6 +55,7 @@ export default function gameLoop(startScene) {
     lastTime = time;
     delta *= game.timeScale;
     ticker.shared.speed = game.timeScale;
+    game.delta = delta;
     if (scene) {
       let nextScene = scene.update(delta);
       if (game.scale != lastScale) {

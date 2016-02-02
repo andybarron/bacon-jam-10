@@ -45,10 +45,12 @@ module.exports = class GameplayScene extends BaseScene {
       // stroke: 0x000000,
       // strokeThickness: 4,
     });
+    self.helpText.visible = false;
     self.helpText.anchor = new pixi.Point(0.5, 1.0);
     self.helpBg = new pixi.Graphics();
     self.helpBg.boundsPadding = 0;
     self.helpBg.alpha = 0.5;
+    self.helpBg.visible = false;
     self.helpBg.beginFill(0x001100);
     self.helpBg.drawRect(0,0,1,1);
     self.helpBg.endFill();
@@ -126,7 +128,7 @@ module.exports = class GameplayScene extends BaseScene {
             if (type == 'Console') {
               let Console = require('../objects/Console');
               let bounds = new pixi.Rectangle(x, y, TILE, TILE);
-              let c = new Console(bounds, contents, self.helpText, self.helpBg, self.player);
+              let c = new Console(bounds, contents, self.helpText, self.helpBg, null);
               self.consoles.push(c);
               self.world.addChild(c.sprite);
             }
@@ -145,7 +147,7 @@ module.exports = class GameplayScene extends BaseScene {
     });
 
     self.enemySpawns.forEach(function(center) {
-      let enemy = new objects.Alien(0, 0, self.player);
+      let enemy = new objects.CleanBot(0, 0, self.player);
       enemy.setCenter(center.x, center.y);
       self.enemies.push(enemy);
       self.world.addChild(enemy.container);
@@ -153,6 +155,10 @@ module.exports = class GameplayScene extends BaseScene {
 
     if (!self.player) debug.error("No player object!");
     self.world.addChild(self.player.container);
+
+    for (let cons of this.consoles) {
+      cons.player = this.player;
+    }
 
     if (!self.exit) debug.error("No level exit!");
     self.world.addChild(self.exit);

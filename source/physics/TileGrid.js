@@ -1,22 +1,22 @@
-function TileGrid(width, height, empty) {
-  this._w = width;
-  this._h = height;
-  this.grid = [];
-  if (typeof empty == 'undefined') {
-    empty = null;
+// TODO maybe use an ES6 Map?
+class TileGrid {
+  constructor(width, height, empty) {
+    this._w = width;
+    this._h = height;
+    this.grid = [];
+    if (typeof empty == 'undefined') {
+      empty = null;
+    }
+    this.empty = empty;
+    for (let tx = 0; tx < width; tx++) {
+      let column = [];
+      column.length = height;
+      column.fill(empty);
+      this.grid.push(column);
+    }
   }
-  this.empty = empty;
-  for (let tx = 0; tx < width; tx++) {
-    let column = [];
-    column.length = height;
-    column.fill(empty);
-    this.grid.push(column);
-  }
-}
-
-// TODO refactor coordinate resolution into its own method?
-TileGrid.prototype = {
-  get: function get(x, y) {
+  // TODO refactor coordinate resolution into its own method?
+  get(x, y) {
     if (arguments.length == 2) {
       if (x >= 0 && x < this._w && y >= 0 && y < this._h) {
         return this.grid[x][y];
@@ -29,8 +29,8 @@ TileGrid.prototype = {
     } else {
       throw new Error("TileGrid#get() requires 1 or 2 arguments, got " + arguments.length);
     }
-  },
-  set: function set(x, y, value) {
+  }
+  set(x, y, value) {
     if (arguments.length == 3) {
       if (x >= 0 && x < this._w && y >= 0 && y < this._h) {
         this.grid[x][y] = value;
@@ -42,13 +42,13 @@ TileGrid.prototype = {
     } else {
       throw new Error("TileGrid#set() requires 2 or 3 arguments, got " + arguments.length);
     }
-  },
-  getWidth: function getWidth() {
+  }
+  getWidth() {
     return this._w;
-  },
-  getHeight: function getHeight() {
+  }
+  getHeight() {
     return this._h;
-  },
+  }
 }
 
 module.exports = TileGrid;

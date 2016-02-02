@@ -17,6 +17,7 @@ function PhysicsObject(x, y, w, h, spriteWidthPadding) {
   this.container = new pixi.Container();
   this.faceVelocityX = true;
   this.currentSprite = null; // TODO consider removing
+  this.currentAlign = null;
   this.padding = (spriteWidthPadding || 0)/2;
 }
 
@@ -68,6 +69,7 @@ extend(BaseObject, PhysicsObject, {
     this.container.removeChildren();
     this.container.addChild(spr);
     this.currentSprite = spr;
+    this.currentAlign = anchor;
   },
   setMovieClip: function setMovieClip(clip, anchor, restart) {
     this.setSprite(clip, anchor);

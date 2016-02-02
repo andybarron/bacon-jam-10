@@ -194,7 +194,7 @@ extend(PhysicsObject, Player, {
       for (var iEnemy = 0; iEnemy < game.enemies.length; iEnemy++) {
         var enemy = game.enemies[iEnemy];
         if (collision.getRectangleOverlap(this.attackBox, enemy.getBounds())) {
-          game.world.removeChild(enemy.container);
+          enemy.setMovieClip(enemy.deathSprite, enemy.currentAlign, true);
           game.enemies.splice(iEnemy, 1);
           iEnemy--;
           this.emit('attack-hit');

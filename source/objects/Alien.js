@@ -17,6 +17,10 @@ function Alien(x, y, player) {
     animationSpeed: 0.1,
     loop: true,
   });
+  this.deathSprite = assets.movieClip('cleanbot/die/', {
+    loop: false,
+  })
+  this.deathSprite.setFps(12);
   sprite.play();
   this.setSprite(sprite, PhysicsObject.Align.BOTTOM_LEFT);
 }

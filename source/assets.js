@@ -47,7 +47,7 @@ function onLoadResource(loader, resource) {
 let pixiLoaded = false;
 module.exports = {
   load: function load(callback) {
-    debug('Begin assets.load()');
+    debug('Loading assets...');
     beginLoadingSounds();
     pixi.loader.add(['/static/atlas.json']);
     pixi.loader.on('progress', onLoadResource);
@@ -63,7 +63,7 @@ module.exports = {
     });
     let loadInterval = setInterval(function() {
       if (pixiLoaded && nHowls == 0) {
-        debug('Completed assets.load(), firing callback');
+        debug('Assets loaded!');
         clearInterval(loadInterval);
         callback();
       }

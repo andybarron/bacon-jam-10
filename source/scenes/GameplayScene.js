@@ -221,7 +221,7 @@ module.exports = class GameplayScene extends BaseScene {
     let fontSize = game.worldPixelsFromScreen(36);
     this.helpText.style.font = fontSize.toString() + this.helpTextFontLabel;
     // Render at native res, regardless of game scale
-    this.helpText.resolution = game.getScale();
+    this.helpText.resolution = game.scale;
     if (this.helpText.visible) {
       this.helpText.dirty = true;
     }

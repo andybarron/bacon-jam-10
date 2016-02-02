@@ -9,5 +9,10 @@ require('howler');
 delete window.Howler;
 delete window.Howl;
 
+// Load extension methods
+require('./extensions');
+
 // then actually do everything else
-require('./game');
+let StartScene = require('./scenes/MainMenuScene');
+import gameLoop from './game-loop';
+require('./assets').load(() => gameLoop(new StartScene()));

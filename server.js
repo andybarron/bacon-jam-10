@@ -79,7 +79,7 @@ b.bundle((err, buf) => {
 
   // Start server
   app.listen(PORT, () => {
-    console.log("App listening on port %s", PORT);
+    console.info("App listening on port %s", PORT);
   });
 
 });

@@ -2,7 +2,7 @@ import * as debug from './debug';
 
 import * as pixi from 'pixi.js';
 import * as howler from "howler";
-import * as naturalSort from 'javascript-natural-sort';
+import naturalSort from 'javascript-natural-sort';
 import * as qajax from 'qajax';
 
 // TODO support array of paths for different codecs

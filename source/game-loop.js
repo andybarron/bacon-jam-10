@@ -47,7 +47,7 @@ export default function gameLoop(startScene) {
   debug.print("Sizing renderer");
   resizeRenderer();
   debug.print("Initializing game loop");
-  let lastTime = performance.now();
+  let lastTime = performance.now(); // TODO polyfill
   let lastScale = game.scale;
   setScene(startScene);
   function animate(time = performance.now()) {

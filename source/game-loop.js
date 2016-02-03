@@ -1,5 +1,7 @@
 import {Point, autoDetectRenderer, ticker} from 'pixi.js';
-import {update as updateKeyboard} from './keyboard';
+import {updateKeys} from './keyboard';
+import now from 'performance-now';
+import requestAnimationFrame from 'raf';
 import * as debug from './debug';
 import * as game from './game';
 import * as assets from './assets';
@@ -47,10 +49,10 @@ export default function gameLoop(startScene) {
   debug.print("Sizing renderer");
   resizeRenderer();
   debug.print("Initializing game loop");
-  let lastTime = performance.now(); // TODO polyfill
+  let lastTime = now();
   let lastScale = game.scale;
   setScene(startScene);
-  function animate(time = performance.now()) {
+  function animate(time = now()) {
     let delta = Math.min( (time - lastTime) / 1000.0, constants.MAX_DELTA );
     lastTime = time;
     delta *= game.timeScale;
@@ -67,9 +69,8 @@ export default function gameLoop(startScene) {
       if (nextScene && nextScene != scene) {
         setScene(nextScene);
       }
-      updateKeyboard();
-      // TODO use polyfill
-      window.requestAnimationFrame(animate);
+      updateKeys();
+      requestAnimationFrame(animate);
     }
   }
   animate();

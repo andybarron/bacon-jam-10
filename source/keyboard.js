@@ -28,7 +28,7 @@ export function isKeyPressed(keyCode) {
 export function isKeyReleased(keyCode) {
   return !!keysReleased[keyCode];
 }
-export function update() {
+export function updateKeys() {
   keysPressed = {};
   keysReleased = {};
 }

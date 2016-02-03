@@ -23,9 +23,9 @@ let sounds = null;
 function removeFileExtension(str) {
   return str.replace(/\.[^/.]+$/, "");
 }
-// TODO support multiple file endings for codec support in Howler
+
 function loadAudioAssets() {
-  console.info('Generating sound preload list...');
+  console.info('Generating sound preload list.');
   sounds = {};
   glob.sync(SOUND_DIR + '/**/*.@(wav|ogg|mp3)').forEach((snd) => {
     let path = snd.slice(SOUND_DIR.length + 1, snd.length);
@@ -36,7 +36,7 @@ function loadAudioAssets() {
     }
     sounds[key].urls.push(url);
   });
-  console.info('Done!');
+  console.info('Sound preload list generated.');
 };
 loadAudioAssets();
 
@@ -55,7 +55,7 @@ b.bundle((err, buf) => {
   if (!DEV) {
     script = uglify.minify(script, {fromString: true}).code;
   }
-  console.info("Done!");
+  console.info("...Done!");
 
   // Serve concatenated js
   app.get('/game.js', (req, res) => {

@@ -2,7 +2,7 @@
   "name": "bacon-jam-10",
   "version": "1.0.0",
   "description": "Team Natural 20's entry to the 10th Bacon Game Jam",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node .",
     "test": "node node_modules/nodemon/bin/nodemon.js ."

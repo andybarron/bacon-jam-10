@@ -24,11 +24,12 @@ export default class FanCurrent extends ColliderObject {
     });
   }
   liftPlayer(player, overlap) {
-    if (player.grounded || !player.gliding || !overlap
+    if (player.lifted || player.grounded || !player.gliding || !overlap
         || overlap.width < player.getBounds().width/2
         || player.velocity.y < -constants.FAN_MAX_SPEED) {
       return;
     }
+    player.lifted = true;
     player.velocity.y -= constants.FAN_ACCELERATION * delta;
     if (player.velocity.y < -constants.FAN_MAX_SPEED) {
       player.velocity.y = -constants.FAN_MAX_SPEED;

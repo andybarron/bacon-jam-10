@@ -7,8 +7,10 @@ export default class ColliderObject extends BaseObject {
     super();
     this.bounds = bounds;
     this.touching = new Set();
+    this.enableCollision = true;
   }
   testCollision(target, targetBounds) {
+    if (!this.enableCollision) return null;
     let overlap = collision.getRectangleOverlap(this.bounds, targetBounds);
     let contained = this.touching.has(target);
     if (overlap && !contained) {

@@ -327,6 +327,7 @@ export default class GameplayScene extends BaseScene {
     })
 
     // update fan currents
+    self.player.lifted = false;
     self.fanCurrents.forEach(function(fc) {
       fc.testCollision(self.player, self.player.getBounds());
     });

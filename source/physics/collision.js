@@ -60,6 +60,7 @@ export function resolveEnemyCollision(player, enemy) {
     player.hitPoints-=1;
     player.recentHit = true;
     player.grounded = false;
+    player.canCancelJump = false;
 
     if(enemyCenter.x > charCenter.x){
       player.velocity.x = -constants.PLAYER_BOUNCE_SPEED_X;

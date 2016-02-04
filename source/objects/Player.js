@@ -29,6 +29,11 @@ export default class Player extends PhysicsObject {
     this.linkEventToSound('attack', 'player/attack');
     this.linkEventToSound('attack-hit', 'player/attack-hit');
 
+    this.lifting = false;
+    this.canCancelJump = false;
+    this.on('jump', () => this.canCancelJump = true);
+    this.on('glide', () => this.canCancelJump = false);
+
     // Sprite Setup
     this.idleSprite = assets.movieClip('player/idle/');
     this.idleSprite.loop = true;
@@ -70,6 +75,10 @@ export default class Player extends PhysicsObject {
 
     if (this.gliding && this.velocity.y > constants.PLAYER_MAX_FLOAT_FALL_SPEED) {
       this.velocity.y = constants.PLAYER_MAX_FLOAT_FALL_SPEED;
+    }
+
+    if (!this.grounded && this.velocity.y >= 0) {
+      this.canCancelJump = false;
     }
 
     this.updatePhysics(delta, game.tileGrid);
@@ -133,9 +142,10 @@ export default class Player extends PhysicsObject {
       this.emit('jump');
     }
 
-    // check recentHit so player can't cancel bounce when they are hurt
-    if (!keyboard.isKeyDown(JUMP) && !this.gliding && this.velocity.y < 0 && !this.recentHit) {
+    // check canCancelJump so player can't cancel bounce when they are hurt
+    if (!keyboard.isKeyDown(JUMP) && this.canCancelJump && !this.gliding && this.velocity.y < 0) {
       this.velocity.y = 0; // cancel jump
+      this.canCancelJump = false;
     }
 
     // Start Glide

@@ -79,7 +79,10 @@ b.bundle((err, buf) => {
 
   // Start server
   app.listen(PORT, () => {
-    console.info("App listening on port %s", PORT);
+    console.info("Server listening on port: %s", PORT);
+    if (DEV) {
+      console.info("To playtest locally, point your browser to: http://localhost:3000")
+    }
   });
 
 });

@@ -26,7 +26,6 @@ export default class MainMenuScene extends BaseScene {
   }
   update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      console.log(levels);
       return new GameplayScene(levels.first);
     }
     if (keyboard.isKeyPressed(keyboard.SHIFT)) {

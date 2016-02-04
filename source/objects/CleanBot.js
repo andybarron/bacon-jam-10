@@ -11,6 +11,7 @@ let PADDING = constants.TILE_SIZE - WIDTH;
 export default class CleanBot extends PhysicsObject {
   constructor(x, y, player) {
     super(x, y, WIDTH, HEIGHT, PADDING);
+    this.spriteAnchor = PhysicsObject.Align.BOTTOM_LEFT;
     this.player = player;
     this.speed = 75;
     let sprite = assets.movieClip('cleanbot/idle/', {
@@ -22,7 +23,7 @@ export default class CleanBot extends PhysicsObject {
     })
     this.deathSprite.fps = 12;
     sprite.play();
-    this.setSprite(sprite, PhysicsObject.Align.BOTTOM_LEFT);
+    this.setSprite(sprite);
   }
   update(delta, game) {
     this.updatePhysics(delta, game.tileGrid);

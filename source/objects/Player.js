@@ -1,6 +1,7 @@
 import {animationSpeedFromFps} from '../game';
 import * as pixi from 'pixi.js';
 import PhysicsObject from '../physics/PhysicsObject';
+import StateMachine from '../data-structures/StateMachine';
 import * as keyboard from '../keyboard';
 import * as constants from '../constants';
 import * as assets from '../assets';
@@ -22,6 +23,7 @@ let ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 export default class Player extends PhysicsObject {
   constructor(x, y) {
     super(x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
+    this.spriteAnchor = PhysicsObject.Align.BOTTOM_LEFT;
     this.faceVelocityX = false;
     this.linkEventToSound('grounded', 'player/land');
     this.linkEventToSound('jump', 'player/jump');
@@ -33,6 +35,11 @@ export default class Player extends PhysicsObject {
     this.canCancelJump = false;
     this.on('jump', () => this.canCancelJump = true);
     this.on('glide', () => this.canCancelJump = false);
+    this.animTracker = new StateMachine(null);
+    this.animTracker.on('state-change', (newS) => {
+      this.setMovieClip(this[newS + 'Sprite'], true);
+    });
+    // Set state AFTER loading all the sprites
 
     // Sprite Setup
     this.idleSprite = assets.movieClip('player/idle/');
@@ -60,7 +67,6 @@ export default class Player extends PhysicsObject {
     this.glideSprite.loop = true;
     this.glideSprite.fps = 12;
 
-    this.setSprite(this.idleSprite, PhysicsObject.Align.BOTTOM_LEFT);
     this.hitPoints = constants.PLAYER_MAX_HEALTH;
     this.recentHit = false;
     this.hitTimeout = 0;
@@ -69,6 +75,7 @@ export default class Player extends PhysicsObject {
     this.attackDuration = this.attackSprite.duration + 1/60;
     this.attackTimer = 0;
     this.attackBox = new pixi.Rectangle(0, 0, ATK_W, ATK_H);
+    this.animTracker.state = 'idle';
   }
   update(delta, game) {
     this.performActions(delta, game);
@@ -83,7 +90,7 @@ export default class Player extends PhysicsObject {
 
     this.updatePhysics(delta, game.tileGrid);
     this.updateEnemyCollisions(game.enemies);
-    this.setState();
+    this.updateState();
 
     if (this.recentHit) {
       // goes from 0 to 1 after hit
@@ -224,6 +231,22 @@ export default class Player extends PhysicsObject {
       }
     }
     this.changeMovieClip(s, PhysicsObject.Align.BOTTOM_LEFT, true);
+    this.container.updateTransform();
+  }
+  updateState() {
+    let s = 'idle';
+    if (this.attacking) {
+      s = 'attack';
+    } else if (this.grounded && this.velocity.x != 0) {
+      s = 'run';
+    } else if (!this.grounded) {
+      if (this.gliding) {
+        s = 'glide';
+      } else {
+        s = this.velocity.y < 0 ? 'jump' : 'fall';
+      }
+    }
+    this.animTracker.state = s;
     this.container.updateTransform();
   }
   updateEnemyCollisions(enemies) {

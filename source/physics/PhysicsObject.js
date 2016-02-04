@@ -30,8 +30,7 @@ export default class PhysicsObject extends BaseObject {
     this._bounds = new pixi.Rectangle(x, y, w, h);
     this.container = new pixi.Container();
     this.faceVelocityX = true;
-    this.currentSprite = null; // TODO consider removing
-    this.currentAlign = null;
+    this.spriteAnchor = null;
     this.padding = (spriteWidthPadding || 0)/2;
   }
   getBounds() {
@@ -56,27 +55,19 @@ export default class PhysicsObject extends BaseObject {
     this.container.x = Math.round(this.container.x);
     this.container.y = Math.round(this.container.y);
   }
-  setSprite(spr, anchor) {
-    // TODO center? yes? no? maybe?
-    if (anchor) {
-      spr.anchor.copy(anchor);
-      spr.x = (this._bounds.width + this.padding * 2) * anchor.x;
-      spr.y = this._bounds.height * anchor.y;
-    }
+  setSprite(spr) {
+    let anchor = this.spriteAnchor;
+    spr.anchor.copy(anchor);
+    spr.x = (this._bounds.width + this.padding * 2) * anchor.x;
+    spr.y = this._bounds.height * anchor.y;
     this.container.removeChildren();
     this.container.addChild(spr);
-    this.currentSprite = spr;
-    this.currentAlign = anchor;
+    this.spriteAnchor = anchor;
   }
-  setMovieClip(clip, anchor, restart) {
-    this.setSprite(clip, anchor);
+  setMovieClip(clip, restart) {
+    this.setSprite(clip);
     if (restart) {
       clip.gotoAndPlay(0);
-    }
-  }
-  changeMovieClip(clip /* varargs */) {
-    if (this.currentSprite != clip) {
-      this.setMovieClip.apply(this, arguments);
     }
   }
   translate(dx, dy) {

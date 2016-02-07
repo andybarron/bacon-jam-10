@@ -1,12 +1,9 @@
 // TODO maybe use an ES6 Map?
 class TileGrid {
-  constructor(width, height, empty) {
+  constructor(width, height, empty = null) {
     this._w = width;
     this._h = height;
     this.grid = [];
-    if (typeof empty == 'undefined') {
-      empty = null;
-    }
     this.empty = empty;
     for (let tx = 0; tx < width; tx++) {
       let column = [];

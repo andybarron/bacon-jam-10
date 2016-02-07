@@ -13,9 +13,10 @@ import * as collision from '../physics/collision';
 import StageClearScene from './StageClearScene';
 import * as game from '../game';
 import * as levels from '../levels';
-import TileGrid from '../physics/TileGrid';
+import TileGrid from '../data-structures/TileGrid';
 import Console from '../objects/Console';
 import MainMenuScene from './MainMenuScene';
+
 let TILE = constants.TILE_SIZE;
 
 let HELP_TEXT_PADDING = 10;
@@ -23,26 +24,24 @@ let HELP_TEXT_PADDING = 10;
 export default class GameplayScene extends BaseScene {
 
   // TODO slim this bad boy down, yeesh
-  constructor(level) {
+  constructor(levelData) {
     super()
-    if (!level) debug.error("No level data!");
-    let self = this; // TODO remove binding, use arrow functions!!!
+    if (!levelData) debug.error("No level data!");
+    this.levelData = levelData;
     // member variables
-    self.level = level;
-    self.backgroundColor = 0x0;
-    self.nextLevel = levels[self.level.next];
-    self.player = null;
-    self.enemySpawns = [];
-    self.enemies = [];
-    self.tileGrid = null;
-    self.exitRect = null;
-    self.exit = null;
-    self.hearts = [];
-    self.paused = false;
-    self.died = false;
-    self.helpTextFontLabel = 'px monospace';
-    self.helpText = new pixi.Text('', {
-      font: '0' + self.helpTextFontLabel,
+    this.backgroundColor = 0x0;
+    this.player = new Player();
+    this.enemySpawns = [];
+    this.enemies = [];
+    this.tileGrid = levelData.grid;
+    this.exitRect = null;
+    this.exit = null;
+    this.hearts = [];
+    this.paused = false;
+    this.died = false;
+    this.helpTextFontLabel = 'px monospace';
+    this.helpText = new pixi.Text('', {
+      font: '0' + this.helpTextFontLabel,
       wordWrap: true,
       wordWrapWidth: 0,
       align: 'center',
@@ -50,21 +49,21 @@ export default class GameplayScene extends BaseScene {
       // stroke: 0x000000,
       // strokeThickness: 4,
     });
-    self.helpText.visible = false;
-    self.helpText.anchor = new pixi.Point(0.5, 1.0);
-    self.helpBg = new pixi.Graphics();
-    self.helpBg.boundsPadding = 0;
-    self.helpBg.alpha = 0.5;
-    self.helpBg.visible = false;
-    self.helpBg.beginFill(0x001100);
-    self.helpBg.drawRect(0,0,1,1);
-    self.helpBg.endFill();
-    self.ui.addChild(self.helpBg);
-    self.ui.addChild(self.helpText);
-    self.consoles = [];
-    self.fanCurrents = []; // TODO refactor into base class/interface
-    self.restarted = false;
-    self.deathY = 0; // to be adjusted later
+    this.helpText.visible = false;
+    this.helpText.anchor = new pixi.Point(0.5, 1.0);
+    this.helpBg = new pixi.Graphics();
+    this.helpBg.boundsPadding = 0;
+    this.helpBg.alpha = 0.5;
+    this.helpBg.visible = false;
+    this.helpBg.beginFill(0x001100);
+    this.helpBg.drawRect(0,0,1,1);
+    this.helpBg.endFill();
+    this.ui.addChild(this.helpBg);
+    this.ui.addChild(this.helpText);
+    this.consoles = [];
+    this.fanCurrents = []; // TODO refactor into base class/interface
+    this.restarted = false;
+    this.deathY = (levelData.grid.getHeight() + 10) * TILE;
 
     // TODO generic bg layer system?
     this.starClip = assets.movieClip('bg/starfield/', {
@@ -83,138 +82,91 @@ export default class GameplayScene extends BaseScene {
     this.bgCols.tint = 0x777777;
 
     // Load level data
-    // Get tile dimensions
-    let tilesDown = level.data.length;
-    let tilesAcross = Math.max.apply(Math, level.data.map(function(row) {
-      return row.length;
-    }));
-    self.deathY = (tilesDown + 10) * TILE;
-    // Initalize tile grid
-    self.tileGrid = new TileGrid(tilesAcross, tilesDown, false);
-    // Set up map
-    level.data.forEach(function(row, iRow) {
-      let y = iRow * TILE;
-      for (let iCol = 0; iCol < row.length; iCol++) {
-        let x = iCol * TILE;
-        let cx = x + TILE/2;
-        let cy = y + TILE/2;
-        let char = row.charAt(iCol);
-        // TODO refactor tile processing into another method
-        if (char == ' ') {
-          // do nothing
-        } else if (char == '@') { // Player
-          // TODO multiple player error
-          if (self.player) debug.error("Duplicate player!");
-          self.player = new Player(0, 0);
-          self.player.setCenter(cx, cy);
-        } else if (char == '#') { // Enemy
-          self.enemySpawns.push(new pixi.Point(cx, cy));
-        } else if (char == '^') { // Fan current
-          let fc = new FanCurrent(new pixi.Rectangle(x, y, TILE, TILE));
-          self.fanCurrents.push(fc);
-          self.world.addChild(fc.sprite);
-        } else if (char == '!') { // Exit
-          self.exit = assets.sprite("objects/spill");
-          self.exit.x = x + TILE/2;
-          self.exit.y = y + TILE + 3;
-          self.exit.anchor = new pixi.Point(0.5, 1.0);
-          self.exitRect = new pixi.Rectangle(
-            x,
-            y,
-            TILE,
-            TILE);
-        } else {
-          let object = level.objects[char];
-          if (object) {
-            let data = object.split('|');
-            let type = data[0];
-            let contents = data[1];
-            if (type == 'Console') {
-              let bounds = new pixi.Rectangle(x, y, TILE, TILE);
-              let c = new Console(bounds, contents, self.helpText, self.helpBg, null);
-              self.consoles.push(c);
-              self.world.addChild(c.sprite);
-            }
-          } else {
-            let tile = assets.sprite("tiles/block"); // TODO randomize? different?
-            // self.platforms.push(new pixi.Rectangle(x, y, TILE, TILE));
-            self.tileGrid.set(iCol, iRow, true);
-            self.world.addChild(tile);
-            tile.x = x;
-            tile.y = y;
-            tile.width = TILE;
-            tile.height = TILE;
-          }
-        }
-      }
-    });
-
-    self.enemySpawns.forEach(function(center) {
-      let enemy = new CleanBot(0, 0, self.player);
-      enemy.setCenter(center.x, center.y);
-      self.enemies.push(enemy);
-      self.world.addChild(enemy.container);
-    });
-
-    if (!self.player) debug.error("No player object!");
-    self.world.addChild(self.player.container);
-
-    for (let cons of this.consoles) {
-      cons.player = this.player;
+    // Load tiles/geometry
+    for (let tileSprite of levelData.tileSprites) {
+      this.world.addChild(tileSprite);
     }
+    // Set player position
+    this.player.setCenter(levelData.playerCenter);
+    // Set up consoles
+    for (let consCfg of levelData.consoleList) {
+      let {bounds, text} = consCfg;
+      let cons = new Console(bounds, text, this.helpText, this.helpBg, this.player);
+      this.consoles.push(cons);
+      this.world.addChild(cons.sprite);
+    }
+    // Set up currents
+    this.fanCurrents = levelData.fanCurrentBoundsList.map((bounds) => {
+      let fc = new FanCurrent(bounds);
+      this.world.addChild(fc.sprite);
+      return fc;
+    });
+    // Set up enemies
+    this.enemies = levelData.enemyCenterList.map((center) => {
+      console.log('ENEMY CENTER:', center);
+      let enemy = new CleanBot(0, 0, this.player);
+      enemy.setCenter(center.x, center.y);
+      this.world.addChild(enemy.container);
+      return enemy;
+    });
+    // Set up exit
+    this.exitRect = levelData.exitBounds.clone();
+    this.exit = assets.sprite("objects/spill");
+    this.exit.anchor.set(0.5, 1.0);
+    this.exit.x = this.exitRect.getCenter().x;
+    this.exit.y = this.exitRect.y + this.exitRect.height + 3;
+    this.world.addChild(this.exit);
+    
 
-    if (!self.exit) debug.error("No level exit!");
-    self.world.addChild(self.exit);
-
-    self.debugGfx = new pixi.Graphics();
-    self.world.addChild(self.debugGfx);
+    // Add player last -- always on top
+    this.world.addChild(this.player.container);
 
     for (let i = 0; i < constants.PLAYER_MAX_HEALTH; i++) {
       let heart = assets.sprite('ui/heart/full');
       heart.x = 5 + i * heart.width + (i * 1);
       heart.y = 5;
-      self.hearts.push(heart);
-      self.ui.addChild(heart);
+      this.hearts.push(heart);
+      this.ui.addChild(heart);
     }
 
 
     // Death Overlay
-    self.deathOverlay = new pixi.Container();
-    self.deathGraphics = new pixi.Graphics();
-    self.deathText = new pixi.Text('YOU DIED.', {
+    this.deathOverlay = new pixi.Container();
+    this.deathGraphics = new pixi.Graphics();
+    this.deathText = new pixi.Text('YOU DIED.', {
       font: '20px monospace',
       fill: 0xFF00CC,
     });
-    self.deathText.anchor = new pixi.Point(0.5, -1);
-    self.deathText.position = game.display.topCenter;
-    self.deathRestartText = new pixi.Text('[RETURN] TO RESTART, [Q] TO QUIT', {
+    this.deathText.anchor = new pixi.Point(0.5, -1);
+    this.deathText.position = game.display.topCenter;
+    this.deathRestartText = new pixi.Text('[RETURN] TO RESTART, [Q] TO QUIT', {
       font: '20px monospace',
       fill: 0xFF00FF,
     });
-    self.deathRestartText.anchor = new pixi.Point(0.5, 0.5);
-    self.deathRestartText.position = game.display.center;
-    self.deathOverlay.addChild(self.deathText);
-    self.deathOverlay.addChild(self.deathRestartText);
-    self.deathOverlay.addChild(self.deathGraphics);  
+    this.deathRestartText.anchor = new pixi.Point(0.5, 0.5);
+    this.deathRestartText.position = game.display.center;
+    this.deathOverlay.addChild(this.deathText);
+    this.deathOverlay.addChild(this.deathRestartText);
+    this.deathOverlay.addChild(this.deathGraphics);  
 
     // Pause Overlay
-    self.pausedOverlay = new pixi.Container();
-    self.pauseGraphics = new pixi.Graphics();
-    self.pauseText = assets.sprite('text/pause');
-    self.pauseText.anchor = new pixi.Point(-0.5, 0.5);
-    self.pauseText.position = game.display.topCenter;
-    self.restartText = new pixi.Text('[ESC] TO CONTINUE, [Q] TO QUIT, [RETURN] TO RESTART', {
+    this.pausedOverlay = new pixi.Container();
+    this.pauseGraphics = new pixi.Graphics();
+    this.pauseText = assets.sprite('text/pause');
+    this.pauseText.anchor = new pixi.Point(-0.5, 0.5);
+    this.pauseText.position = game.display.topCenter;
+    this.restartText = new pixi.Text('[ESC] TO CONTINUE, [Q] TO QUIT, [RETURN] TO RESTART', {
       font: '20px monospace',
       fill: 0xFFFFFF,
       wordWrap: true,
       wordWrapWidth: 400,
       align: 'center',
     });
-    self.restartText.anchor = new pixi.Point(0.5, 0.5);
-    self.restartText.position = game.display.center;
-    self.pausedOverlay.addChild(self.pauseText);
-    self.pausedOverlay.addChild(self.restartText);
-    self.pausedOverlay.addChild(self.pauseGraphics);  
+    this.restartText.anchor = new pixi.Point(0.5, 0.5);
+    this.restartText.position = game.display.center;
+    this.pausedOverlay.addChild(this.pauseText);
+    this.pausedOverlay.addChild(this.restartText);
+    this.pausedOverlay.addChild(this.pauseGraphics);  
   }
 
   initialize() {
@@ -270,10 +222,10 @@ export default class GameplayScene extends BaseScene {
     if(this.died) {
       if (keyboard.isKeyPressed(keyboard.RETURN)) {
         this.restarted = true;
-        return new GameplayScene(this.level);
+        return new GameplayScene(this.levelData);
       }
       if (keyboard.isKeyPressed(keyboard.Q)) {
-        return new MainMenuScene(this.level);
+        return new MainMenuScene(this.levelData);
       }      
       return;
     };
@@ -281,7 +233,7 @@ export default class GameplayScene extends BaseScene {
     if(this.paused) {
       if (keyboard.isKeyPressed(keyboard.RETURN)) {
         this.restarted = true;
-        return new GameplayScene(this.level);
+        return new GameplayScene(this.levelData);
       } else if (keyboard.isKeyPressed(keyboard.Q)) {
         return new MainMenuScene();
       }
@@ -300,6 +252,7 @@ export default class GameplayScene extends BaseScene {
     }
 
     if (this.paused) return;
+
 
     if (this.player.grounded && collision.getRectangleOverlap(
         this.player.getBounds(),
@@ -345,16 +298,14 @@ export default class GameplayScene extends BaseScene {
     }
 
     // Have screen follow the player
-    this.world.x = Math.round(-this.player.getCenterX() + game.display.width / 2);
-    this.world.y = Math.round(-this.player.getCenterY() + game.display.height / 2);
     this.world.x =
       -Math.round(this.player.getBounds().x) +
       -Math.round(this.player.getWidth() / 2) +
-      Math.round(+ game.display.width / 2);
+      Math.round(game.display.width / 2);
     this.world.y =
       -Math.round(this.player.getBounds().y) +
       -Math.round(this.player.getHeight() / 2) +
-      Math.round(+ game.display.height / 2);
+      Math.round(game.display.height / 2);
     this.bgHull.tilePosition.x = this.world.x*1/5;
     this.bgHull.tilePosition.y = this.world.y*1/5;
     this.bgCols.tilePosition.x = this.world.x*1/3;
@@ -366,5 +317,8 @@ export default class GameplayScene extends BaseScene {
       this.died = true;
       this.ui.addChild(this.deathOverlay);
     }
+
+    this.starClip.update(delta);
+    this.getStage().update(delta);
   }
 }

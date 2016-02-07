@@ -1,4 +1,5 @@
 import * as debug from './debug';
+import parse from './levels/parse';
 
 import * as pixi from 'pixi.js';
 import * as howler from "howler";
@@ -47,9 +48,20 @@ function onLoadResource(loader, resource) {
 
 let pixiLoaded = false;
 
+let levelList = null;
+function beginLoadingLevels() {
+  debug.print('Fetching level list');
+  qajax.getJSON('/levels.json')
+    .then(data => {
+      debug.print('Got level list');
+      levelList = data;
+    })
+    .catch(e => debug.error('Failed to load levels!', e));
+}
 
 export function load(callback) {
   debug.print('Loading assets...');
+  beginLoadingLevels();
   beginLoadingSounds();
   pixi.loader.add(['/static/atlas.json']);
   pixi.loader.on('progress', onLoadResource);
@@ -64,7 +76,7 @@ export function load(callback) {
     pixiLoaded = true;
   });
   let loadInterval = setInterval(function() {
-    if (pixiLoaded && nHowls == 0) {
+    if (levelList && pixiLoaded && nHowls == 0) {
       debug.print('Assets loaded!');
       clearInterval(loadInterval);
       callback();
@@ -76,6 +88,9 @@ export function texture(name) {
 }
 export function sprite(name) {
   return pixi.Sprite.fromFrame(name);
+}
+export function loadLevel(i) {
+  return parse(levelList[i]);
 }
 export function movieClip(clipName, options) {
   let names = [];

@@ -1,9 +1,10 @@
 "use strict";
 // Load dependencies
-var express = require('express');
-var browserify = require('browserify');
-var uglify = require('uglify-js');
-var glob = require('glob');
+let express = require('express');
+let browserify = require('browserify');
+let uglify = require('uglify-js');
+let glob = require('glob');
+let fs = require('fs');
 
 // Load environment config
 let env = process.env;
@@ -17,16 +18,17 @@ app.set('view engine', 'ejs');
 // Game config
 let SOUND_DIR = 'assets/audio';
 let SOUND_ROUTE = '/sounds';
+let LEVELS_FILE = 'assets/level-list.json'
+let LEVEL_DIR = 'assets/maps';
 
 // Preload list for music and sounds
-let sounds = null;
 function removeFileExtension(str) {
   return str.replace(/\.[^/.]+$/, "");
 }
 
 function loadAudioAssets() {
   console.info('Generating sound preload list.');
-  sounds = {};
+  let sounds = {};
   glob.sync(SOUND_DIR + '/**/*.@(wav|ogg|mp3)').forEach((snd) => {
     let path = snd.slice(SOUND_DIR.length + 1, snd.length);
     let key = removeFileExtension(path);
@@ -37,8 +39,31 @@ function loadAudioAssets() {
     sounds[key].urls.push(url);
   });
   console.info('Sound preload list generated.');
+  return sounds;
 };
-loadAudioAssets();
+let sounds = loadAudioAssets();
+
+// Combined list of levels
+function loadLevelList() {
+  console.info('Generating list of levels.');
+  let nameList = JSON.parse(fs.readFileSync(LEVELS_FILE).toString('utf-8'));
+  let levelList = [];
+  for (let levelId of nameList) {
+    let levelPath = LEVEL_DIR + '/' + levelId + '.json';
+    let levelData = JSON.parse(fs.readFileSync(levelPath).toString('utf-8'));
+    for (let tileset of levelData.tilesets) {
+      for (let tileId in tileset.tiles) {
+        let name = tileset.tiles[tileId].image;
+        name = removeFileExtension(name).replace(/^\.\.\/graphics\//, '');
+        tileset.tiles[tileId].image = name;
+      }
+    }
+    levelList.push(levelData);
+  }
+  console.info('Level list generated.');
+  return levelList;
+}
+let levelList = loadLevelList();
 
 console.info("Compiling game source...");
 let b = browserify('source/main.js', {
@@ -68,6 +93,10 @@ b.bundle((err, buf) => {
 
   app.use('/sounds.json', (req, res) => {
     res.json(sounds);
+  });
+
+  app.use('/levels.json', (req, res) => {
+    res.json(levelList);
   });
 
   app.use(SOUND_ROUTE, express.static('assets/audio'));

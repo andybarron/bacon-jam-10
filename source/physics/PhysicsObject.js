@@ -80,8 +80,24 @@ export default class PhysicsObject extends BaseObject {
     this._bounds.y = y;
     this.updateContainer();
   }
-  setCenter(x, y) {
-    this.setPosition(x - this._bounds.width/2, y - this._bounds.height/2);
+  getCenter() {
+    return new pixi.Point(
+      this._bounds.x + this._bounds.width/2,
+      this._bounds.y + this._bounds.height/2);
+  }
+  setCenter() {
+    if (arguments.length == 2) {
+      let x = arguments[0];
+      let y = arguments[1];
+      this.setPosition(x - this._bounds.width/2, y - this._bounds.height/2);
+    } else if (arguments.length == 1) {
+      let p = arguments[0];
+      return this.setCenter(p.x, p.y);
+    } else {
+      throw new Error(
+        'Wrong number of args to setCenter; expected 1 or 2 but found '
+        + arguments.length);
+    }
   }
   getCenterX() {
     return this._bounds.x + this._bounds.width/2;

@@ -26,7 +26,8 @@ export default class MainMenuScene extends BaseScene {
   }
   update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      return new GameplayScene(levels.first);
+      return new GameplayScene(assets.loadLevel(0));
+      // return new GameplayScene(levels.first);
     }
     if (keyboard.isKeyPressed(keyboard.SHIFT)) {
       let levelName = prompt("Jump to level?", 'tutorial1');

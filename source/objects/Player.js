@@ -21,7 +21,7 @@ let ATK_W = constants.PLAYER_ATTACK_WIDTH;
 let ATK_H = constants.PLAYER_ATTACK_HEIGHT;
 
 export default class Player extends PhysicsObject {
-  constructor(x, y) {
+  constructor(x = 0, y = 0) {
     super(x, y, constants.TILE_SIZE/2, constants.TILE_SIZE, constants.TILE_SIZE/2);
     this.spriteAnchor = PhysicsObject.Align.BOTTOM_LEFT;
     this.faceVelocityX = false;

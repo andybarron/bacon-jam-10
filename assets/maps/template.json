@@ -1,13 +1,13 @@
-{ "height":9,
+{ "height":5,
  "layers":[
         {
-         "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-         "height":9,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3],
+         "height":5,
          "name":"tiles",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":42,
+         "width":4,
          "x":0,
          "y":0
         }, 
@@ -29,8 +29,8 @@
                  "type":"",
                  "visible":true,
                  "width":22,
-                 "x":100,
-                 "y":232
+                 "x":5,
+                 "y":7
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -57,38 +57,8 @@
                  "type":"",
                  "visible":true,
                  "width":21,
-                 "x":100,
-                 "y":231
-                }, 
-                {
-                 "height":18,
-                 "id":24,
-                 "name":"",
-                 "properties":
-                    {
-                     "text":"Use the up arrow to jump. Hold it down to jump higher!"
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":21,
-                 "x":325.5,
-                 "y":233
-                }, 
-                {
-                 "height":18,
-                 "id":25,
-                 "name":"",
-                 "properties":
-                    {
-                     "text":"Reach the \"Wet Floor\" sign to clean the spill and complete the level."
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":21,
-                 "x":1093.5,
-                 "y":231
+                 "x":37,
+                 "y":7
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -115,8 +85,8 @@
                  "type":"",
                  "visible":true,
                  "width":18,
-                 "x":1255,
-                 "y":232
+                 "x":103,
+                 "y":100
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -130,7 +100,22 @@
          "draworder":"topdown",
          "height":10,
          "name":"enemies",
-         "objects":[],
+         "objects":[
+                {
+                 "height":18,
+                 "id":20,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":20,
+                 "x":101,
+                 "y":101
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -143,7 +128,22 @@
          "draworder":"topdown",
          "height":10,
          "name":"currents",
-         "objects":[],
+         "objects":[
+                {
+                 "height":51,
+                 "id":23,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":8,
+                 "y":39
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -151,7 +151,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":26,
+ "nextobjectid":24,
  "orientation":"orthogonal",
  "properties":
     {
@@ -170,7 +170,7 @@
 
             },
          "spacing":0,
-         "tilecount":3,
+         "tilecount":4,
          "tileheight":32,
          "tiles":
             {
@@ -185,11 +185,15 @@
              "2":
                 {
                  "image":"..\/graphics\/tiles\/block.png"
+                },
+             "3":
+                {
+                 "image":"..\/graphics\/tiles\/fan\/1.png"
                 }
             },
          "tilewidth":32
         }],
  "tilewidth":32,
  "version":1,
- "width":42
+ "width":4
 }

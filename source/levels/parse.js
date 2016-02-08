@@ -62,7 +62,6 @@ function tileCoordsFromLayer(layerName, levelData, fullExtent = false) {
 }
 
 function tileCenterFromCoords(p) {
-  console.log(p);
   return new Point(
     p.x * TILE_SIZE + TILE_SIZE/2,
     p.y * TILE_SIZE + TILE_SIZE/2);
@@ -76,7 +75,7 @@ function tileBoundsFromCoords(p) {
     TILE_SIZE);
 }
 
-export default function(data) {
+export default function(data, index) {
   // first, load tiles
   let tileset = data.tilesets[0];
   let tileOffset = tileset.firstgid;
@@ -92,7 +91,7 @@ export default function(data) {
     let collide = tileId in tileMap;
     if (collide) {
       grid.set(x, y, true);
-      let sprite = assets.sprite(tileMap[tileId].image);
+      let sprite = assets.tileSprite(tileMap[tileId].image);
       sprite.x = x * TILE_SIZE;
       sprite.y = y * TILE_SIZE;
       tileSprites.push(sprite);
@@ -125,17 +124,15 @@ export default function(data) {
     tileCoordsFromLayer('currents', data, true)
     .map(tileBoundsFromCoords);
   // load enemies
-  console.log(enemyCenterList);
   let enemyCenterList =
     tileCoordsFromLayer('enemies', data)
-    .map((c) => {console.log(c); return c})
     .map(tileCenterFromCoords);
-  console.log('#enemies:', enemyCenterList.length);
   // load exit position
   let exitObj = findLayer('exit', layers).objects[0];
   let exitBounds = tileBoundsFromRect(boundsFromTiledObject(exitObj));
   // return data
   return {
+    index,
     grid,
     tileSprites,
     playerCenter,

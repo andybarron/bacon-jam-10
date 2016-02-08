@@ -83,16 +83,36 @@ export function load(callback) {
     }
   }, 50);
 }
+export function cleanFrameId(id) {
+  return id
+    .replace(/^(\.{0,2}\/)?graphics\//, '')
+    .replace(/\.[^/.]+$/, '');
+}
 export function texture(name) {
-  return pixi.Texture.fromFrame(name);
+  return pixi.Texture.fromFrame(cleanFrameId(name));
 }
 export function sprite(name) {
-  return pixi.Sprite.fromFrame(name);
+  return pixi.Sprite.fromFrame(cleanFrameId(name));
+}
+export function tileSprite(name) {
+  name = cleanFrameId(name);
+  let regexEndDigits = /\d+$/;
+  if (regexEndDigits.test(name)) {
+    name = name.replace(regexEndDigits, '');
+    return movieClip(name, {fps: 10});
+  } else {
+    return sprite(name);
+  }
 }
 export function loadLevel(i) {
-  return parse(levelList[i]);
+  if (i >= 0 && i < levelList.length) {
+    return parse(levelList[i], i);
+  } else {
+    return null;
+  }
 }
 export function movieClip(clipName, options) {
+  clipName = cleanFrameId(clipName);
   let names = [];
   options = options || {};
   for (let texName in pixi.utils.TextureCache) {

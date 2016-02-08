@@ -103,7 +103,6 @@ export default class GameplayScene extends BaseScene {
     });
     // Set up enemies
     this.enemies = levelData.enemyCenterList.map((center) => {
-      console.log('ENEMY CENTER:', center);
       let enemy = new CleanBot(0, 0, this.player);
       enemy.setCenter(center.x, center.y);
       this.world.addChild(enemy.container);
@@ -258,9 +257,10 @@ export default class GameplayScene extends BaseScene {
         this.player.getBounds(),
         this.exitRect)) {
       let nextScene = null;
-      if (this.nextLevel) {
+      let nextLevel = assets.loadLevel(this.levelData.index + 1);
+      if (nextLevel) {
         this.restarted = true;
-        nextScene = new GameplayScene(this.nextLevel);
+        nextScene = new GameplayScene(nextLevel);
       } else {
         nextScene = new StageClearScene(); // TODO this has a next level property
       }

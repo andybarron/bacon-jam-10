@@ -21,7 +21,6 @@ export function collidePhysicsTile(phys, tileRect, tileData) {
     let ignoreHorizontal = tileData.ignoreLeft && tileData.ignoreRight;
     if (overlap.width > overlap.height && !tileData.ignoreVertical) { // char moves vertically
       if (tileCenter.y >= charCenter.y && !tileData.ignoreUp) { // move up
-        // TODO also set grounded to true???
         phys.grounded = true;
         phys.getBounds().y -= overlap.height;
         if (phys.velocity.y > 0) {

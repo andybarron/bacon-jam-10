@@ -1,7 +1,6 @@
 import {animationSpeedFromFps, fpsFromAnimationSpeed} from './game';
 import * as pixi from 'pixi.js';
 let MovieClip = pixi.extras.MovieClip;
-window.ticker = pixi.ticker.shared;
 
 Object.defineProperty(MovieClip.prototype, 'fps', {
   get: function() {

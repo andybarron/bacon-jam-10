@@ -12,10 +12,10 @@ import * as constants from '../constants';
 import * as collision from '../physics/collision';
 import StageClearScene from './StageClearScene';
 import * as game from '../game';
-import * as levels from '../levels';
 import TileGrid from '../data-structures/TileGrid';
 import Console from '../objects/Console';
 import MainMenuScene from './MainMenuScene';
+import LevelLoadingScene from './LevelLoadingScene';
 
 let TILE = constants.TILE_SIZE;
 
@@ -24,10 +24,12 @@ let HELP_TEXT_PADDING = 10;
 export default class GameplayScene extends BaseScene {
 
   // TODO slim this bad boy down, yeesh
-  constructor(levelData) {
+  constructor(levelData, levelInfo) {
     super()
     if (!levelData) debug.error("No level data!");
+    if (!levelInfo) debug.error("No level info!");
     this.levelData = levelData;
+    this.levelInfo = levelInfo;
     // member variables
     this.backgroundColor = 0x0;
     this.player = new Player();
@@ -221,10 +223,10 @@ export default class GameplayScene extends BaseScene {
     if(this.died) {
       if (keyboard.isKeyPressed(keyboard.RETURN)) {
         this.restarted = true;
-        return new GameplayScene(this.levelData);
+        return new GameplayScene(this.levelData, this.levelInfo);
       }
       if (keyboard.isKeyPressed(keyboard.Q)) {
-        return new MainMenuScene(this.levelData);
+        return new MainMenuScene(this.levelData, this.levelInfo);
       }      
       return;
     };
@@ -232,7 +234,7 @@ export default class GameplayScene extends BaseScene {
     if(this.paused) {
       if (keyboard.isKeyPressed(keyboard.RETURN)) {
         this.restarted = true;
-        return new GameplayScene(this.levelData);
+        return new GameplayScene(this.levelData, this.levelInfo);
       } else if (keyboard.isKeyPressed(keyboard.Q)) {
         return new MainMenuScene();
       }
@@ -257,10 +259,10 @@ export default class GameplayScene extends BaseScene {
         this.player.getBounds(),
         this.exitRect)) {
       let nextScene = null;
-      let nextLevel = assets.loadLevel(this.levelData.index + 1);
+      let nextLevel = assets.getLevelInfo(this.levelInfo.index + 1);
       if (nextLevel) {
         this.restarted = true;
-        nextScene = new GameplayScene(nextLevel);
+        nextScene = new LevelLoadingScene(nextLevel);
       } else {
         nextScene = new StageClearScene(); // TODO this has a next level property
       }
@@ -312,7 +314,6 @@ export default class GameplayScene extends BaseScene {
     this.bgCols.tilePosition.y = this.world.y*1/3;
 
     // reset on fall
-    // TODO calculate based on level size!!!
     if (!this.died && this.player.getPosition().y > this.deathY || this.player.hitPoints == 0) {
       this.died = true;
       this.ui.addChild(this.deathOverlay);

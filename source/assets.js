@@ -6,7 +6,6 @@ import * as howler from "howler";
 import naturalSort from 'javascript-natural-sort';
 import * as qajax from 'qajax';
 
-// TODO support array of paths for different codecs
 let nHowls = -1;
 function createHowl(cfg) {
   let path = cfg.urls.join(', ');
@@ -104,11 +103,13 @@ export function tileSprite(name) {
     return sprite(name);
   }
 }
-export function loadLevel(i) {
-  if (i >= 0 && i < levelList.length) {
-    return parse(levelList[i], i);
+export function getLevelInfo(level) {
+  if (typeof level == 'number') {
+    return levelList[level];
+  } else if (typeof level == 'string') {
+    return levelList.find(info => info.id == level);
   } else {
-    return null;
+    throw new Error("Invalid arg type for getLevelInfo: " + typeof level);
   }
 }
 export function movieClip(clipName, options) {

@@ -20,6 +20,7 @@ let SOUND_DIR = 'assets/audio';
 let SOUND_ROUTE = '/sounds';
 let LEVELS_FILE = 'assets/level-list.json'
 let LEVEL_DIR = 'assets/maps';
+let LEVEL_ROUTE = '/levels';
 
 // Preload list for music and sounds
 function removeFileExtension(str) {
@@ -51,14 +52,12 @@ function loadLevelList() {
   for (let levelId of nameList) {
     let levelPath = LEVEL_DIR + '/' + levelId + '.json';
     let levelData = JSON.parse(fs.readFileSync(levelPath).toString('utf-8'));
-    for (let tileset of levelData.tilesets) {
-      for (let tileId in tileset.tiles) {
-        let name = tileset.tiles[tileId].image;
-        name = removeFileExtension(name).replace(/^\.\.\/graphics\//, '');
-        tileset.tiles[tileId].image = name;
-      }
-    }
-    levelList.push(levelData);
+    levelList.push({
+      id: levelId,
+      name: levelData.properties.name,
+      url: `${LEVEL_ROUTE}/${levelId}.json`,
+      index: levelList.length,
+    });
   }
   console.info('Level list generated.');
   return levelList;
@@ -98,6 +97,8 @@ b.bundle((err, buf) => {
   app.use('/levels.json', (req, res) => {
     res.json(levelList);
   });
+
+  app.use('/levels', express.static(LEVEL_DIR));
 
   app.use(SOUND_ROUTE, express.static('assets/audio'));
 

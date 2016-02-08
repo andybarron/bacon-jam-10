@@ -4,9 +4,8 @@ import * as assets from '../assets';
 import * as constants from '../constants';
 import * as game from '../game';
 import * as keyboard from '../keyboard';
-import GameplayScene from './GameplayScene';
+import LevelLoadingScene from './LevelLoadingScene';
 import BaseScene from './BaseScene';
-import * as levels from '../levels';
 
 export default class MainMenuScene extends BaseScene {
   constructor() {
@@ -26,16 +25,11 @@ export default class MainMenuScene extends BaseScene {
   }
   update(delta) {
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
-      return new GameplayScene(assets.loadLevel(0));
-      // return new GameplayScene(levels.first);
+      return new LevelLoadingScene(0);
     }
     if (keyboard.isKeyPressed(keyboard.SHIFT)) {
       let levelName = prompt("Jump to level?", 'tutorial1');
-      if (levelName in levels) {
-        return new GameplayScene(levels[levelName]);
-      } else {
-        debug.error('The level "' + levelName + '" does not exist!');
-      }
+      return new LevelLoadingScene(levelName);
     }
   }
 }

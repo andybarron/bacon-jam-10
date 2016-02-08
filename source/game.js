@@ -30,6 +30,8 @@ export function updateDisplayDimensions(w, h) {
   display.bottomRight.set(w, h);
   display.width = w;
   display.height = h;
+  display.bounds.width = w;
+  display.bounds.height = h;
 }
 export function screenPixelsFromWorld(n) {
   return n * scale;

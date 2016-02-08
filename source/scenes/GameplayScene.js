@@ -62,8 +62,7 @@ export default class GameplayScene extends BaseScene {
     this.helpBg.endFill();
     this.ui.addChild(this.helpBg);
     this.ui.addChild(this.helpText);
-    this.consoles = [];
-    this.fanCurrents = []; // TODO refactor into base class/interface
+    this.playerColliders = [];
     this.restarted = false;
     this.deathY = (levelData.grid.getHeight() + 10) * TILE;
 
@@ -94,15 +93,15 @@ export default class GameplayScene extends BaseScene {
     for (let consCfg of levelData.consoleList) {
       let {bounds, text} = consCfg;
       let cons = new Console(bounds, text, this.helpText, this.helpBg, this.player);
-      this.consoles.push(cons);
+      this.playerColliders.push(cons);
       this.world.addChild(cons.sprite);
     }
     // Set up currents
-    this.fanCurrents = levelData.fanCurrentBoundsList.map((bounds) => {
+    for (let bounds of levelData.fanCurrentBoundsList) {
       let fc = new FanCurrent(bounds);
+      this.playerColliders.push(fc);
       this.world.addChild(fc.sprite);
-      return fc;
-    });
+    }
     // Set up enemies
     this.enemies = levelData.enemyCenterList.map((center) => {
       let enemy = new CleanBot(0, 0, this.player);
@@ -276,14 +275,9 @@ export default class GameplayScene extends BaseScene {
     // Update Player
     self.player.update(delta, self);
 
-    // update consoles
-    self.consoles.forEach(function(cons) {
-      cons.update();
-    })
-
     // update fan currents
     self.player.lifted = false;
-    self.fanCurrents.forEach(function(fc) {
+    self.playerColliders.forEach((fc) => {
       fc.testCollision(self.player, self.player.getBounds());
     });
 

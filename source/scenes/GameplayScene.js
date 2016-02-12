@@ -16,6 +16,7 @@ import TileGrid from '../data-structures/TileGrid';
 import Console from '../objects/Console';
 import MainMenuScene from './MainMenuScene';
 import LevelLoadingScene from './LevelLoadingScene';
+import SharpText from '../interface/SharpText';
 
 let TILE = constants.TILE_SIZE;
 
@@ -33,16 +34,14 @@ export default class GameplayScene extends BaseScene {
     // member variables
     this.backgroundColor = 0x0;
     this.player = new Player();
-    this.enemySpawns = [];
     this.enemies = [];
     this.tileGrid = levelData.grid;
     this.exitRect = null;
-    this.exit = null;
     this.hearts = [];
     this.paused = false;
     this.died = false;
     this.helpTextFontLabel = 'px monospace';
-    this.helpText = new pixi.Text('', {
+    this.helpText = new SharpText('', {
       font: '0' + this.helpTextFontLabel,
       wordWrap: true,
       wordWrapWidth: 0,
@@ -111,11 +110,11 @@ export default class GameplayScene extends BaseScene {
     });
     // Set up exit
     this.exitRect = levelData.exitBounds.clone();
-    this.exit = assets.sprite("objects/spill");
-    this.exit.anchor.set(0.5, 1.0);
-    this.exit.x = this.exitRect.getCenter().x;
-    this.exit.y = this.exitRect.y + this.exitRect.height + 3;
-    this.world.addChild(this.exit);
+    let exit = assets.sprite("objects/spill");
+    exit.anchor.set(0.5, 1.0);
+    exit.x = this.exitRect.getCenter().x;
+    exit.y = this.exitRect.y + this.exitRect.height + 3;
+    this.world.addChild(exit);
     
 
     // Add player last -- always on top
@@ -133,13 +132,13 @@ export default class GameplayScene extends BaseScene {
     // Death Overlay
     this.deathOverlay = new pixi.Container();
     this.deathGraphics = new pixi.Graphics();
-    this.deathText = new pixi.Text('YOU DIED.', {
+    this.deathText = new SharpText('YOU DIED.', {
       font: '20px monospace',
       fill: 0xFF00CC,
     });
     this.deathText.anchor = new pixi.Point(0.5, -1);
     this.deathText.position = game.display.topCenter;
-    this.deathRestartText = new pixi.Text('[RETURN] TO RESTART, [Q] TO QUIT', {
+    this.deathRestartText = new SharpText('[RETURN] TO RESTART, [Q] TO QUIT', {
       font: '20px monospace',
       fill: 0xFF00FF,
     });
@@ -147,7 +146,9 @@ export default class GameplayScene extends BaseScene {
     this.deathRestartText.position = game.display.center;
     this.deathOverlay.addChild(this.deathText);
     this.deathOverlay.addChild(this.deathRestartText);
-    this.deathOverlay.addChild(this.deathGraphics);  
+    this.deathOverlay.addChild(this.deathGraphics);
+    this.ui.addChild(this.deathOverlay);
+    this.deathOverlay.visible = false;
 
     // Pause Overlay
     this.pausedOverlay = new pixi.Container();
@@ -155,7 +156,7 @@ export default class GameplayScene extends BaseScene {
     this.pauseText = assets.sprite('text/pause');
     this.pauseText.anchor = new pixi.Point(-0.5, 0.5);
     this.pauseText.position = game.display.topCenter;
-    this.restartText = new pixi.Text('[ESC] TO CONTINUE, [Q] TO QUIT, [RETURN] TO RESTART', {
+    this.restartText = new SharpText('[ESC] TO CONTINUE, [Q] TO QUIT, [RETURN] TO RESTART', {
       font: '20px monospace',
       fill: 0xFFFFFF,
       wordWrap: true,
@@ -166,7 +167,9 @@ export default class GameplayScene extends BaseScene {
     this.restartText.position = game.display.center;
     this.pausedOverlay.addChild(this.pauseText);
     this.pausedOverlay.addChild(this.restartText);
-    this.pausedOverlay.addChild(this.pauseGraphics);  
+    this.pausedOverlay.addChild(this.pauseGraphics);
+    this.ui.addChild(this.pausedOverlay);
+    this.pausedOverlay.visible = false;
   }
 
   initialize() {
@@ -181,11 +184,6 @@ export default class GameplayScene extends BaseScene {
     this.helpText.style.wordWrapWidth = w - HELP_TEXT_PADDING * 2;
     let fontSize = game.worldPixelsFromScreen(36);
     this.helpText.style.font = fontSize.toString() + this.helpTextFontLabel;
-    // Render at native res, regardless of game scale
-    this.helpText.resolution = game.scale;
-    if (this.helpText.visible) {
-      this.helpText.dirty = true;
-    }
     this.deathGraphics.clear();
     this.deathGraphics.beginFill(0x000000, 0.5);
     this.deathGraphics.drawRect(0,0,w,h);
@@ -200,7 +198,7 @@ export default class GameplayScene extends BaseScene {
     });
   }
   update(delta) {
-
+    this.ui.update(delta); // Always update UI
     this.bgSprite.texture = this.starClip.texture;
     if (this.helpText.visible) {
       let padding = HELP_TEXT_PADDING;
@@ -243,12 +241,7 @@ export default class GameplayScene extends BaseScene {
     if (keyboard.isKeyPressed(keyboard.ESC)) {
       this.paused = !this.paused;
 
-      if (this.paused) {
-        this.ui.addChild(this.pausedOverlay);
-      }
-      else {
-        this.ui.removeChild(this.pausedOverlay);
-      }
+      this.pausedOverlay.visible = this.paused;
     }
 
     if (this.paused) return;
@@ -310,10 +303,12 @@ export default class GameplayScene extends BaseScene {
     // reset on fall
     if (!this.died && this.player.getPosition().y > this.deathY || this.player.hitPoints == 0) {
       this.died = true;
-      this.ui.addChild(this.deathOverlay);
+      this.deathOverlay.visible = true;
     }
 
+    // Only update background and foreground anims when not paused
     this.starClip.update(delta);
-    this.getStage().update(delta);
+    this.background.update(delta);
+    this.world.update(delta);
   }
 }

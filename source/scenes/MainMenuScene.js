@@ -6,6 +6,7 @@ import * as game from '../game';
 import * as keyboard from '../keyboard';
 import LevelLoadingScene from './LevelLoadingScene';
 import BaseScene from './BaseScene';
+import SharpText from '../interface/SharpText';
 
 export default class MainMenuScene extends BaseScene {
   constructor() {
@@ -14,7 +15,7 @@ export default class MainMenuScene extends BaseScene {
     this.ui.addChild(title);
     title.anchor.x = 0.5;
     title.position = game.display.topCenter;
-    let play = new pixi.Text('PRESS [RETURN] TO ENGAGE SANITATION PROCEDURE', {
+    let play = new SharpText('PRESS [RETURN] TO ENGAGE SANITATION PROCEDURE', {
       font: '20px monospace',
       fill: 0xFF00CC,
     });
@@ -24,6 +25,7 @@ export default class MainMenuScene extends BaseScene {
     play.position = game.display.bottomCenter;
   }
   update(delta) {
+    this.getStage().update(delta);
     if (keyboard.isKeyPressed(keyboard.RETURN)) {
       return new LevelLoadingScene(0);
     }

@@ -117,8 +117,9 @@ export function movieClip(clipName, options) {
   let names = [];
   options = options || {};
   for (let texName in pixi.utils.TextureCache) {
-    // check if texName starts with clipName
-    if (texName.lastIndexOf(clipName, 0) == 0) {
+    // check if texName starts with clipName and non-matching portion doesn't
+    // contain '/' (no sub-clips)
+    if (texName.startsWith(clipName) && !texName.slice(clipName.length).includes('/')) {
       names.push(texName);
     }
   }

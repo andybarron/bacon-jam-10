@@ -3,6 +3,7 @@ import * as constants from '../constants';
 import * as collision from './collision';
 import BaseObject from '../objects/BaseObject';
 
+let MAX_VELOCITY_COMPONENT = constants.PHYSICS_VELOCITY_MAX_COMPONENT;
 let TILE = constants.TILE_SIZE;
 let tempRect = new pixi.Rectangle();
 let tempData = {};
@@ -112,6 +113,12 @@ export default class PhysicsObject extends BaseObject {
     let wasGrounded = this.grounded;
     this.grounded = false;
     this.velocity.y += constants.GRAVITY * this.gravityScale * delta;
+    if (Math.abs(this.velocity.x) > MAX_VELOCITY_COMPONENT) {
+      this.velocity.x = Math.sign(this.velocity.x) * MAX_VELOCITY_COMPONENT;
+    }
+    if (Math.abs(this.velocity.y) > MAX_VELOCITY_COMPONENT) {
+      this.velocity.y = Math.sign(this.velocity.y) * MAX_VELOCITY_COMPONENT;
+    }
     this.translate(this.velocity.x * delta, this.velocity.y * delta);
     if (tiles) {
       this.updateWorldCollisions(tiles);

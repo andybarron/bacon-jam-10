@@ -8,7 +8,7 @@
 * Joshua Angeley
 
 ## Music
-* Craig Hunger
+* Craig Hunter
 
 ## Art
 * Andy Barron
